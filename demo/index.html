@@ -40,16 +40,18 @@
     <h3>Default Use</h3>
     <div class="demo-snippet fs-card">
       <div class="demo">
-<fs-dialog id="modal" transition="from-right">
-  <h1 class="fs-dialog__heading">My Modal</h1>
+<fs-dialog id="modal" transition="from-right" type="modeless">
+  <header>
+    <h4>My Modal</h4>
+  </header>
   <div class="fs-dialog__body">
     <p>Hello world</p>
     <a href="#">LINK!</a>
   </div>
-  <div class="fs-dialog__footer">
+  <footer>
     <button class="fs-button fs-button--recommended">Yes</button>
     <button class="fs-button" data-dialog-dismiss>No</button>
-  </div>
+  <footer>
 </fs-dialog>
       </div>
     </div>

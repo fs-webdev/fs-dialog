@@ -1,6 +1,6 @@
 {
   "name": "fs-dialog",
-  "description": "Standard display of a persons sex, name, lifespan, and id for FamilySearch.",
+  "description": "An accessible standard dialog for FamilySearch.",
   "version": "1.0.0",
   "main": "fs-dialog.html",
   "author": {
@@ -26,5 +26,8 @@
     "test/",
     "test/*",
     "wct.conf.json"
+    "src/",
+    "src/*",
+    "gulpfile.js"
   ]
 }
