@@ -1,0 +1,10 @@
+.DS_Store
+.env
+.vscode/*
+bower_components
+bower-debug.log
+buildAssets
+node_modules
+npm-debug.log
+coverage
+wct.log
