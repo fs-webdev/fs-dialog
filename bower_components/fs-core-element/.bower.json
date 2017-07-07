@@ -1,0 +1,32 @@
+{
+  "name": "fs-core-element",
+  "description": "Functions and properties used globally across the FamilySearch site, available to web components.",
+  "homepage": "https://github.com/fs-webdev/fs-core-element",
+  "author": {
+    "name": "FamilySearch",
+    "url": "https://familysearch.org/"
+  },
+  "main": "fs-core-element.html",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "devDependencies": {
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.23",
+    "web-component-tester": "Polymer/web-component-tester#^5.0.0"
+  },
+  "ignore": [
+    ".*",
+    "bin/",
+    "bin/*",
+    "test/",
+    "test/*",
+    "wct.conf.json"
+  ],
+  "_release": "4ff4358902",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "4ff43589022c638a739652c73777c4d14ef9eccf"
+  },
+  "_source": "https://github.com/fs-webdev/fs-core-element.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/fs-webdev/fs-core-element.git"
+}

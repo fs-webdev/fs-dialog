@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../axe.min/index.js" ></script>
+    <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
+
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../fs-dialog.html">
+  </head>
+  <body>
+
+    <!-- Use the document as a place to set up your fixtures. -->
+    <test-fixture id="fs-dialog-fixture">
+      <template>
+        <fs-dialog></fs-dialog>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="fs-dialog-fixture-slot">
+      <template>
+        <fs-dialog>
+          <a href="#" slot="name"></a>
+        </fs-dialog>
+      </template>
+    </test-fixture>
+
+    <script>
+    describe('fs-dialog', function() {
+      var el, person;
+      var portraitEl, sexEl, givenNameEl, familyNameEl, fullNameEl, lifespanEl, idEl, separatorEl, sexClassEl, nameSystemClassEl;
+
+      function updateSelectors() {
+        portraitEl = el.querySelector('.fs-dialog__portrait');
+        imageEl = el.querySelector('[data-test="portrait"]');
+        sexEl = el.querySelector('[data-test="sex"]');
+        givenNameEl = el.querySelector('[data-test="given-name"]');
+        familyNameEl = el.querySelector('[data-test="family-name"]');
+        fullNameEl = el.querySelector('[data-test="full-name"]');
+        lifespanEl = el.querySelector('[data-test="lifespan"]');
+        separatorEl = el.querySelector('.fs-dialog__separator');
+        idEl = el.querySelector('[data-test="pid"]');
+
+        sexClassEl = el.querySelector('.fs-dialog__sex');
+        nameSystemClassEl = el.querySelector('.fs-dialog__name');
+      }
+
+      function setPerson() {
+        el.person = person;
+        updateSelectors();
+      }
+
+      beforeEach(function() {
+        el = fixture('fs-dialog-fixture');
+        person = {
+          name: 'John Doe',
+          givenName: 'John',
+          familyName: 'Doe',
+          sex: 'MALE',
+          lifespan: '1900–2000',
+          id: 'XKCD-123',
+          nameSystem: 'eruotipic',
+          portraitUrl: 'https://randomuser.me/api/portraits/men/15.jpg'
+        };
+      });
+
+
+
+
+
+      describe('data', function() {
+
+        it('should display all passed in data via the person property', function() {
+          setPerson();
+
+          expect(portraitEl).to.not.exist;
+          expect(imageEl).to.not.exist;
+          expect(sexEl.textContent).to.equal(person.sex.toLowerCase());
+          expect(givenNameEl.textContent).to.equal(person.givenName);
+          expect(familyNameEl.textContent).to.equal(person.familyName);
+          expect(fullNameEl.textContent).to.equal(person.name);
+          expect(lifespanEl.textContent).to.equal(person.lifespan);
+          expect(idEl.textContent).to.equal(person.id);
+        });
+
+        it('should default sex to "unknown" if not passed in', function() {
+          person.sex = null;
+          el.person = person;
+
+          expect(el.person.sex).to.equal('unknown');
+        });
+
+        it('should remove the family-name if not passed in', function() {
+          person.familyName = null;
+
+          setPerson();
+
+          expect(familyNameEl).to.not.exist;
+        });
+
+        it('should default name to "[Unknown Name]" if not passed in', function() {
+          person.name = null;
+          el.person = person;
+
+          expect(el.person.name).to.equal('[Unknown Name]');
+        });
+
+        it('should default name to "[Unknown Name]" if the name only contains whitespace', function() {
+          person.name = ' ';
+          el.person = person;
+
+          expect(el.person.name).to.equal('[Unknown Name]');
+        });
+
+        it('should default given name to "[Unknown Name]" if not passed in', function() {
+          person.givenName = null;
+          el.person = person;
+
+          expect(el.person.givenName).to.equal('[Unknown Name]');
+        });
+
+        it('should default given name to "[Unknown Name]" if the name only contains whitespace', function() {
+          person.givenName = ' ';
+          el.person = person;
+
+          expect(el.person.givenName).to.equal('[Unknown Name]');
+        });
+
+        it('should render encoded names correctly', function() {
+          person.name = 'Angelo &quot;Snaps&quot; Provolone';
+          person.givenName = 'Angelo &quot;Snaps&quot;'
+          person.familyName = 'Provolone';
+
+          setPerson();
+
+          expect(fullNameEl.textContent).to.equal('Angelo "Snaps" Provolone');
+          expect(givenNameEl.textContent).to.equal('Angelo "Snaps"');
+          expect(familyNameEl.textContent).to.equal('Provolone');
+        });
+
+        it('should add the lang to the name if it doesn\'t match current language', function() {
+          person.lang = 'de';
+
+          setPerson();
+
+          expect(fullNameEl.parentElement.getAttribute('lang')).to.equal('de');
+        });
+
+        it('should not add the lang to the name if it matches current language', function() {
+          person.lang = 'en';
+
+          setPerson();
+
+          expect(fullNameEl.parentElement.hasAttribute('lang')).to.be.false;
+        });
+
+        it('should remove the lifespan and separator if not passed in', function() {
+          person.lifespan = null;
+
+          setPerson();
+
+          expect(lifespanEl).to.not.exist;
+          expect(separatorEl).to.not.exist;
+        });
+
+        it('should remove the id and separator if not passed in', function() {
+          person.id = null;
+
+          setPerson();
+
+          expect(idEl).to.not.exist;
+          expect(separatorEl).to.not.exist;
+        });
+
+        it('should not throw errors if there is no person', function() {
+          expect(el.person).to.not.exist;
+          expect(el._render).to.not.throw();
+        });
+
+      });
+
+
+
+
+
+      describe('attributes', function() {
+
+        it('should display all passed in data via a JSON.stringified person attribute', function() {
+          el.setAttribute('person', JSON.stringify(person));
+          updateSelectors();
+
+          expect(portraitEl).to.not.exist;
+          expect(imageEl).to.not.exist;
+          expect(sexEl.textContent).to.equal(person.sex.toLowerCase());
+          expect(givenNameEl.textContent).to.equal(person.givenName);
+          expect(familyNameEl.textContent).to.equal(person.familyName);
+          expect(fullNameEl.textContent).to.equal(person.name);
+          expect(lifespanEl.textContent).to.equal(person.lifespan);
+          expect(idEl.textContent).to.equal(person.id);
+        });
+
+        it('"portrait" should show the portrait', function() {
+          el.setAttribute('portrait', '');
+
+          setPerson();
+
+          expect(portraitEl).to.exist;
+        });
+
+        it('"portrait" should show the image when portraitUrl is passed in', function() {
+          el.setAttribute('portrait', '');
+
+          setPerson();
+
+          expect(imageEl).to.exist;
+          expect(imageEl.getAttribute('src')).to.equal(person.portraitUrl);
+        });
+
+        it('"portrait" should remove the image if portraitUrl is not passed in', function() {
+          el.setAttribute('portrait', '');
+          person.portraitUrl = null;
+
+          setPerson();
+
+          expect(imageEl).to.not.exist;
+        });
+
+        it('"orientation=portrait" should show the portrait', function() {
+          el.setAttribute('orientation', 'portrait');
+
+          setPerson();
+
+          expect(portraitEl).to.exist;
+        });
+
+        it('"orientation=portrait" should show the image when portraitUrl is passed in', function() {
+          el.setAttribute('orientation', 'portrait');
+
+          setPerson();
+
+          expect(imageEl).to.exist;
+          expect(imageEl.getAttribute('src')).to.equal(person.portraitUrl);
+        });
+
+        it('"orientation=portrait" should remove the image if portraitUrl is not passed in', function() {
+          el.setAttribute('orientation', 'portrait');
+          person.portraitUrl = null;
+
+          setPerson();
+
+          expect(imageEl).to.not.exist;
+        });
+
+        it('"no-sex" should remove the sex', function() {
+          el.setAttribute('no-sex', '');
+
+          setPerson();
+
+          expect(sexEl).to.not.exist;
+        });
+
+        it('"no-lifespan" should remove the lifespan and separator', function() {
+          el.setAttribute('no-lifespan', '');
+
+          setPerson();
+
+          expect(lifespanEl).to.not.exist;
+          expect(separatorEl).to.not.exist;
+        });
+
+        it('"no-id" should remove the id and separator', function() {
+          el.setAttribute('no-id', '');
+
+          setPerson();
+
+          expect(idEl).to.not.exist;
+          expect(separatorEl).to.not.exist;
+        });
+
+      });
+
+
+
+
+
+      describe('slots', function() {
+
+        it('"slot=name" should wrap the name with the DOM', function() {
+          el = fixture('fs-dialog-fixture-slot');
+          setPerson();
+
+          expect(fullNameEl.children.length).to.equal(1);
+
+          var slotEl = fullNameEl.children[0];
+
+          expect(slotEl.nodeName).to.equal('A');
+          expect(slotEl.getAttribute('href')).to.equal('#');
+          expect(slotEl.textContent).to.equal(person.name);
+        });
+
+      });
+
+
+
+
+
+      describe('styles', function() {
+
+        it('should add the default sex icon class', function() {
+          setPerson();
+
+          expect(sexClassEl.classList.contains('fs-icon-medium-male')).to.be.true;
+        });
+
+
+        it('should add the small sex icon class for "icon-size=small"', function() {
+          el.setAttribute('icon-size', 'small');
+
+          setPerson();
+
+          expect(sexClassEl.classList.contains('fs-icon-small-male')).to.be.true;
+        });
+
+        it('should add the small sex icon class for "orientation=inline"', function() {
+          el.setAttribute('orientation', 'inline');
+
+          setPerson();
+
+          expect(sexClassEl.classList.contains('fs-icon-small-male')).to.be.true;
+        });
+
+        it('should add the small sex icon class for "portrait"', function() {
+          el.setAttribute('portrait', '');
+
+          setPerson();
+
+          expect(sexClassEl.classList.contains('fs-icon-small-male')).to.be.true;
+        });
+
+        it('should add the default sex icon class when "icon-size" is invalid', function() {
+          el.setAttribute('icon-size', 'large');
+
+          setPerson();
+
+          expect(sexClassEl.classList.contains('fs-icon-medium-male')).to.be.true;
+        });
+
+        it('should default the sex icon to unknown if not passed in', function() {
+          person.sex = null;
+
+          setPerson();
+
+          expect(sexClassEl.classList.contains('fs-icon-medium-unknown')).to.be.true;
+        });
+
+        it('should add the nameSystem class if passed in', function() {
+          setPerson();
+
+          expect(nameSystemClassEl.classList.contains('fs-dialog__name--eruotipic')).to.be.true;
+        });
+
+        it('should not add the nameSystem if not passed in', function() {
+          person.nameSystem = null;
+
+          setPerson();
+
+          expect(nameSystemClassEl.classList.contains('fs-dialog__name--eruotipic')).to.be.false;
+        });
+
+        it('should add the lifespan to the data-lifespan attribute of the lifespan element', function() {
+          setPerson();
+
+          expect(lifespanEl.getAttribute('data-lifespan')).to.equal(person.lifespan);
+        });
+
+      });
+
+
+
+
+
+      describe('a11y', function() {
+
+        it('should pass accessibility guidelines', function(done) {
+          el.setAttribute('portrait', '');
+
+          setPerson();
+
+          axe.run(function (err, results) {
+            if (err) return done(err);
+
+            if (results.violations.length || results.incomplete.length) {
+              var errMsg = '';
+
+              results.violations.forEach(function(violation) {
+                errMsg += `\n\n${violation.help}:`;
+
+                violation.nodes.forEach(function(node, index) {
+                  errMsg += `\n\t${index+1}: ${node.html}`;
+                });
+              });
+
+              results.incomplete.forEach(function(incomplete) {
+                errMsg += `\n\n${incomplete.help}:`;
+
+                incomplete.nodes.forEach(function(node, index) {
+                  errMsg += `\n\t${index+1}: ${node.html}`;
+                });
+              });
+
+              var error = new Error(errMsg+'\n');
+              error.stack = null;
+
+              return done(error)
+            }
+
+            done();
+          });
+
+        });
+
+      });
+
+    });
+    </script>
+  </body>
+</html>

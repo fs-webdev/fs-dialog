@@ -1,0 +1,206 @@
+/*------------------------------------*\
+  $CONTENTS
+\*------------------------------------*/
+/*
+ * DEFAULT_STATE........Default field state
+ * VALID_STATE..........Valid field state
+ * WARNING_STATE........Warning field state
+ * INVALID_STATE........Invalid field state
+ */
+
+
+
+
+
+/*------------------------------------*\
+  $DEFAULT_STATE
+\*------------------------------------*/
+/**
+ * Field Validation
+ *
+ * ##### Acceptable Use
+ *
+ * Any type of form field (textareas, input fields, radios, etc.) can be used for
+ * validation.
+ *
+ * ##### Accessibility
+ *
+ * Associate each message with the form field by using the attribute `aria-describedby=[id]`.
+ * This will cause the screen reader to read the contents of the message when focusing on the
+ * form field. This means that as the state changes, so too should the id that the
+ * `aria-describedby` references.
+ *
+ * When using the invalid state, use the attribute `aria-invalid="true"` so screen readers
+ * know the form field is invalid.
+ *
+ * @section
+ * @sectionof Forms
+ *
+ * @example
+ * <label class="example__title" for="defaultState">Default State</label>
+ * <div class="fs-field-validation">
+ *   <input id="defaultState" type="text" placeholder="Example Text"/>
+ *   <p class="fs-field-validation__valid-message" id="validMessage">Please save changes below.</p>
+ *   <p class="fs-field-validation__warning-message" id="warningMessage">Please enter an email address.</p>
+ *   <p class="fs-field-validation__invalid-message" id="invalidMessage">Please enter a valid email.</p>
+ * </div>
+ *
+ * <label class="example__title" for="validState">Valid State</label>
+ * <div class="fs-field-validation fs-field-validation--valid">
+ *   <input id="validState" type="text" placeholder="Example Text" aria-describedby="validMessage1"/>
+ *   <p class="fs-field-validation__valid-message" id="validMessage1">Please save changes below.</p>
+ *   <p class="fs-field-validation__warning-message" id="warningMessage1">Please enter an email address.</p>
+ *   <p class="fs-field-validation__invalid-message" id="invalidMessage1">Please enter a valid email.</p>
+ * </div>
+ *
+ * <label class="example__title" for="warningState">Warning State</label>
+ * <div class="fs-field-validation fs-field-validation--warning">
+ *   <input id="warningState" type="text" placeholder="Example Text" aria-describedby="warningMessage2"/>
+ *   <p class="fs-field-validation__valid-message" id="validMessage2">Please save changes below.</p>
+ *   <p class="fs-field-validation__warning-message" id="warningMessage2">Please enter an email address.</p>
+ *   <p class="fs-field-validation__invalid-message" id="invalidMessage2">Please enter a valid email.</p>
+ * </div>
+ *
+ * <label class="example__title" for="invalidState">Invalid State</label>
+ * <div class="fs-field-validation fs-field-validation--invalid">
+ *   <input id="invalidState" type="text" placeholder="Example Text" aria-describedby="invalidMessage3" aria-invalid="true"/>
+ *   <p class="fs-field-validation__valid-message" id="validMessage3">Please save changes below.</p>
+ *   <p class="fs-field-validation__warning-message" id="warningMessage3">Please enter an email address.</p>
+ *   <p class="fs-field-validation__invalid-message" id="invalidMessage3">Please enter a valid email.</p>
+ * </div>
+ *
+ * @code
+ * <label class="example__title" for="defaultState">Default State</label>
+ * <div class="fs-field-validation">
+ *   <input id="defaultState" type="text" placeholder="Example Text"/>
+ *   <p class="fs-field-validation__valid-message" id="validMessage">Please save changes below.</p>
+ *   <p class="fs-field-validation__warning-message" id="warningMessage">Please enter an email address.</p>
+ *   <p class="fs-field-validation__invalid-message" id="invalidMessage">Please enter a valid email.</p>
+ * </div>
+ *
+ * <label class="example__title" for="validState">Valid State</label>
+ * <div class="fs-field-validation fs-field-validation--valid">
+ *   <input id="validState" type="text" placeholder="Example Text" aria-describedby="validMessage"/>
+ *   <p class="fs-field-validation__valid-message" id="validMessage">Please save changes below.</p>
+ *   <p class="fs-field-validation__warning-message" id="warningMessage">Please enter an email address.</p>
+ *   <p class="fs-field-validation__invalid-message" id="invalidMessage">Please enter a valid email.</p>
+ * </div>
+ *
+ * <label class="example__title" for="warningState">Warning State</label>
+ * <div class="fs-field-validation fs-field-validation--warning">
+ *   <input id="warningState" type="text" placeholder="Example Text" aria-describedby="warningMessage"/>
+ *   <p class="fs-field-validation__valid-message" id="validMessage">Please save changes below.</p>
+ *   <p class="fs-field-validation__warning-message" id="warningMessage">Please enter an email address.</p>
+ *   <p class="fs-field-validation__invalid-message" id="invalidMessage">Please enter a valid email.</p>
+ * </div>
+ *
+ * <label class="example__title" for="invalidState">Invalid State</label>
+ * <div class="fs-field-validation fs-field-validation--invalid">
+ *   <input id="invalidState" type="text" placeholder="Example Text" aria-describedby="invalidMessage" aria-invalid="true"/>
+ *   <p class="fs-field-validation__valid-message" id="validMessage">Please save changes below.</p>
+ *   <p class="fs-field-validation__warning-message" id="warningMessage">Please enter an email address.</p>
+ *   <p class="fs-field-validation__invalid-message" id="invalidMessage">Please enter a valid email.</p>
+ * </div>
+ */
+
+ /*
+  * 1. Allow CSS3 feature of background-position from right to be viewed on older and mobile browsers. See http://stackoverflow.com/questions/5142405/offset-a-background-image-from-the-right-using-css
+  */
+.fs-field-validation {
+  border-radius: $border-radius;
+  margin: -6px;
+  padding: 6px;
+  position: relative;
+
+  input {
+    background-repeat: no-repeat;
+    background-position: 98% center; /* [1] */
+    background-position: right 10px center;
+  }
+
+  &__valid-message,
+  &__invalid-message,
+  &__warning-message {
+    display: none;
+    margin: 10px 10px 4px 10px;
+  }
+
+
+
+
+
+  /*------------------------------------*\
+    $VALID_STATE
+  \*------------------------------------*/
+  &--valid {
+    background: #f1f6d3;
+    border: 1px solid #bfd730;
+
+    input {
+      @extends $icon-check
+      background-color: #fff;
+      border-color: #bfd730;
+
+      &:focus {
+        border-color: #44650f
+      }
+    }
+
+    .fs-field-validation__valid-message {
+      color: #44650f;
+      display: block;
+    }
+  }
+
+
+
+
+
+  /*------------------------------------*\
+    $WARNING_STATE
+  \*------------------------------------*/
+  &--warning {
+    background: #fff8de;
+    border: 1px solid #ffd400;
+
+    input {
+      @extends $icon-warning
+      border-color: #ffd400;
+
+      &:focus {
+        border-color: #79520f
+      }
+    }
+
+    .fs-field-validation__warning-message {
+      color: #79520f;
+      display: block;
+    }
+  }
+
+
+
+
+
+  /*------------------------------------*\
+    $INVALID_STATE
+  \*------------------------------------*/
+  &--invalid {
+    background: #fdeeee;
+    border: 1px solid #f8b0ab;
+
+    input {
+      @extends $icon-exclamation
+      border-color: #f8b0ab;
+
+      &:focus {
+        border-color: #a71e1a
+      }
+    }
+
+    .fs-field-validation__invalid-message {
+      color: #a71e1a;
+      display: block;
+    }
+  }
+}

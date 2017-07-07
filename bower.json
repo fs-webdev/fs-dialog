@@ -1,0 +1,30 @@
+{
+  "name": "fs-dialog",
+  "description": "Standard display of a persons sex, name, lifespan, and id for FamilySearch.",
+  "version": "1.0.0",
+  "main": "fs-dialog.html",
+  "author": {
+    "name": "FamilySearch",
+    "url": "https://familysearch.org/"
+  },
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "dependencies": {
+    "fs-styles": "fs-webdev/fs-styles#^3.x.x",
+    "fs-core-element": "https://github.com/fs-webdev/fs-core-element.git",
+    "a11y-enhancer": "straker/a11y-enhancer",
+    "inert": "WICG/inert#^1.1.4"
+  },
+  "devDependencies": {
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.23",
+    "web-component-tester": "Polymer/web-component-tester#^5.0.0",
+    "axe.min": "https://unpkg.com/axe-core/axe.min.js"
+  },
+  "ignore": [
+    ".*",
+    "bin/",
+    "bin/*",
+    "test/",
+    "test/*",
+    "wct.conf.json"
+  ]
+}

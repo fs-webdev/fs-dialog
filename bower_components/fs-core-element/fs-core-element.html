@@ -1,0 +1,66 @@
+<script>
+(function() {
+  var proto = Object.create(HTMLElement.prototype);
+
+  proto.createdCallback = function() {
+      // properties
+    this.simpleLocale = document.documentElement.getAttribute('lang');
+    this.translations = null;
+  };
+
+  /**
+   * Get the current language translation
+   * @param {string} key
+   */
+  proto.i18n = function(key) {
+    if (!this.translations) return '';
+
+    var lang = this.getAttribute('lang') || this.simpleLocale || 'en';
+
+    // keep splitting sublocales off the lang until we find a supported one
+    while(!this.translations[lang] && lang.indexOf('-') !== -1) {
+      lang = lang.substring(0, lang.lastIndexOf('-'));
+    }
+
+    var translations = this.translations[lang] || this.translations.en;
+
+    // if key does not exist in the lang, default to english, otherwise return empty string
+    var translation = translations[key] ? translations[key] :
+      this.translations.en[key] ? this.translations.en[key] : '';
+
+    return translation;
+  }
+
+  /**
+   * Encode html entities.
+   * @param {string} text
+   * @returns {string}
+   */
+  proto.htmlEncode = function(text) {
+    if (!text) return '';
+
+    return text.replace(/&/g, "&amp;")
+       .replace(/</g, "&lt;")
+       .replace(/>/g, "&gt;")
+       .replace(/"/g, "&quot;")
+       .replace(/'/g, "&#39;")
+       .replace(/\xA0/g, "&nbsp;");
+  }
+
+  /**
+   * Safely decode html entities.
+   * @see https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript/1912522#1912522
+   *
+   * @param {string} text
+   * @returns {string}
+   */
+  proto.htmlDecode = function(text) {
+    if (!text) return '';
+
+    var doc = new DOMParser().parseFromString(text, "text/html");
+    return doc.documentElement.textContent;
+  }
+
+  document.registerElement('fs-core-element', {prototype: proto});
+})();
+</script>

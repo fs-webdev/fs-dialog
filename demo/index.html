@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/prism/1.6.0/themes/prism.css">
+
+    <title>fs-dialog demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel='import' href='../fs-dialog.html'>
+    <link rel='import' href='../../fs-core-element/fs-core-element.html'>
+    <style>
+    .demo-snippet {
+      margin-bottom: 60px;
+    }
+
+    .demo {
+      border-bottom: 1px solid #ccc;
+      padding: 20px;
+    }
+
+    pre[class*="language-"] {
+      margin: 0;
+      padding: 20px;
+    }
+
+    .demo > h5:not(:first-child) {
+      margin-top: 40px;
+    }
+
+    .demo > h5 {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+    </style>
+  </head>
+  <body>
+    <h3>Default Use</h3>
+    <div class="demo-snippet fs-card">
+      <div class="demo">
+<fs-dialog id="modal" transition="from-right">
+  <h1 class="fs-dialog__heading">My Modal</h1>
+  <div class="fs-dialog__body">
+    <p>Hello world</p>
+    <a href="#">LINK!</a>
+  </div>
+  <div class="fs-dialog__footer">
+    <button class="fs-button fs-button--recommended">Yes</button>
+    <button class="fs-button" data-dialog-dismiss>No</button>
+  </div>
+</fs-dialog>
+      </div>
+    </div>
+
+
+<button class="open-dialog">Open</button>
+
+<fs-dialog id="other-modal">
+  <h1 class="fs-dialog__heading">My Modal 2</h1>
+  <div class="fs-dialog__body">
+    <p>Hello world</p>
+  </div>
+</fs-dialog>
+
+    <script>
+    (function() {
+
+      window.addEventListener('WebComponentsReady', function() {
+        console.log('ready!');
+
+        document.querySelector('.open-dialog').addEventListener('click', function(e) {
+          document.querySelector('#modal').open();
+        });
+
+        document.querySelector('.fs-button--recommended').addEventListener('click', function() {
+          document.querySelector('#other-modal').open();
+        });
+      });
+
+      // add automatic code output
+      Array.from(document.querySelectorAll('.demo')).forEach(function(demo) {
+        var code = demo.innerHTML
+          .trim()
+          .replace(/<\/?demo-/g, '&lt;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+
+        var preEL = document.createElement('pre');
+        var codeEl = document.createElement('code');
+        codeEl.classList.add('language-markup');
+        codeEl.innerHTML = code;
+
+        preEL.appendChild(codeEl);
+        demo.parentElement.appendChild(preEL);
+      });
+    })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/prism/1.6.0/prism.js"></script>
+  </body>
+</html>

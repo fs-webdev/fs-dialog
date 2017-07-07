@@ -1,0 +1,22 @@
+{
+  "plugins": {
+    "local": {
+      "browsers": [ "chrome" ]
+    },
+    "istanbul": {
+      "dir": "./coverage",
+      "reporters": ["text", "text-summary", "lcov"],
+      "include": [
+        "**/fs-dialog.html"
+      ],
+      "exclude": [
+        "**/bin/*",
+        "**/bower_components/**/*",
+        "**/demo/*",
+        "**/locales/*",
+        "**/reports/*",
+        "**/test/*"
+      ]
+    }
+  }
+}

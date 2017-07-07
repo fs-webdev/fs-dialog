@@ -1,0 +1,566 @@
+/*------------------------------------*\
+  $CONTENTS
+  Variables should start with the most generic term and end with the most specific term
+  (such as `$color-green-primary`).
+
+  Doing so will group common variables into categories which are easier to remember and
+  search for.
+\*------------------------------------*/
+/*
+ * MEDIA_QUERIES...Media query sizes
+ * COLORS..........Color variables
+ * FONTS...........Font variables
+ * OTHER...........Other property variables such as border-radius
+ */
+
+
+
+
+
+/*------------------------------------*\
+  $MEDIA_QUERIES
+  Match Bootstrap 2 breakpoints for consistency
+\*------------------------------------*/
+// screen sizes
+$screen-mobile-max = 767px;
+
+$screen-tablet-min = 768px;
+$screen-tablet-max = 991px;
+
+$screen-desktop-min = 992px;
+$screen-desktop-max = 1199px;
+
+$screen-desktop-hd-min = 1200px;
+
+/**
+ * Break Points
+ * @section
+ */
+
+/**
+ * Media Queries
+ *
+ * @section
+ * @sectionof Break Points
+ * @noDescription
+ * @fullWidth
+ * @example
+ * <div class="break-point__wrapper">
+ *   <table>
+ *     <thead>
+ *      <tr>
+ *        <th scope="col">Stylus Variable</th>
+ *        <th scope="col">Mobile<br><small>&lt; 768px</small></th>
+ *        <th scope="col">Tablet<br><small>&gt;= 768px</small></th>
+ *        <th scope="col">Desktop<br><small>&gt;= 992px</small></th>
+ *        <th scope="col">Desktop HD<br> <small>&gt;= 1200px</small></th>
+ *      </tr>
+ *     </thead>
+ *     <tbody>
+ *       <tr>
+ *         <th scope="row"><code>&dollar;break-mobile</code></td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *       </tr>
+ *       <tr class="break-point__group">
+ *         <th scope="row"><code>&dollar;break-tablet-below</code</td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *       </tr>
+ *       <tr>
+ *         <th scope="row"><code>&dollar;break-tablet</code></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *       </tr>
+ *       <tr>
+ *         <th scope="row"><code>&dollar;break-tablet-above</code></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td class="break-point__covered">Visible</td>
+ *       </tr>
+ *       <tr class="break-point__group">
+ *         <th scope="row"><code>&dollar;break-desktop-below</code></td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *       </tr>
+ *       <tr>
+ *         <th scope="row"><code>&dollar;break-desktop</td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *       </tr>
+ *       <tr>
+ *         <th scope="row"><code>&dollar;break-desktop-above</code></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td class="break-point__covered">Visible</td>
+ *         <td class="break-point__covered">Visible</td>
+ *       </tr>
+ *       <tr class="break-point__group">
+ *         <th scope="row"><code>&dollar;break-desktop-hd</code></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td><span class="visually-hidden">Hidden</span></td>
+ *         <td class="break-point__covered">Visible</td>
+ *       </tr>
+ *    </tbody>
+ *   </table>
+ * </div>
+ *
+ * @code {stylus} @media $break-tablet {
+ *   body { width: 600px; }
+ * }
+ */
+$break-mobile = "screen and (max-width:" + $screen-mobile-max  + ")";
+
+$break-tablet-above = "screen and (min-width:" + $screen-tablet-min +")";
+$break-tablet = "screen and (min-width:" + $screen-tablet-min +") and (max-width:" + $screen-tablet-max +")";
+$break-tablet-below = "screen and (max-width:" + $screen-tablet-max +")";
+
+$break-desktop-above = "screen and (min-width:" + $screen-desktop-min +")";
+$break-desktop = "screen and (min-width:" + $screen-desktop-min +") and (max-width:" + $screen-desktop-max +")";
+$break-desktop-below = "screen and (max-width:" + $screen-desktop-max +")";
+
+$break-desktop-hd = "screen and (min-width:" + $screen-desktop-hd-min +")";
+
+
+
+
+
+/*------------------------------------*\
+  $COLORS
+  Use the stylus function 'rgba(hex, opacity)' to add alpha transparency to a color
+  @see http://learnboost.github.io/stylus/docs/bifs.html#rgbacolor--rgba
+
+  Use the stylus function 'lighten(hex, amount)' to lighten a color by adding white
+  @see https://learnboost.github.io/stylus/docs/bifs.html#lightencolor-amount
+\*------------------------------------*/
+/**
+ * Colors
+ * @section
+ */
+
+/**
+ * Logo Colors
+ *
+ * ##### Acceptable Use
+ *
+ * The full 3-color logo is the primary logo and should be used in all instances when
+ * possible.
+ *
+ * There may be some instances where a single color logo is appropriate, such as using the
+ * FamilySearch logo on photography, apparel, spiffs, etc.
+ *
+ * ##### Avoid
+ *
+ * Do not use any other colors for the logo.
+ *
+ * @section
+ * @sectionof Colors
+ */
+
+/**
+ * Full Color Logo
+ * @section
+ * @sectionof Colors.Logo Colors
+ */
+
+ /**
+ * Single Color Logos
+ * @section
+ * @sectionof Colors.Logo Colors
+ */
+
+/**
+ * @colordef Green Primary
+ * @color {hex} #87B940
+ * @color {rgb} 135,185,64
+ * @color {cmyk} 53,7,100,0
+ * @colorof Colors.Logo Colors.Full Color Logo
+ * @colorof Colors.Logo Colors.Single Color Logos
+ */
+$color-green-primary = #87b940;
+
+/**
+ * @colordef Grey Primary
+ * @color {hex} #BAB7B1
+ * @color {rgb} 186,183,177
+ * @color {cmyk} 28,23,27,0
+ * @colorof Colors.Logo Colors.Full Color Logo
+ */
+$color-grey-primary = #bab7b1;
+
+/**
+ * @colordef Brown Primary
+ * @color {hex} #9C947A
+ * @color {rgb} 156,148,122
+ * @color {cmyk} 40,35,54,4
+ * @colorof Colors.Logo Colors.Full Color Logo
+ */
+$color-brown-primary = #9c947a;
+
+/**
+ * @colordef Black
+ * @color {hex} #000000
+ * @color {rgb} 0,0,0
+ * @color {cmyk} 75,68,67,90
+ * @colorof Colors.Logo Colors.Single Color Logos
+ */
+$color-black = #000000;
+
+ /**
+ * @colordef White
+ * @color {hex} #FFFFFF
+ * @color {rgb} 255,255,255
+ * @color {cmyk} 0,0,0,0
+ * @colorof Colors.Logo Colors.Single Color Logos
+ */
+$color-white = #ffffff;
+
+/**
+ * Accent Colors
+ *
+ * ##### Acceptable Use
+ *
+ * Use accent colors to help draw attention and create visual interest within your designs.
+ *
+ * You can lighten the value of the color by adjusting the amount of white added to it (use
+ * the [Stylus function `lighten(color, amount)`)](https://learnboost.github.io/stylus/docs/bifs.html#lightencolor-amount) or by adjusting the opacity of the color (use the [Stylus function `rgba(hex, alpha)`](https://learnboost.github.io/stylus/docs/bifs.html#rgbacolor--rgba)).
+ *
+ * ##### Avoid
+ *
+ * Avoid using too many colors.
+ *
+ * Avoid darkening the value of the color by adjusting the amount of black added to it.
+ *
+ * @section
+ * @sectionof Colors
+ */
+
+/**
+ * @colordef Red Accent
+ * @color {hex} #F16458
+ * @color {rgb} 241,100,88
+ * @color {cmyk} 0,76,64,0
+ * @colorof Colors.Accent Colors
+ */
+$color-red-accent = #f16458;
+
+/**
+ * @colordef Blue Accent
+ * @color {hex} #27C4F4
+ * @color {rgb} 39,196,244
+ * @color {cmyk} 64,0,0,0
+ * @colorof Colors.Accent Colors
+ */
+$color-blue-accent = #27c4f4;
+
+/**
+ * @colordef Orange Accent
+ * @color {hex} #FCB34B
+ * @color {rgb} 252,179,75
+ * @color {cmyk} 0,34,80,0
+ * @colorof Colors.Accent Colors
+ */
+$color-orange-accent = #fcb34b;
+
+/**
+ * @colordef Green Accent
+ * @color {hex} #BFD730
+ * @color {rgb} 191,215,48
+ * @color {cmyk} 30,0,100,0
+ * @colorof Colors.Accent Colors
+ */
+$color-green-accent = #bfd730;
+
+/**
+ * @colordef Purple Accent
+ * @color {hex} #996799
+ * @color {rgb} 153,103,153
+ * @color {cmyk} 36,70,11,0
+ * @colorof Colors.Accent Colors
+ */
+$color-purple-accent = #996799;
+
+/**
+ * @colordef Brown Accent
+ * @color {hex} #9C947A
+ * @color {rgb} 156,148,122
+ * @color {cmyk} 40,35,54,4
+ * @colorof Colors.Accent Colors
+ */
+$color-brown-accent = #9c947a;
+
+/**
+ * Adjusting the Value
+ *
+ * @section
+ * @sectionof Colors.Accent Colors
+ *
+ * @example
+ * <div class="row-fluid">
+ *   <div class="span12 color-square fs-card" style="height: auto">
+ *     <div class="color-square__color color-square__color--gradient">
+ *       <div class="color__gradient color__gradient--100" style="background: rgba(39,196,244, 1)">100%</div>
+ *       <div class="color__gradient color__gradient--80" style="background: rgba(39,196,244, 0.8)">80%</div>
+ *       <div class="color__gradient color__gradient--60" style="background: rgba(39,196,244, 0.6)">60%</div>
+ *       <div class="color__gradient color__gradient--40" style="background: rgba(39,196,244, 0.4)">40%</div>
+ *     </div>
+ *   </div>
+ * </div>
+ */
+
+/**
+ * Text Colors
+ *
+ * ##### Avoid
+ *
+ * Do not use other colors for text.
+ *
+ * @section
+ * @sectionof Colors
+ */
+
+/**
+ * Body Text
+ *
+ * @colordef Grey Body
+ * @color {hex} #333331
+ * @color {rgb} 51,51,49
+ * @color {cmyk} 64,57,59,38
+ * @colorof Colors.Text Colors
+ */
+$color-grey-body = #333331;
+
+/**
+ * Headings
+ *
+ * @colordef Grey
+ * @color {hex} #4D4D4A
+ * @color {rgb} 77,77,74
+ * @colorof Colors.Text Colors
+ */
+$color-grey = #4d4d4a;
+
+/**
+ * Sub-Headings, Labels, and Small Text
+ *
+ * @colordef Grey Light
+ * @color {hex} #666662
+ * @color {rgb} 102,102,98
+ * @colorof Colors.Text Colors
+ */
+$color-grey-light = #666662;
+
+/**
+ * Background Colors
+ *
+ * @section
+ * @sectionof Colors
+ */
+
+/**
+ * @colordef Grey Body
+ * @color {hex} #333331
+ * @color {rgb} 51,51,49
+ * @color {cmyk} 64,57,59,38
+ * @colorof Colors.Background Colors
+ */
+
+/**
+ * @colordef Grey
+ * @color {hex} #4D4D4A
+ * @color {rgb} 77,77,74
+ * @colorof Colors.Background Colors
+ */
+
+/**
+ * @colordef Grey Light
+ * @color {hex} #666662
+ * @color {rgb} 102,102,98
+ * @colorof Colors.Background Colors
+ */
+
+/**
+ * @colordef Grey Background
+ * @color {hex} #ECEBEA
+ * @color {rgb} 236,235,234
+ * @colorof Colors.Background Colors
+ */
+$color-grey-background = #ecebea;
+
+/**
+ * @colordef Grey Background Light
+ * @color {hex} #F4F4F4
+ * @color {rgb} 244,244,244
+ * @colorof Colors.Background Colors
+ */
+$color-grey-background-light = #f4f4f4;
+
+/**
+ * Other Colors
+ *
+ * ##### Acceptable Use
+ *
+ * The male and female gender colors should only be used to represent gender.
+ *
+ * Use the Light Gender Colors when on dark backgrounds.
+ *
+ * @section
+ * @sectionof Colors
+ */
+
+/**
+ * Gender Colors
+ * @section
+ * @sectionof Colors.Other Colors
+ */
+
+ /**
+ * Light Gender Colors
+ * @section
+ * @sectionof Colors.Other Colors
+ */
+
+/**
+ * Male
+ *
+ * @colordef Blue Gender
+ * @color {hex} #3D8FF7
+ * @color {rgb} 601,143,247
+ * @colorof Colors.Other Colors.Gender Colors
+ */
+$color-blue-gender = #3d8ff7;
+
+/**
+ * @colordef Blue Gender Light
+ * @color {hex} #99C4FE
+ * @color {rgb} 153,196,254
+ * @colorof Colors.Other Colors.Light Gender Colors
+ */
+$color-blue-gender-light = #99c4fe;
+
+/**
+ * Female
+ *
+ * @colordef Pink Gender
+ * @color {hex} #E23F7B
+ * @color {rgb} 226,63,123
+ * @colorof Colors.Other Colors.Gender Colors
+ */
+$color-pink-gender = #e23f7b;
+
+/**
+ * @colordef Pink Gender Light
+ * @color {hex} #F48EB6
+ * @color {rgb} 244,142,182
+ * @colorof Colors.Other Colors.Light Gender Colors
+ */
+$color-pink-gender-light = #f48eb6;
+
+/**
+ * Unknown
+ *
+ * @colordef Grey Light
+ * @color {hex} #666662
+ * @color {rgb} 102,102,98
+ * @colorof Colors.Other Colors.Gender Colors
+ */
+
+
+/**
+ * Border Color
+ * @section
+ * @sectionof Colors.Other Colors
+ */
+
+/**
+ * @colordef Grey Border
+ * @color {hex} #CCCCCC
+ * @color {rgb} 204,204,204
+ * @colorof Colors.Other Colors.Border Color
+ */
+$color-grey-border = #cccccc;
+
+/**
+ * Color Accessibility
+ *
+ * @section
+ * @sectionof Colors
+ * @noDescription
+ * @fullWidth
+ */
+
+/*------------------------------------*\
+  $FONTS
+\*------------------------------------*/
+// font families
+$font-face-body = Verdana, sans-serif;
+$font-face-heading = "museo", serif;
+
+// responsive typography settings
+$base-font-size = 14;
+$baseline-grid = 1.625;  // 1.625rem multiples = 26px baseline grid
+
+/*
+  modular font scale (using golden ratios)
+  16 = base font size
+  scale = 1.625 (close enough to 1.618 but provides more even numbers)
+
+  We'll use a triple-stranded scale (3 different modular scales to fill in the
+  gaps of the others)
+
+  - 18@1:1.625 -
+  18 * 1.625 = 29.25 = 30px
+
+  - 16@1:1.625 -
+  16 * 1.625 = 26 = 26px
+
+  - 14@1:1.625 -
+  14 * 1.625 = 22.75 = 22px
+  22.652 * 1.625 = 36.96875 = 36px
+
+  12px - small
+  14px - body, H5, H6
+  18px - H4
+  22px - H3
+  26px - H2
+  30px - H1
+  36px - Campaign Heading
+*/
+$font-size-small = 12px;
+$font-size-medium = unit($base-font-size, 'px');
+$font-size-large = 18px;
+$font-size-large-x = 22px;
+$font-size-large-xx = 26px;
+$font-size-large-xxx = 30px;
+$font-size-large-xxxx = 36px;
+
+// line heights
+$line-height-small = 1.35rem;
+$line-height-medium = unit($baseline-grid, 'rem');
+$line-height-large = unit($baseline-grid, 'rem');
+$line-height-large-x = 1.95rem;
+$line-height-large-xx = 2.15rem;
+$line-height-large-xxx = 2.5rem;
+$line-height-large-xxxx = 2.875rem;
+
+
+
+
+
+/*------------------------------------*\
+  $OTHER
+\*------------------------------------*/
+$border-radius = 4px;
+$limit-base-styles = false;

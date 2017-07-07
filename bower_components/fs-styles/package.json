@@ -1,0 +1,53 @@
+{
+  "name": "fs-styles",
+  "description": "Global styles for the FamilySearch.org website.",
+  "version": "3.2.0",
+  "keywords": [
+    "css",
+    "stylus",
+    "familysearch",
+    "styles"
+  ],
+  "homepage": "https://github.com/fs-webdev/fs-styles",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fs-webdev/fs-styles.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fs-webdev/fs-styles/issues"
+  },
+  "author": {
+    "name": "FamilySearch",
+    "url": "https://familysearch.org/"
+  },
+  "contributors": [
+    {
+      "name": "Steven Lambert",
+      "email": "steven.lambert@familysearch.org"
+    },
+    {
+      "name": "Josh Crowther",
+      "email": "jcrowther@familysearch.org"
+    }
+  ],
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "private": false,
+  "dependencies": {
+    "gulp-plumber": "^1.1.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-clean-css": "^3.4.2",
+    "gulp-insert": "^0.5.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-size": "^2.0.0",
+    "gulp-stylus": "^2.0.6",
+    "pre-commit": "^1.1.2"
+  },
+  "scripts": {
+    "buildDist": "gulp build && git add ."
+  },
+  "pre-commit": [
+    "buildDist"
+  ]
+}

@@ -1,0 +1,260 @@
+<link rel="import" href="../fs-core-element/fs-core-element.html">
+<link rel="import" href="../a11y-enhancer/dialog.html">
+<link rel="import" href="../inert/inert.html">
+
+<style>
+/*
+ * 1. The display property cannot be animated so we need to use opacity and visibility
+ *    to fade in
+ *    @see https://stackoverflow.com/questions/3331353/transitions-on-the-display-property
+ * 2. Delay the visibility property so we can see the dialog disappear
+ *    @see https://codepen.io/matthewlein/pen/fvrLD
+ * 3. Support a fixed modal header/footer and scrollable middle
+ */
+fs-dialog {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: visibility 0s linear;
+  visibility: visible;
+}
+
+/* [1] */
+fs-dialog:not([open]) {
+  visibility: hidden;
+  transition: visibility 0s linear 0.3s; /* [2] */
+}
+
+fs-dialog[open] .fs-dialog__mask {
+  opacity: 1;
+}
+
+fs-dialog[open] .fs-dialog__window {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.fs-dialog__mask {
+  background: rgba(51,51,49,0.8);
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity 0.3s;
+}
+
+.fs-dialog__window {
+  background: #fff;
+  border-radius: 4px;
+  border-radius: var(--fs-border-radius);
+  box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);
+  display: flex; /* [3] */
+  flex-direction: column;
+  left: 50%;
+  max-height: 100vh;
+  max-width: 545px;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  transition: transform 0.3s, opacity 0.3s;
+  width: 100%;
+}
+
+.fs-dialog__heading {
+  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--fs-color-grey-border);
+  border-radius: 4px 4px 0 0;
+  border-radius: var(--fs-border-radius) var(--fs-border-radius) 0 0;
+  flex-shrink: 0;
+  padding: 15px 15px 10px;
+}
+
+.fs-dialog__body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 15px;
+  position: relative;
+}
+
+.fs-dialog__footer {
+  background: #f4f4f4;
+  background: var(--fs-color-grey-background-light);
+  border-radius: 0 0 4px 4px;
+  border-radius: 0 0 var(--fs-border-radius) var(--fs-border-radius);
+  border-top: 1px solid #ccc;
+  border-top: 1px solid var(--fs-color-grey-border);
+  flex-shrink: 0;
+  padding: 10px 15px;
+}
+
+
+
+
+
+/** FROM-BOTTOM **/
+fs-dialog[transition="from-bottom"] .fs-dialog__window {
+  top: 100%;
+  transform: translateX(-50%);
+  transition: opacity 0.3s, top 0.3s;
+}
+
+fs-dialog[transition="from-bottom"][open] .fs-dialog__window {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+
+
+
+/** FROM-RIGHT **/
+fs-dialog[transition="from-right"] .fs-dialog__window {
+  left: 100%;
+  transform: translateY(-50%);
+  transition: opacity 0.3s, left 0.3s;
+}
+
+fs-dialog[transition="from-right"][open] .fs-dialog__window {
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>
+
+<template id="fs-dialog-template">
+
+  <div class="fs-dialog" role="dialog">
+    <div class="fs-dialog__mask"></div>
+    <div class="fs-dialog__window" role="document">
+      <button class="fs-dialog__close" aria-label="Close" data-dialog-dismiss></button>
+    </div>
+  </div>
+
+</template>
+
+<script>
+(function() {
+  var doc = (document._currentScript || document.currentScript).ownerDocument;
+  var template = doc.querySelector('#fs-dialog-template');
+  var fsCore = document.createElement('fs-core-element');
+  fsCore.translations = /* LANG CODE */;
+
+  var zIndex = 9989;
+  var zIndexIncrement = 10;
+
+  // keep track of all dialogs
+  var dialogs = [];
+  var readyEventFired = false;
+
+  // trying to move an element during parsing for polyfilled browsers results in
+  // elements being skipped, so we'll move them after the webcomponentsready event
+  window.addEventListener('WebComponentsReady', function() {
+    readyEventFired = true;
+
+    dialogs.forEach(function(element) {
+      if (element.type === 'modal' && element.parentElement !== document.body) {
+        document.body.appendChild(element);
+      }
+    });
+  });
+
+  var proto = Object.create(HTMLElement.prototype);
+
+  proto.createdCallback = function () {
+
+    // if the webcomponentsread event has been fired already then let a11y-enhancer
+    // move it to body normally
+    if (!readyEventFired) {
+      dialogs.push(this);
+    }
+
+    var clone = document.importNode(template.content, true);
+
+    // selectors
+    var dialogEl = clone.querySelector('.fs-dialog');
+    var windowEl = clone.querySelector('.fs-dialog__window');
+
+    // move user content to the body of the modal
+    Array.from(this.children).forEach(function(el) {
+      windowEl.appendChild(el);
+    }.bind(this));
+
+    this.appendChild(clone);
+    a11yEnhancer.dialog(this);
+
+    // open the dialog
+    this.addEventListener('dialog-opened', function(e) {
+      this.setAttribute('open', '');
+
+      // if there is more than one dialog on the page the inert attribute will
+      // be added to it, so we need to remove any inert attributes that might
+      // have been added to get stacking dialogs working
+      this.removeAttribute('inert');
+
+      // allow multiple dialogs to be open at a time by incrementing z-index by
+      // the order they were opened
+      zIndex += zIndexIncrement;
+      this.style.zIndex = zIndex;
+
+      this.addEventListener('click', proto.clickHandler);
+      this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
+    }.bind(this));
+
+    // close the dialog
+    this.addEventListener('dialog-closed', function(e) {
+      this.removeAttribute('open');
+
+      zIndex -= zIndexIncrement;
+
+      this.removeEventListener('click', proto.clickHandler);
+      this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
+    }.bind(this));
+
+    if (this.hasAttribute('open')) {
+      this.open();
+    }
+  };
+
+  proto.attributeChangedCallback = function(attr, oldValue, newValue) {
+
+    // open and close the modal with the `open` attribute
+    if (attr === 'open') {
+      if (newValue !== null) {
+        this.open();
+      }
+      else {
+        this.close();
+      }
+    }
+  };
+
+  proto.clickHandler = function(e) {
+    if (e.target && e.target.classList.contains('fs-dialog__mask')) {
+      this.close();
+    }
+
+    if (e.target.hasAttribute('data-dialog-dismiss')) {
+      this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true}));
+
+      // stop the event from propagating to parent fs-dialogs
+      e.stopPropagation();
+      this.close();
+    }
+
+    // confirming the dialog does not close it. allow the user to determine
+    // what to do with the modal
+    if (e.target.hasAttribute('data-dialog-confirm')) {
+      this.dispatchEvent(new Event('fs-dialog-confirm', {bubbles: true}));
+
+      // stop the event from propagating to parent fs-dialogs
+      e.stopPropagation();
+    }
+  };
+
+  document.registerElement('fs-dialog', {prototype: proto});
+})();
+</script>
