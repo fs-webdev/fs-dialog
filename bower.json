@@ -25,7 +25,7 @@
     "bin/*",
     "test/",
     "test/*",
-    "wct.conf.json"
+    "wct.conf.json",
     "src/",
     "src/*",
     "gulpfile.js"
