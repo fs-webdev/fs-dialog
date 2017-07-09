@@ -2,6 +2,8 @@
 
 An accessible standard dialog for FamilySearch.
 
+![](/../screenshots/modal.png?raw=true)
+
 A [dialog](https://en.wikipedia.org/wiki/Dialog_box) is:
 
 > "a small window that communicates information to the user and prompts them for a response.
@@ -12,11 +14,7 @@ For accessibility, dialogs always have a close button in to top right corner.
 
 The content of a dialog (the element with the class `.fs-dialog--body`) will scroll if it's taller than the dialog, and the `<header>` or `<footer>` of a dialog will always be visible and won't scroll with content.
 
-![](/../screenshots/modal.png?raw=true)
-
 Modal dialogs darken the background and prevent user interaction of any other elements on the page. They are fixed to the center of the screen and cannot be dragged. They will always close if clicked outside of the modal or with the <cmd>esc</cmd> key (for accessibility).
-
-![](/../screenshots/modeless.png?raw=true)
 
 Modeless dialogs do not darken the screen and do not prevent interaction of any other elements. They start in the top left corner of the screen but can be dragged. They will not close if clicked outside nor with the <cmd>esc</cmd>.
 
