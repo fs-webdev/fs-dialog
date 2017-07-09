@@ -278,12 +278,20 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) .fs-dialog__wind
 
       this.addEventListener('click', clickHandler);
 
-      // add events to modeless dialog for dragging
-      if (this.type === 'modeless' && headerEl) {
-        headerEl.addEventListener('mousedown', windowEl._startDragHandler);
-        headerEl.addEventListener('touchstart', windowEl._startDragHandler);
-        window.addEventListener('mouseup', windowEl._endDragHandler);
-        window.addEventListener('touchend', windowEl._endDragHandler);
+      if (this.type === 'modeless') {
+
+        // calc center of screen for modeless dialog transform property
+        var x = (window.innerWidth / 2) - (windowEl.offsetWidth / 2);
+        var y = (window.innerHeight / 2) - (windowEl.offsetHeight / 2);
+        windowEl.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+
+        // add events to modeless dialog for dragging
+        if (headerEl) {
+          headerEl.addEventListener('mousedown', windowEl._startDragHandler);
+          headerEl.addEventListener('touchstart', windowEl._startDragHandler);
+          window.addEventListener('mouseup', windowEl._endDragHandler);
+          window.addEventListener('touchend', windowEl._endDragHandler);
+        }
       }
 
       this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
