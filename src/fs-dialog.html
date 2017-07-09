@@ -10,41 +10,40 @@
  * 2. Delay the visibility property so we can see the dialog disappear
  *    @see https://codepen.io/matthewlein/pen/fvrLD
  * 3. Support a fixed modal header/footer and scrollable middle
+ * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
  */
-fs-dialog {
+fs-dialog .fs-dialog {
+  opacity: 1;
+  transition: opacity 0.3s, visibility 0s linear;
+  visibility: visible;
+}
+
+fs-dialog:not([type="modeless"]) .fs-dialog {
+  background: rgba(51,51,49,0.8);
   bottom: 0;
   left: 0;
   position: fixed;
   right: 0;
   top: 0;
-  transition: visibility 0s linear;
-  visibility: visible;
 }
 
 /* [1] */
-fs-dialog:not([open]) {
+fs-dialog:not([open]) .fs-dialog {
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
   visibility: hidden;
-  transition: visibility 0s linear 0.3s; /* [2] */
 }
 
-fs-dialog[open] .fs-dialog__mask {
-  opacity: 1;
-}
-
-fs-dialog[open] .fs-dialog__window {
-  opacity: 1;
+fs-dialog[open]:not([type="modeless"]) .fs-dialog__window {
   transform: translate(-50%, -50%) scale(1);
 }
 
-.fs-dialog__mask {
-  background: rgba(51,51,49,0.8);
+fs-dialog:not([type="modeless"]) .fs-dialog__mask {
   bottom: 0;
   left: 0;
-  opacity: 0;
   position: absolute;
   right: 0;
   top: 0;
-  transition: opacity 0.3s;
 }
 
 .fs-dialog__window {
@@ -54,15 +53,17 @@ fs-dialog[open] .fs-dialog__window {
   box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);
   display: flex; /* [3] */
   flex-direction: column;
-  left: 50%;
   max-height: 100vh;
   max-width: 545px;
-  opacity: 0;
   position: absolute;
+  width: 100%;
+}
+
+fs-dialog:not([type="modeless"]) .fs-dialog__window {
+  left: 50%;
   top: 50%;
   transform: translate(-50%, -50%) scale(0.7);
-  transition: transform 0.3s, opacity 0.3s;
-  width: 100%;
+  transition: transform 0.3s;
 }
 
 .fs-dialog__window > header {
@@ -72,6 +73,18 @@ fs-dialog[open] .fs-dialog__window {
   border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
   flex-shrink: 0;
   padding: 15px 15px 10px;
+}
+
+/* [4] */
+.fs-dialog__window .fs-dialog__close {
+  background-image: none !important;
+  top: 15px;
+  opacity: 1;
+}
+
+.fs-dialog__window .fs-dialog__close:active svg {
+  width: 11px;
+  height: 11px;
 }
 
 .fs-dialog__body {
@@ -97,22 +110,35 @@ fs-dialog[open] .fs-dialog__window {
 
 
 /** MODELESS **/
+fs-dialog[type="modeless"] .fs-dialog__window {
+  left: 0;
+  top: 0;
+  transform: translate3d(0px, 0px, 0);
+}
+
 fs-dialog[type="modeless"] .fs-dialog__window > header {
+  cursor: move;
+}
+
+.fs-dialog--dragging {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   cursor: move;
 }
 
 
 
 
-
 /** FROM-BOTTOM **/
-fs-dialog[transition="from-bottom"] .fs-dialog__window {
+fs-dialog[transition="from-bottom"]:not([type="modeless"]) .fs-dialog__window {
   top: 100%;
   transform: translateX(-50%);
-  transition: opacity 0.3s, top 0.3s;
+  transition: top 0.3s;
 }
 
-fs-dialog[transition="from-bottom"][open] .fs-dialog__window {
+fs-dialog[transition="from-bottom"][open]:not([type="modeless"]) .fs-dialog__window {
   top: 50%;
   transform: translate(-50%, -50%);
 }
@@ -122,24 +148,28 @@ fs-dialog[transition="from-bottom"][open] .fs-dialog__window {
 
 
 /** FROM-RIGHT **/
-fs-dialog[transition="from-right"] .fs-dialog__window {
+fs-dialog[transition="from-right"]:not([type="modeless"]) .fs-dialog__window {
   left: 100%;
   transform: translateY(-50%);
-  transition: opacity 0.3s, left 0.3s;
+  transition: left 0.3s;
 }
 
-fs-dialog[transition="from-right"][open] .fs-dialog__window {
+fs-dialog[transition="from-right"][open]:not([type="modeless"]) .fs-dialog__window {
   left: 50%;
   transform: translate(-50%, -50%);
 }
 </style>
 
+<!-- 1. Use inline svg so the color can be changed with the rest of the text inside
+        the header -->
 <template id="fs-dialog-template">
 
   <div class="fs-dialog" role="dialog">
     <div class="fs-dialog__mask"></div>
     <div class="fs-dialog__window" role="document">
-      <button class="fs-dialog__close" aria-label="Close" data-dialog-dismiss></button>
+      <button class="fs-dialog__close" data-dialog-dismiss>
+        <svg aria-hidden="true" width='13' height='13' viewbox="0 0 13 13" preserveAspectRatio="xMidYMin"><g transform='translate(-1.000000, -1.000000)'><path d='M13 2L2 13M2 2L13 13' stroke='currentColor' stroke-width='2.5'/></g></svg>
+      </button>
     </div>
   </div>
 
@@ -150,10 +180,12 @@ fs-dialog[transition="from-right"][open] .fs-dialog__window {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
   var template = doc.querySelector('#fs-dialog-template');
   var fsCore = document.createElement('fs-core-element');
-  fsCore.translations = {"en":{"fs.shared.fsPerson.UNKNOWN_NAME":"[Unknown Name]"},"es":{"fs.shared.fsPerson.UNKNOWN_NAME":"[Nombre desconocido]"}};
+  fsCore.translations = /* LANG CODE */;
 
   var zIndex = 9989;
   var zIndexIncrement = 10;
+
+  var proto = Object.create(HTMLElement.prototype);
 
   // keep track of all dialogs
   var dialogs = [];
@@ -171,8 +203,9 @@ fs-dialog[transition="from-right"][open] .fs-dialog__window {
     });
   });
 
-  var proto = Object.create(HTMLElement.prototype);
-
+  /**
+   * Initialize the dialog and add events and accessibility features.
+   */
   proto.createdCallback = function () {
 
     // if the WebComponentsReady event has been fired then let a11y-enhancer
@@ -185,26 +218,51 @@ fs-dialog[transition="from-right"][open] .fs-dialog__window {
 
     // selectors
     var dialogEl = clone.querySelector('.fs-dialog');
+    var closeEl = clone.querySelector('.fs-dialog__close');
     var windowEl = clone.querySelector('.fs-dialog__window');
+    var bodyEl = this.querySelector('.fs-dialog__body');
+    var headerEl, footerEl;
+
+    // set aria-label on close button for screen readers
+    closeEl.setAttribute('aria-label', fsCore.i18n('fs.shared.fsDialog.CLOSE'));
 
     // move user content to the body of the modal
     Array.from(this.children).forEach(function(el) {
+
+      // find the direct header and footer element while we're already looping over
+      // children
+      if (!headerEl && el.nodeName === 'HEADER') {
+        headerEl = el;
+
+        // move close button to header so it can be styled with header colors
+        headerEl.appendChild(closeEl);
+      }
+      else if (!footerEl && el.nodeName === 'FOOTER') {
+        footerEl = el;
+      }
+
       windowEl.appendChild(el);
     }.bind(this));
 
     this.appendChild(clone);
     a11yEnhancer.dialog(this);
 
+    // save element reference to drag event listeners so we can use it as this
+    if (this.type === 'modeless') {
+      windowEl._startDragHandler = startDragHandler.bind(windowEl);
+      windowEl._dragHandler = dragHandler.bind(windowEl);
+      windowEl._endDragHandler = endDragHandler.bind(windowEl);
+    }
+
     // add role=main to body of a modal dialog to improve accessibility for screen
     // readers. can't just use the <main> element since modeless dialogs don't
     // hide any <main> elements on the page
     // @see https://web-a11y.slack.com/archives/C042TSFGN/p1499454746902809
-    var bodyEl = this.querySelector('.fs-dialog__body');
     if (this.type === 'modal' && bodyEl) {
       bodyEl.setAttribute('role', 'main');
     }
 
-    // open the dialog
+    // open the dialog (event fired from a11y-enhancer)
     this.addEventListener('dialog-opened', function(e) {
       this.setAttribute('open', '');
 
@@ -216,19 +274,37 @@ fs-dialog[transition="from-right"][open] .fs-dialog__window {
       // allow multiple dialogs to be open at a time by incrementing z-index by
       // the order they were opened
       zIndex += zIndexIncrement;
-      this.style.zIndex = zIndex;
+      dialogEl.style.zIndex = zIndex;
 
-      this.addEventListener('click', proto.clickHandler);
+      this.addEventListener('click', clickHandler);
+
+      // add events to modeless dialog for dragging
+      if (this.type === 'modeless' && headerEl) {
+        headerEl.addEventListener('mousedown', windowEl._startDragHandler);
+        headerEl.addEventListener('touchstart', windowEl._startDragHandler);
+        window.addEventListener('mouseup', windowEl._endDragHandler);
+        window.addEventListener('touchend', windowEl._endDragHandler);
+      }
+
       this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
     }.bind(this));
 
-    // close the dialog
+    // close the dialog (event fired from a11y-enhancer)
     this.addEventListener('dialog-closed', function(e) {
       this.removeAttribute('open');
 
       zIndex -= zIndexIncrement;
 
-      this.removeEventListener('click', proto.clickHandler);
+      this.removeEventListener('click', clickHandler);
+
+      // clean up events to modeless dialog for dragging
+      if (this.type === 'modeless' && headerEl) {
+        headerEl.removeEventListener('mousedown', windowEl._startDragHandler);
+        headerEl.removeEventListener('touchstart', windowEl._startDragHandler);
+        window.removeEventListener('mouseup', windowEl._endDragHandler);
+        window.removeEventListener('touchend', windowEl._endDragHandler);
+      }
+
       this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
     }.bind(this));
 
@@ -238,6 +314,9 @@ fs-dialog[transition="from-right"][open] .fs-dialog__window {
     }
   };
 
+  /**
+   * Listen to the open attribute.
+   */
   proto.attributeChangedCallback = function(attr, oldValue, newValue) {
 
     // open and close the modal with the `open` attribute
@@ -251,28 +330,129 @@ fs-dialog[transition="from-right"][open] .fs-dialog__window {
     }
   };
 
-  proto.clickHandler = function(e) {
+  /**
+   * Determine when to close the dialog.
+   */
+  function clickHandler(e) {
     if (e.target && e.target.classList.contains('fs-dialog__mask')) {
       this.close();
     }
 
-    if (e.target.hasAttribute('data-dialog-dismiss')) {
-      this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true}));
+    // handle child elements of elements with these attributes
+    var el = e.target;
+    while (el !== this) {
+      if (el.hasAttribute('data-dialog-dismiss')) {
+        this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true}));
 
-      // stop the event from propagating to parent fs-dialogs
-      e.stopPropagation();
-      this.close();
+        // stop the event from propagating to parent fs-dialogs
+        e.stopPropagation();
+        this.close();
+      }
+
+      // confirming the dialog does not close it. allow the user to determine
+      // what to do with the modal
+      if (el.hasAttribute('data-dialog-confirm')) {
+        this.dispatchEvent(new Event('fs-dialog-confirm', {bubbles: true}));
+
+        // stop the event from propagating to parent fs-dialogs
+        e.stopPropagation();
+      }
+
+      el = el.parentElement;
+    }
+  }
+
+  /**
+   * Set up dragging for the dialog.
+   * @see http://jsfiddle.net/Lk2hLt
+   * @see http://interactjs.io/
+   */
+  function startDragHandler(e) {
+
+    // only activate drag with left mouse button
+    if (e.type === 'mousedown' && e.button !== 0) return true;
+
+    // normalize mousedown and touchstart x/y position
+    var clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+    var clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+
+    var rect = this.getBoundingClientRect();
+    this._drag = {
+
+      // store the current x/y position as well as the start x/y of the event
+      // (getBoundingClientRect takes into account transform x/y)
+      // @see https://stackoverflow.com/a/22360535/2124254
+      xPos: rect.left,
+      yPos: rect.top,
+      clientX: clientX,
+      clientY: clientY,
+
+      // don't let the dialog go outside of the window
+      maxX: window.innerWidth - this.offsetWidth,
+      maxY: window.innerHeight - this.offsetHeight
+    };
+
+    window.addEventListener('mousemove', this._dragHandler, true);
+    window.addEventListener('touchmove', this._dragHandler, true);
+  }
+
+  /**
+   * Update the x/y position of the dialog while dragging.
+   */
+  function dragHandler(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // prevent user highlighting while dragging by disabling user-select through css
+    if (!this._drag.isDragging) {
+      document.body.classList.add('fs-dialog--dragging');
+      this._drag.isDragging = true;
     }
 
-    // confirming the dialog does not close it. allow the user to determine
-    // what to do with the modal
-    if (e.target.hasAttribute('data-dialog-confirm')) {
-      this.dispatchEvent(new Event('fs-dialog-confirm', {bubbles: true}));
+    // normalize mousedown and touchstart x and y position
+    var clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+    var clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
 
-      // stop the event from propagating to parent fs-dialogs
-      e.stopPropagation();
+    var dx = clientX -this._drag.clientX;
+    var dy = clientY - this._drag.clientY;
+
+    var x = this._drag.xPos + dx;
+    var y = this._drag.yPos + dy;
+
+    // bind x/y to window
+    if (x < 0) {
+      x = 0;
     }
-  };
+    else if (x > this._drag.maxX) {
+      x = this._drag.maxX
+    }
+
+    if (y < 0) {
+      y = 0;
+    }
+    else if (y > this._drag.maxY) {
+      y = this._drag.maxY;
+    }
+
+    this.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+
+    // update x/y position
+    this._drag.clientX = clientX;
+    this._drag.clientY = clientY;
+    this._drag.xPos = x;
+    this._drag.yPos = y;
+  }
+
+  /**
+   * Clean up events and properties when drag is finished.
+   */
+  function endDragHandler() {
+    document.body.classList.remove('fs-dialog--dragging');
+    this._drag = null;
+
+    window.removeEventListener('mousemove', this._dragHandler, true);
+    window.removeEventListener('touchmove', this._dragHandler, true);
+  }
 
   document.registerElement('fs-dialog', {prototype: proto});
 })();
