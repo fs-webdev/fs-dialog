@@ -9,7 +9,6 @@
     <title>fs-dialog demo</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel='import' href='../fs-dialog.html'>
     <link rel='import' href='../../fs-core-element/fs-core-element.html'>
     <style>
     .demo-snippet {
@@ -37,48 +36,137 @@
     </style>
   </head>
   <body>
+
     <h3>Default Use</h3>
     <div class="demo-snippet fs-card">
       <div class="demo">
-<fs-dialog id="modal" transition="from-right" type="modeless">
+<fs-dialog>
   <header>
-    <h4>Modeless Dialog</h4>
+    <h4>Modal</h4>
   </header>
   <div class="fs-dialog__body">
-    <p>This is a modeless dialog. It really stands out from the content but doesn't force the user to perform an action before they can continue.</p>
+    <p>This is a modal dialog. It really stands out from the content and forces the user to perform an action before they can continue.</p>
   </div>
   <footer>
-    <button class="fs-button fs-button--recommended">Done</button>
-    <button class="fs-button fs-button--minor" data-dialog-dismiss>Cancel</button>
-  <footer>
+    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
+  </footer>
 </fs-dialog>
+
+<button class="fs-button">Open Dialog</button>
       </div>
     </div>
 
 
-<button class="open-dialog">Open</button>
 
-<fs-dialog id="other-modal">
-  <h1 class="fs-dialog__heading">My Modal 2</h1>
+
+
+    <h3>Attributes</h3>
+    <div class="demo-snippet fs-card">
+      <div class="demo">
+<h5>type</h5>
+<fs-dialog type="modeless">
+  <header>
+    <h4>Modeless Dialog</h4>
+  </header>
   <div class="fs-dialog__body">
-    <p>Hello world</p>
+    <p>Can be moved and doesn't prevent user interaction of the page.</p>
   </div>
 </fs-dialog>
 
+<button class="fs-button">Open Dialog</button>
+
+<h5>transition=from-bottom</h5>
+<fs-dialog transition="from-bottom">
+  <header>
+    <h4>From-bottom</h4>
+  </header>
+</fs-dialog>
+<button class="fs-button">Open Dialog</button>
+
+<h5>transition=from-right</h5>
+<fs-dialog transition="from-right">
+  <header>
+    <h4>From-right</h4>
+  </header>
+</fs-dialog>
+<button class="fs-button">Open Dialog</button>
+      </div>
+    </div>
+
+
+
+
+
+    <h3>Scrolling Content</h3>
+    <div class="demo-snippet fs-card">
+      <div class="demo">
+<style>
+#scrolling-dialog .fs-dialog__window {
+  height: 50vh;
+}
+</style>
+
+<fs-dialog id="scrolling-dialog">
+  <header>
+    <h4>Scroll</h4>
+  </header>
+  <div class="fs-dialog__body">
+    <p>This dialogs content will scroll.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu auctor diam. Donec condimentum eleifend purus at lacinia. Cras feugiat sodales pulvinar. Curabitur a aliquet eros. Integer vitae suscipit justo, vel sagittis dui. Maecenas nec porttitor arcu. Maecenas consequat lacinia dui quis vestibulum. Sed cursus consectetur erat quis eleifend. Sed consectetur imperdiet dui, nec iaculis ante lacinia nec. Nullam at nunc sed mauris convallis eleifend. Phasellus at malesuada nisi. Maecenas purus mi, pellentesque nec enim ut, venenatis congue leo. Integer porttitor sem eu nunc ornare, ac aliquet augue gravida. Cras sit amet dolor nisl.</p>
+
+    <p>Curabitur maximus, metus quis rutrum tristique, mi nunc condimentum nibh, sit amet luctus leo velit ultricies sem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque rutrum nec arcu et tincidunt. Maecenas varius convallis bibendum. Proin mattis arcu orci, id eleifend ex posuere et. Aenean faucibus scelerisque turpis, at bibendum urna sodales et. Mauris posuere ultricies nisl, sed tincidunt felis pretium ac. Suspendisse sollicitudin in lacus ut pharetra. Duis dapibus elementum sapien at scelerisque. Vivamus non ullamcorper velit, a eleifend metus. Proin velit lorem, feugiat ac justo et, congue eleifend risus.</p>
+
+    <p>Aenean convallis commodo metus. Donec euismod neque velit, at accumsan velit vulputate gravida. Duis ultricies pellentesque ante at dignissim. Sed non turpis magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam mollis sed eros vitae mattis. Suspendisse non blandit nisi. Etiam mattis sodales congue.</p>
+  </div>
+  <footer>
+    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
+  </footer>
+</fs-dialog>
+
+<button class="fs-button">Open Dialog</button>
+      </div>
+    </div>
+
+
+
+
+
+    <h3>Stacking</h3>
+    <p>Dialogs will automatically stack based on order opened.
+    <div class="demo-snippet fs-card">
+      <div class="demo">
+<fs-dialog>
+  <header>
+    <h4>Bottom Dialog</h4>
+  </header>
+  <div class="fs-dialog__body">
+    <p>Open a dialog on top of this one.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu auctor diam. Donec condimentum eleifend purus at lacinia. Cras feugiat sodales pulvinar. Curabitur a aliquet eros. Integer vitae suscipit justo, vel sagittis dui. Maecenas nec porttitor arcu. Maecenas consequat lacinia dui quis vestibulum. Sed cursus consectetur erat quis eleifend. Sed consectetur imperdiet dui, nec iaculis ante lacinia nec. Nullam at nunc sed mauris convallis eleifend. Phasellus at malesuada nisi. Maecenas purus mi, pellentesque nec enim ut, venenatis congue leo. Integer porttitor sem eu nunc ornare, ac aliquet augue gravida. Cras sit amet dolor nisl.</p>
+  </div>
+  <footer>
+    <button class="fs-button fs-button--recommended" id="stacking-button">Open Another</button>
+    <button class="fs-button fs-button--minor" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-dialog>
+
+<button class="fs-button">Open Dialog</button>
+
+<fs-dialog id="stacking-dialog">
+  <header>
+    <h4>Top Dialog</h4>
+  </header>
+  <div class="fs-dialog__body">
+    <p>Stacking like a pro.</p>
+  </div>
+  <footer>
+    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-dialog>
+      </div>
+    </div>
+
     <script>
     (function() {
-
-      window.addEventListener('WebComponentsReady', function() {
-        console.log('ready!');
-
-        document.querySelector('.open-dialog').addEventListener('click', function(e) {
-          document.querySelector('#modal').open();
-        });
-
-        document.querySelector('.fs-button--recommended').addEventListener('click', function() {
-          document.querySelector('#other-modal').open();
-        });
-      });
 
       // add automatic code output
       Array.from(document.querySelectorAll('.demo')).forEach(function(demo) {
@@ -96,8 +184,27 @@
         preEL.appendChild(codeEl);
         demo.parentElement.appendChild(preEL);
       });
+
+      // find each button and open the previous sibling dialog
+      var dialogs = document.querySelectorAll('.demo > fs-dialog');
+      var buttons = document.querySelectorAll('.demo > button');
+
+      Array.from(buttons).forEach(function(button, index) {
+        button.addEventListener('click', function() {
+          dialogs[index].open();
+        });
+      });
+
+      // stacking click
+      document.getElementById('stacking-button').addEventListener('click', function() {
+        document.getElementById('stacking-dialog').open();
+      });
     })();
     </script>
     <script src="https://cdn.jsdelivr.net/prism/1.6.0/prism.js"></script>
+
+    <!-- by importing the element last, the code output script can run before it gets
+         populated -->
+    <link rel='import' href='../fs-dialog.html'>
   </body>
 </html>

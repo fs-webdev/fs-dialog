@@ -112,6 +112,7 @@ fs-dialog:not([type="modeless"]) .fs-dialog__window {
 /** MODELESS **/
 fs-dialog[type="modeless"] .fs-dialog__window {
   left: 0;
+  position: fixed;
   top: 0;
   transform: translate3d(0px, 0px, 0);
 }
@@ -274,11 +275,11 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) .fs-dialog__wind
       // allow multiple dialogs to be open at a time by incrementing z-index by
       // the order they were opened
       zIndex += zIndexIncrement;
-      dialogEl.style.zIndex = zIndex;
 
       this.addEventListener('click', clickHandler);
 
       if (this.type === 'modeless') {
+        windowEl.style.zIndex = zIndex;
 
         // calc center of screen for modeless dialog transform property
         var x = (window.innerWidth / 2) - (windowEl.offsetWidth / 2);
@@ -293,6 +294,9 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) .fs-dialog__wind
           window.addEventListener('touchend', windowEl._endDragHandler);
         }
       }
+      else {
+        dialogEl.style.zIndex = zIndex;
+      }
 
       this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
     }.bind(this));
@@ -300,6 +304,10 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) .fs-dialog__wind
     // close the dialog (event fired from a11y-enhancer)
     this.addEventListener('dialog-closed', function(e) {
       this.removeAttribute('open');
+
+      // inert attribute doesn't have to be added back since visibility:hidden
+      // elements are already removed from the DOM both visually and for screen
+      // readers
 
       zIndex -= zIndexIncrement;
 
