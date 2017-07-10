@@ -16,7 +16,7 @@ The content of a dialog (the element with the class `.fs-dialog--body`) will scr
 
 Modal dialogs darken the background and prevent user interaction of all other elements on the page. They are fixed to the center of the screen and cannot be moved. They will always close if clicked outside of the modal or with the <cmd>esc</cmd> key (for accessibility).
 
-Modeless dialogs do not darken the screen and do not prevent interaction of all other elements. They start also start in the center of the screen but can be moved. They will not close if clicked outside nor with the <cmd>esc</cmd>.
+Modeless dialogs do not darken the screen and do not prevent interaction of all other elements. They also start in the center of the screen but can be moved. They will not close if clicked outside nor with the <cmd>esc</cmd>.
 
 ## Installation
 
