@@ -11,6 +11,7 @@
  *    @see https://codepen.io/matthewlein/pen/fvrLD
  * 3. Support a fixed modal header/footer and scrollable middle
  * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
+ * 5. Safari's default active button color seems to be white (activebuttontext)
  */
 fs-dialog {
   background: #fff;
@@ -72,6 +73,7 @@ fs-dialog header {
 /* [4] */
 fs-dialog .fs-dialog__close {
   background-image: none !important;
+  color: inherit; /* [5] */
   top: 15px;
   opacity: 1;
 }
@@ -217,7 +219,6 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       maskEl.classList.add('fs-dialog__mask');
 
       // add mask as a previous sibling to the dialog so it's below it in z-index
-      // see https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore#Example
       this.parentNode.insertBefore(maskEl, this);
 
       // add role=main to body of a modal dialog to improve accessibility for screen
