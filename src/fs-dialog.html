@@ -12,41 +12,7 @@
  * 3. Support a fixed modal header/footer and scrollable middle
  * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
  */
-fs-dialog .fs-dialog {
-  opacity: 1;
-  transition: opacity 0.3s, visibility 0s linear;
-  visibility: visible;
-}
-
-fs-dialog:not([type="modeless"]) .fs-dialog {
-  background: rgba(51,51,49,0.8);
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-}
-
-/* [1] */
-fs-dialog:not([open]) .fs-dialog {
-  opacity: 0;
-  transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
-  visibility: hidden;
-}
-
-fs-dialog[open]:not([type="modeless"]) .fs-dialog__window {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-fs-dialog:not([type="modeless"]) .fs-dialog__mask {
-  bottom: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.fs-dialog__window {
+fs-dialog {
   background: #fff;
   border-radius: 4px;
   border-radius: var(--fs-border-radius, 4px);
@@ -55,18 +21,46 @@ fs-dialog:not([type="modeless"]) .fs-dialog__mask {
   flex-direction: column;
   max-height: 100vh;
   max-width: 545px;
-  position: absolute;
+  opacity: 0;
+  position: fixed;
+  transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
+  visibility: hidden;
   width: 100%;
 }
 
-fs-dialog:not([type="modeless"]) .fs-dialog__window {
+fs-dialog:not([type="modeless"]) {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%) scale(0.7);
-  transition: transform 0.3s;
+  transition: opacity 0.3s, visibility 0s linear 0.3s, transform 0.3s; /* [2] */
 }
 
-.fs-dialog__window > header {
+/* [1] */
+fs-dialog[open],
+.fs-dialog__mask[open] {
+  opacity: 1;
+  transition: opacity 0.3s, visibility 0s linear;
+  visibility: visible;
+}
+
+fs-dialog[open]:not([type="modeless"]) {
+  transform: translate(-50%, -50%) scale(1);
+  transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
+}
+
+.fs-dialog__mask {
+  background: rgba(51,51,49,0.8);
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
+  visibility: hidden;
+}
+
+fs-dialog header {
   border-bottom: 1px solid #ccc;
   border-bottom: 1px solid var(--fs-color-grey-border, #ccc);
   border-radius: 4px 4px 0 0;
@@ -76,13 +70,13 @@ fs-dialog:not([type="modeless"]) .fs-dialog__window {
 }
 
 /* [4] */
-.fs-dialog__window .fs-dialog__close {
+fs-dialog .fs-dialog__close {
   background-image: none !important;
   top: 15px;
   opacity: 1;
 }
 
-.fs-dialog__window .fs-dialog__close:active svg {
+fs-dialog .fs-dialog__close:active svg {
   width: 11px;
   height: 11px;
 }
@@ -94,7 +88,7 @@ fs-dialog:not([type="modeless"]) .fs-dialog__window {
   position: relative;
 }
 
-.fs-dialog__window > footer {
+fs-dialog footer {
   background: #f4f4f4;
   background: var(--fs-color-grey-background-light, #f4f4f4);
   border-radius: 0 0 4px 4px;
@@ -110,14 +104,14 @@ fs-dialog:not([type="modeless"]) .fs-dialog__window {
 
 
 /** MODELESS **/
-fs-dialog[type="modeless"] .fs-dialog__window {
+fs-dialog[type="modeless"] {
   left: 0;
   position: fixed;
   top: 0;
   transform: translate3d(0px, 0px, 0);
 }
 
-fs-dialog[type="modeless"] .fs-dialog__window > header {
+fs-dialog[type="modeless"] header {
   cursor: move;
 }
 
@@ -133,13 +127,13 @@ fs-dialog[type="modeless"] .fs-dialog__window > header {
 
 
 /** FROM-BOTTOM **/
-fs-dialog[transition="from-bottom"]:not([type="modeless"]) .fs-dialog__window {
+fs-dialog[transition="from-bottom"]:not([type="modeless"]) {
   top: 100%;
   transform: translateX(-50%);
   transition: top 0.3s;
 }
 
-fs-dialog[transition="from-bottom"][open]:not([type="modeless"]) .fs-dialog__window {
+fs-dialog[transition="from-bottom"][open]:not([type="modeless"]) {
   top: 50%;
   transform: translate(-50%, -50%);
 }
@@ -149,30 +143,30 @@ fs-dialog[transition="from-bottom"][open]:not([type="modeless"]) .fs-dialog__win
 
 
 /** FROM-RIGHT **/
-fs-dialog[transition="from-right"]:not([type="modeless"]) .fs-dialog__window {
+fs-dialog[transition="from-right"]:not([type="modeless"]) {
   left: 100%;
   transform: translateY(-50%);
   transition: left 0.3s;
 }
 
-fs-dialog[transition="from-right"][open]:not([type="modeless"]) .fs-dialog__window {
+fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
   left: 50%;
   transform: translate(-50%, -50%);
 }
 </style>
 
-<!-- 1. Use inline svg so the color can be changed with the rest of the text inside
-        the header -->
+<!-- 1. Since we're not using shadow DOM and can't use <slot> elements, we can only
+        add siblings to the user nodes and cannot move their nodes (breaks binding
+        for polymer and angular)
+     2. Use inline svg so the color can be changed with the rest of the text inside
+        the header
+     3. Each modal dialog will get its own mask. that way when dialogs stack we can
+        know exactly which one to close -->
 <template id="fs-dialog-template">
 
-  <div class="fs-dialog" role="dialog">
-    <div class="fs-dialog__mask"></div>
-    <div class="fs-dialog__window" role="document">
-      <button class="fs-dialog__close" data-dialog-dismiss>
-        <svg aria-hidden="true" width='13' height='13' viewbox="0 0 13 13" preserveAspectRatio="xMidYMin"><g transform='translate(-1.000000, -1.000000)'><path d='M13 2L2 13M2 2L13 13' stroke='currentColor' stroke-width='2.5'/></g></svg>
-      </button>
-    </div>
-  </div>
+  <button class="fs-dialog__close" data-dialog-dismiss>
+    <svg aria-hidden="true" width='13' height='13' viewbox="0 0 13 13" preserveAspectRatio="xMidYMin"><g transform='translate(-1.000000, -1.000000)'><path d='M13 2L2 13M2 2L13 13' stroke='currentColor' stroke-width='2.5'/></g></svg>
+  </button>
 
 </template>
 
@@ -183,119 +177,152 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) .fs-dialog__wind
   var fsCore = document.createElement('fs-core-element');
   fsCore.translations = /* LANG CODE */;
 
-  var zIndex = 9989;
+  var zIndex = 990;
   var zIndexIncrement = 10;
 
   var proto = Object.create(HTMLElement.prototype);
-
-  // keep track of all dialogs
-  var dialogs = [];
-  var readyEventFired = false;
-
-  // trying to move an element during parsing for polyfilled browsers results in
-  // elements being skipped, so we'll move them after the WebComponentsReady event
-  window.addEventListener('WebComponentsReady', function() {
-    readyEventFired = true;
-
-    dialogs.forEach(function(element) {
-      if (element.type === 'modal' && element.parentElement !== document.body) {
-        document.body.appendChild(element);
-      }
-    });
-  });
 
   /**
    * Initialize the dialog and add events and accessibility features.
    */
   proto.createdCallback = function () {
-
-    // if the WebComponentsReady event has been fired then let a11y-enhancer
-    // move the dialog to body normally
-    if (!readyEventFired) {
-      dialogs.push(this);
-    }
-
     var clone = document.importNode(template.content, true);
 
     // selectors
-    var dialogEl = clone.querySelector('.fs-dialog');
     var closeEl = clone.querySelector('.fs-dialog__close');
-    var windowEl = clone.querySelector('.fs-dialog__window');
     var bodyEl = this.querySelector('.fs-dialog__body');
-    var headerEl, footerEl;
+    var headerEl = this.querySelector('header');
+    var footerEl = this.querySelector('footer');
+    var maskEl;
 
     // set aria-label on close button for screen readers
     closeEl.setAttribute('aria-label', fsCore.i18n('fs.shared.fsDialog.CLOSE'));
 
-    // move user content to the body of the modal
-    Array.from(this.children).forEach(function(el) {
-
-      // find the direct header and footer element while we're already looping over
-      // children
-      if (!headerEl && el.nodeName === 'HEADER') {
-        headerEl = el;
-
-        // move close button to header so it can be styled with header colors
-        headerEl.appendChild(closeEl);
-      }
-      else if (!footerEl && el.nodeName === 'FOOTER') {
-        footerEl = el;
-      }
-
-      windowEl.appendChild(el);
-    }.bind(this));
+    // move the close button into the header or as the first child of the dialog
+    // (so it's first in the tab order)
+    if (headerEl) {
+      headerEl.appendChild(closeEl);
+    }
+    else {
+      this.insertBefore(closeEl, this.firstChild);
+    }
 
     this.appendChild(clone);
+    this.setAttribute('role', 'dialog');
     a11yEnhancer.dialog(this);
 
-    // save element reference to drag event listeners so we can use it as this
-    if (this.type === 'modeless') {
-      windowEl._startDragHandler = startDragHandler.bind(windowEl);
-      windowEl._dragHandler = dragHandler.bind(windowEl);
-      windowEl._endDragHandler = endDragHandler.bind(windowEl);
+    // can only check for type after a11yEnhancer has run
+    if (this.type === 'modal') {
+      maskEl = document.createElement('div');
+      maskEl.classList.add('fs-dialog__mask');
+
+      // add mask as a previous sibling to the dialog so it's below it in z-index
+      // see https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore#Example
+      this.parentNode.insertBefore(maskEl, this);
+
+      // add role=main to body of a modal dialog to improve accessibility for screen
+      // readers. can't just use the <main> element since modeless dialogs don't
+      // hide any <main> elements on the page
+      // @see https://web-a11y.slack.com/archives/C042TSFGN/p1499454746902809
+      if (bodyEl) {
+        bodyEl.setAttribute('role', 'main');
+      }
+    }
+    else {
+
+      // save element reference to drag event listeners so we can use it as this
+      this._startDragHandler = startDragHandler.bind(this);
+      this._dragHandler = dragHandler.bind(this);
+      this._endDragHandler = endDragHandler.bind(this);
     }
 
-    // add role=main to body of a modal dialog to improve accessibility for screen
-    // readers. can't just use the <main> element since modeless dialogs don't
-    // hide any <main> elements on the page
-    // @see https://web-a11y.slack.com/archives/C042TSFGN/p1499454746902809
-    if (this.type === 'modal' && bodyEl) {
-      bodyEl.setAttribute('role', 'main');
-    }
+    this._maskClickHandler = this.close.bind(this);
 
     // open the dialog (event fired from a11y-enhancer)
     this.addEventListener('dialog-opened', function(e) {
       this.setAttribute('open', '');
 
-      // if there is more than one dialog on the page the inert attribute will
-      // be added to it, so we need to remove any inert attributes that might
-      // have been added to get stacking dialogs working
-      this.removeAttribute('inert');
-
       // allow multiple dialogs to be open at a time by incrementing z-index by
       // the order they were opened
       zIndex += zIndexIncrement;
+      this.style.zIndex = zIndex;
 
-      this.addEventListener('click', clickHandler);
+      this.addEventListener('click', dialogClickHandler);
 
-      if (this.type === 'modeless') {
-        windowEl.style.zIndex = zIndex;
+      if (this.type === 'modal') {
 
-        // calc center of screen for modeless dialog transform property
-        var x = (window.innerWidth / 2) - (windowEl.offsetWidth / 2);
-        var y = (window.innerHeight / 2) - (windowEl.offsetHeight / 2);
-        windowEl.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+        // if there is more than one dialog on the page the inert attribute will
+        // have been added to it's parent tree. we'll need to uninert the tree and
+        // reinert any sibling subtrees
+        // use setTimeout to give the a11yEnhancer inerting a chance to run, otherwise
+        // removing inert from the mask doesn't work (it would seem the inert polyfill
+        // is async)
+        setTimeout(function() {
+          this.inert = false;
+          maskEl.inert = false;
+
+          this._inerted = {
+            parents: [],
+            children: []
+          };
+          var el = this;
+
+          do {
+
+            // an element that is a child of a shadowroot will have a parentNode but not
+            // a parentElement. a shadowroot element has neither but instead has a host
+            var parent = el.parentNode || el.host;
+
+            if (parent.inert) {
+              parent.inert = false;
+              this._inerted.parents.push(parent);
+
+              for (var i = 0, child; (child = parent.children[i]); i++) {
+
+                // by only adding inert to elements that have not been inerted, we can
+                // preserve a11y through stacking modals
+                if (child !== el && child !== maskEl && !child.inert) {
+                  child.inert = true;
+                  this._inerted.children.push(child);
+                }
+              }
+            }
+
+            el = parent;
+          } while (el !== document.body);
+        }.bind(this), 100);
+
+        // when the body of the dialog scrolls we need to allow keyboard users to
+        // focus the scrolling content so they can use the up/down arrow keys
+        // to scroll
+        // @see https://stackoverflow.com/questions/4814398/how-can-i-check-if-a-scrollbar-is-visible
+        // @see https://github.com/angular/material/issues/2961
+        // @see https://github.com/miguelcobain/ember-paper/pull/393
+        if (bodyEl && bodyEl.scrollHeight > bodyEl.clientHeight) {
+          bodyEl.setAttribute('tabindex', 0);
+        }
+
+        maskEl.setAttribute('open', '');
+        maskEl.style.zIndex = zIndex;
+
+        maskEl.addEventListener('click', this._maskClickHandler);
+      }
+      else {
+
+        // calc center of screen for initial modeless dialog transform property
+        if (!this.style.transform) {
+          var x = (window.innerWidth / 2) - (this.offsetWidth / 2);
+          var y = (window.innerHeight / 2) - (this.offsetHeight / 2);
+          this.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+        }
 
         // add events to modeless dialog for dragging
         if (headerEl) {
-          headerEl.addEventListener('mousedown', windowEl._startDragHandler);
-          headerEl.addEventListener('touchstart', windowEl._startDragHandler);
-          window.addEventListener('mouseup', windowEl._endDragHandler);
-          window.addEventListener('touchend', windowEl._endDragHandler);
+          headerEl.addEventListener('mousedown', this._startDragHandler);
+          headerEl.addEventListener('touchstart', this._startDragHandler);
+          window.addEventListener('mouseup', this._endDragHandler);
+          window.addEventListener('touchend', this._endDragHandler);
         }
-      }
-      else {
-        dialogEl.style.zIndex = zIndex;
       }
 
       this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
@@ -311,14 +338,31 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) .fs-dialog__wind
 
       zIndex -= zIndexIncrement;
 
-      this.removeEventListener('click', clickHandler);
+      this.removeEventListener('click', dialogClickHandler);
 
-      // clean up events to modeless dialog for dragging
-      if (this.type === 'modeless' && headerEl) {
-        headerEl.removeEventListener('mousedown', windowEl._startDragHandler);
-        headerEl.removeEventListener('touchstart', windowEl._startDragHandler);
-        window.removeEventListener('mouseup', windowEl._endDragHandler);
-        window.removeEventListener('touchend', windowEl._endDragHandler);
+      if (this.type === 'modal') {
+
+        // uninert all children nodes and reinert parent nodes
+        setTimeout(function() {
+          this._inerted.children.forEach(function(node) {
+            node.inert = false;
+          });
+          this._inerted.parents.forEach(function(node) {
+            node.inert = true;
+          });
+          this._inerted = null;
+        }.bind(this), 100);
+
+        maskEl.removeAttribute('open');
+        maskEl.removeEventListener('click', this._maskClickHandler);
+      }
+      else if (headerEl) {
+
+        // clean up events to modeless dialog for dragging
+        headerEl.removeEventListener('mousedown', this._startDragHandler);
+        headerEl.removeEventListener('touchstart', this._startDragHandler);
+        window.removeEventListener('mouseup', this._endDragHandler);
+        window.removeEventListener('touchend', this._endDragHandler);
       }
 
       this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
@@ -349,11 +393,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) .fs-dialog__wind
   /**
    * Determine when to close the dialog.
    */
-  function clickHandler(e) {
-    if (e.target && e.target.classList.contains('fs-dialog__mask')) {
-      this.close();
-    }
-
+  function dialogClickHandler(e) {
     // handle child elements of elements with these attributes
     var el = e.target;
     while (el !== this) {
