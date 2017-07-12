@@ -161,9 +161,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
         add siblings to the user nodes and cannot move their nodes (breaks binding
         for polymer and angular)
      2. Use inline svg so the color can be changed with the rest of the text inside
-        the header
-     3. Each modal dialog will get its own mask. that way when dialogs stack we can
-        know exactly which one to close -->
+        the header -->
 <template id="fs-dialog-template">
 
   <button class="fs-dialog__close" data-dialog-dismiss>
@@ -182,6 +180,8 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
   var zIndex = 990;
   var zIndexIncrement = 10;
 
+  var numModalsOpen = 0;  // keep track of how many modals are open to speed up work
+
   var proto = Object.create(HTMLElement.prototype);
 
   /**
@@ -195,7 +195,11 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     var bodyEl = this.querySelector('.fs-dialog__body');
     var headerEl = this.querySelector('header');
     var footerEl = this.querySelector('footer');
-    var maskEl;
+
+    // each modal dialog will get its own mask so when dialogs stack we can
+    // know exactly which one to close
+    var maskEl = document.createElement('div');
+    maskEl.classList.add('fs-dialog__mask');
 
     // set aria-label on close button for screen readers
     closeEl.setAttribute('aria-label', fsCore.i18n('fs.shared.fsDialog.CLOSE'));
@@ -211,15 +215,18 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
     this.appendChild(clone);
     this.setAttribute('role', 'dialog');
-    a11yEnhancer.dialog(this);
+    a11yEnhancer.dialog(this, null, {
+      preventInert: [maskEl]
+    });
 
     // can only check for type after a11yEnhancer has run
     if (this.type === 'modal') {
-      maskEl = document.createElement('div');
-      maskEl.classList.add('fs-dialog__mask');
 
       // add mask as a previous sibling to the dialog so it's below it in z-index
       this.parentNode.insertBefore(maskEl, this);
+
+      // bind the functions that will used in event listeners to avoid losing reference
+      this._maskClickHandler = this.close.bind(this);
 
       // add role=main to body of a modal dialog to improve accessibility for screen
       // readers. can't just use the <main> element since modeless dialogs don't
@@ -231,13 +238,14 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     }
     else {
 
-      // save element reference to drag event listeners so we can use it as this
+      // bind the functions that will used in event listeners to avoid losing reference
       this._startDragHandler = startDragHandler.bind(this);
       this._dragHandler = dragHandler.bind(this);
       this._endDragHandler = endDragHandler.bind(this);
     }
 
-    this._maskClickHandler = this.close.bind(this);
+
+
 
     // open the dialog (event fired from a11y-enhancer)
     this.addEventListener('dialog-opened', function(e) {
@@ -251,47 +259,56 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       this.addEventListener('click', dialogClickHandler);
 
       if (this.type === 'modal') {
+        numModalsOpen++;
 
-        // if there is more than one dialog on the page the inert attribute will
+        maskEl.setAttribute('open', '');
+        maskEl.style.zIndex = zIndex;
+
+        maskEl.addEventListener('click', this._maskClickHandler);
+
+        // if there is more than one dialog open on the page the inert attribute will
         // have been added to it's parent tree. we'll need to uninert the tree and
         // reinert any sibling subtrees
         // use setTimeout to give the a11yEnhancer inerting a chance to run, otherwise
         // removing inert from the mask doesn't work (it would seem the inert polyfill
         // is async)
-        setTimeout(function() {
-          this.inert = false;
-          maskEl.inert = false;
+        if (numModalsOpen > 1) {
+          setTimeout(function() {
+            this.inert = false;
+            maskEl.inert = false;
 
-          this._inerted = {
-            parents: [],
-            children: []
-          };
-          var el = this;
+            this._inerted = {
+              parents: [],
+              children: []
+            };
+            var el = this;
 
-          do {
+            do {
 
-            // an element that is a child of a shadowroot will have a parentNode but not
-            // a parentElement. a shadowroot element has neither but instead has a host
-            var parent = el.parentNode || el.host;
+              // an element that is a child of a shadowroot will have a parentNode but not
+              // a parentElement. a shadowroot element has neither but instead has a host
+              var parent = el.parentNode || el.host;
 
-            if (parent.inert) {
-              parent.inert = false;
-              this._inerted.parents.push(parent);
+              // only inert subtrees if an ancestor of the dialog is inerted
+              if (parent.inert) {
+                parent.inert = false;
+                this._inerted.parents.push(parent);
 
-              for (var i = 0, child; (child = parent.children[i]); i++) {
+                for (var i = 0, child; (child = parent.children[i]); i++) {
 
-                // by only adding inert to elements that have not been inerted, we can
-                // preserve a11y through stacking modals
-                if (child !== el && child !== maskEl && !child.inert) {
-                  child.inert = true;
-                  this._inerted.children.push(child);
+                  // by only adding inert to elements that have not been inerted, we can
+                  // preserve a11y through stacking modals
+                  if (child !== el && child !== maskEl && !child.inert) {
+                    child.inert = true;
+                    this._inerted.children.push(child);
+                  }
                 }
               }
-            }
 
-            el = parent;
-          } while (el !== document.body);
-        }.bind(this), 100);
+              el = parent;
+            } while (el !== document.body);
+          }.bind(this), 100);
+        }
 
         // when the body of the dialog scrolls we need to allow keyboard users to
         // focus the scrolling content so they can use the up/down arrow keys
@@ -302,11 +319,6 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
         if (bodyEl && bodyEl.scrollHeight > bodyEl.clientHeight) {
           bodyEl.setAttribute('tabindex', 0);
         }
-
-        maskEl.setAttribute('open', '');
-        maskEl.style.zIndex = zIndex;
-
-        maskEl.addEventListener('click', this._maskClickHandler);
       }
       else {
 
@@ -329,6 +341,9 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
     }.bind(this));
 
+
+
+
     // close the dialog (event fired from a11y-enhancer)
     this.addEventListener('dialog-closed', function(e) {
       this.removeAttribute('open');
@@ -343,17 +358,21 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
       if (this.type === 'modal') {
 
-        // uninert all children nodes and reinert parent nodes
-        setTimeout(function() {
-          this._inerted.children.forEach(function(node) {
-            node.inert = false;
-          });
-          this._inerted.parents.forEach(function(node) {
-            node.inert = true;
-          });
-          this._inerted = null;
-        }.bind(this), 100);
+        // uninert all children nodes and reinert parent nodes. in Safari this
+        // causes a visually delay in the closing animation so we need to delay it
+        if (numModalsOpen > 1) {
+          setTimeout(function() {
+            this._inerted.children.forEach(function(node) {
+              node.inert = false;
+            });
+            this._inerted.parents.forEach(function(node) {
+              node.inert = true;
+            });
+            this._inerted = null;
+          }.bind(this), 100);
+        }
 
+        numModalsOpen--;
         maskEl.removeAttribute('open');
         maskEl.removeEventListener('click', this._maskClickHandler);
       }
@@ -369,7 +388,8 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
     }.bind(this));
 
-    // start opened
+    // start opened (needs to be done after adding the event listeners to open
+    // otherwise it wont run any of that code)
     if (this.hasAttribute('open')) {
       this.open();
     }
@@ -395,6 +415,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
    * Determine when to close the dialog.
    */
   function dialogClickHandler(e) {
+
     // handle child elements of elements with these attributes
     var el = e.target;
     while (el !== this) {
@@ -433,12 +454,11 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     var clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
     var clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
 
+    // store the current x/y position as well as the start x/y of the event
+    // (getBoundingClientRect takes into account transform x/y)
+    // @see https://stackoverflow.com/a/22360535/2124254
     var rect = this.getBoundingClientRect();
     this._drag = {
-
-      // store the current x/y position as well as the start x/y of the event
-      // (getBoundingClientRect takes into account transform x/y)
-      // @see https://stackoverflow.com/a/22360535/2124254
       xPos: rect.left,
       yPos: rect.top,
       clientX: clientX,
