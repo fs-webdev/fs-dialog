@@ -12,7 +12,7 @@
     "fs-styles": "fs-webdev/fs-styles#^3.x.x",
     "fs-core-element": "https://github.com/fs-webdev/fs-core-element.git",
     "a11y-enhancer": "straker/a11y-enhancer",
-    "inert": "WICG/inert#^1.1.4"
+    "inert": "https://github.com/straker/inert.git#^1.1.4"
   },
   "devDependencies": {
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.23",
