@@ -208,21 +208,21 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
   var zIndex = 990;
   var zIndexIncrement = 10;
 
-  var numModalsOpen = 0;  // keep track of how many modals are open to speed up work
-
-  var proto = Object.create(HTMLElement.prototype);
+  var fsDialog = Object.create(HTMLElement.prototype);
 
   /**
-   * Initialize the dialog and add events and accessibility features.
+   * Initialize the dialog, add events, and accessibility features. Should only change
+   * the DOM on attached callback otherwise it breaks Polymer bindings.
    */
-  proto.attachedCallback = function () {
+  fsDialog.attachedCallback = function () {
     var root = this.getRootNode();
 
     // In polyfilled browsers there is no shadow DOM so global styles still style
     // the "fake" shadow DOM. We need to test for truly native support so we know
-    // when to inject styles into the shadow dom. The best way I've found to do that
+    // when to inject styles into the shadow DOM. The best way I've found to do that
     // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
     // returns true when it's just a document-fragment in polyfilled browsers
+    // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
     if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-dialog]')) {
       var styles = doc.querySelector('style[data-fs-dialog]').cloneNode(true);
       root.appendChild(styles);
@@ -235,11 +235,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     var bodyEl = this.querySelector('.fs-dialog__body');
     var headerEl = this.querySelector('header');
     var footerEl = this.querySelector('footer');
-
-    // each modal dialog will get its own mask so when dialogs stack we can
-    // know exactly which one to close
-    var maskEl = document.createElement('div');
-    maskEl.classList.add('fs-dialog__mask');
+    var maskEl;
 
     // set aria-label on close button for screen readers
     closeEl.setAttribute('aria-label', fsCore.i18n('fs.shared.fsDialog.CLOSE'));
@@ -255,12 +251,16 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
     this.appendChild(clone);
     this.setAttribute('role', 'dialog');
-    a11yEnhancer.dialog(this, null, {
-      preventInert: [maskEl]
-    });
+    a11yEnhancer.dialog(this);
 
     // can only check for type after a11yEnhancer has run
     if (this.type === 'modal') {
+
+      // each modal dialog will get its own mask so when dialogs stack we can
+      // know exactly which one to close
+      maskEl = document.createElement('div');
+      maskEl.setAttribute('data-no-inert', '');
+      maskEl.classList.add('fs-dialog__mask');
 
       // add mask as a previous sibling to the dialog so it's below it in z-index
       this.parentNode.insertBefore(maskEl, this);
@@ -298,67 +298,21 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
       this.addEventListener('click', dialogClickHandler);
 
-      if (this.type === 'modal') {
-        numModalsOpen++;
+      // when the body of the dialog scrolls we need to allow keyboard users to
+      // focus the scrolling content so they can use the up/down arrow keys
+      // to scroll
+      // @see https://stackoverflow.com/questions/4814398/how-can-i-check-if-a-scrollbar-is-visible
+      // @see https://github.com/angular/material/issues/2961
+      // @see https://github.com/miguelcobain/ember-paper/pull/393
+      if (bodyEl && bodyEl.scrollHeight > bodyEl.clientHeight) {
+        bodyEl.setAttribute('tabindex', 0);
+      }
 
+      if (this.type === 'modal') {
         maskEl.setAttribute('open', '');
         maskEl.style.zIndex = zIndex;
 
         maskEl.addEventListener('click', this._maskClickHandler);
-
-        // if there is more than one dialog open on the page the inert attribute will
-        // have been added to it's parent tree. we'll need to uninert the tree and
-        // reinert any sibling subtrees
-        // use setTimeout to give the a11yEnhancer inerting a chance to run, otherwise
-        // removing inert from the mask doesn't work (it would seem the inert polyfill
-        // is async)
-        if (numModalsOpen > 1) {
-          setTimeout(function() {
-            this.inert = false;
-            maskEl.inert = false;
-
-            this._inerted = {
-              parents: [],
-              children: []
-            };
-            var el = this;
-
-            do {
-
-              // an element that is a child of a shadowroot will have a parentNode but not
-              // a parentElement. a shadowroot element has neither but instead has a host
-              var parent = el.parentNode || el.host;
-
-              // only inert subtrees if an ancestor of the dialog is inerted
-              if (parent.inert) {
-                parent.inert = false;
-                this._inerted.parents.push(parent);
-
-                for (var i = 0, child; (child = parent.children[i]); i++) {
-
-                  // by only adding inert to elements that have not been inerted, we can
-                  // preserve a11y through stacking modals
-                  if (child !== el && child !== maskEl && !child.inert) {
-                    child.inert = true;
-                    this._inerted.children.push(child);
-                  }
-                }
-              }
-
-              el = parent;
-            } while (el !== document.body);
-          }.bind(this), 100);
-        }
-
-        // when the body of the dialog scrolls we need to allow keyboard users to
-        // focus the scrolling content so they can use the up/down arrow keys
-        // to scroll
-        // @see https://stackoverflow.com/questions/4814398/how-can-i-check-if-a-scrollbar-is-visible
-        // @see https://github.com/angular/material/issues/2961
-        // @see https://github.com/miguelcobain/ember-paper/pull/393
-        if (bodyEl && bodyEl.scrollHeight > bodyEl.clientHeight) {
-          bodyEl.setAttribute('tabindex', 0);
-        }
       }
       else {
 
@@ -388,31 +342,11 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     this.addEventListener('dialog-closed', function(e) {
       this.removeAttribute('open');
 
-      // inert attribute doesn't have to be added back since visibility:hidden
-      // elements are already removed from the DOM both visually and for screen
-      // readers
-
       zIndex -= zIndexIncrement;
 
       this.removeEventListener('click', dialogClickHandler);
 
       if (this.type === 'modal') {
-
-        // uninert all children nodes and reinert parent nodes. in Safari this
-        // causes a visually delay in the closing animation so we need to delay it
-        if (numModalsOpen > 1) {
-          setTimeout(function() {
-            this._inerted.children.forEach(function(node) {
-              node.inert = false;
-            });
-            this._inerted.parents.forEach(function(node) {
-              node.inert = true;
-            });
-            this._inerted = null;
-          }.bind(this), 100);
-        }
-
-        numModalsOpen--;
         maskEl.removeAttribute('open');
         maskEl.removeEventListener('click', this._maskClickHandler);
       }
@@ -438,7 +372,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
   /**
    * Listen to the open attribute.
    */
-  proto.attributeChangedCallback = function(attr, oldValue, newValue) {
+  fsDialog.attributeChangedCallback = function(attr, oldValue, newValue) {
 
     // open and close the modal with the `open` attribute
     if (attr === 'open') {
@@ -571,6 +505,6 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     window.removeEventListener('touchmove', this._dragHandler, true);
   }
 
-  document.registerElement('fs-dialog', {prototype: proto});
+  document.registerElement('fs-dialog', {prototype: fsDialog});
 })();
 </script>
