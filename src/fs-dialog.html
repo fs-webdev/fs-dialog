@@ -1,4 +1,4 @@
-<link rel="import" href="../fs-core-element/fs-core-element.html">
+<link rel="import" href="../fs-globals/fs-globals.html">
 <link rel="import" href="../a11y-enhancer/dialog.html">
 <link rel="import" href="../inert/inert.html">
 
@@ -202,8 +202,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 (function() {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
   var template = doc.querySelector('#fs-dialog-template');
-  var fsCore = document.createElement('fs-core-element');
-  fsCore.translations = /* LANG CODE */;
+  FS._registerTranslations(/* LANG CODE */);
 
   var zIndex = 990;
   var zIndexIncrement = 10;
@@ -238,7 +237,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     var maskEl;
 
     // set aria-label on close button for screen readers
-    closeEl.setAttribute('aria-label', fsCore.i18n('fs.shared.fsDialog.CLOSE'));
+    closeEl.setAttribute('aria-label', FS.i18n('fs.shared.fsDialog.CLOSE'));
 
     // move the close button into the header or as the first child of the dialog
     // (so it's first in the tab order)

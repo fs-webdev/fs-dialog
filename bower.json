@@ -10,7 +10,7 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "dependencies": {
     "fs-styles": "fs-webdev/fs-styles#^3.x.x",
-    "fs-core-element": "https://github.com/fs-webdev/fs-core-element.git",
+    "fs-globals": "fs-webdev/fs-globals",
     "a11y-enhancer": "straker/a11y-enhancer",
     "inert": "https://github.com/straker/inert.git#master"
   },
