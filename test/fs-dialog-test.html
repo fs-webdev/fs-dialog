@@ -18,168 +18,172 @@
     <!-- Use the document as a place to set up your fixtures. -->
     <test-fixture id="fs-dialog-fixture">
       <template>
-        <fs-dialog></fs-dialog>
-      </template>
-    </test-fixture>
-
-    <test-fixture id="fs-dialog-fixture-slot">
-      <template>
         <fs-dialog>
-          <a href="#" slot="name"></a>
+          <header>
+            <h4>Modal</h4>
+          </header>
+          <div class="fs-dialog__body">
+            <p>This is a modal dialog. It really stands out from the content and forces the user to perform an action before they can continue.</p>
+          </div>
+          <footer>
+            <button class="fs-button fs-button--recommended" data-dialog-confirm>Done</button>
+            <button class="fs-button" data-dialog-dismiss>Cancel</button>
+          </footer>
         </fs-dialog>
       </template>
     </test-fixture>
 
+     <test-fixture id="fs-dialog-fixture-modless">
+      <template>
+        <fs-dialog type="modeless">
+          <header>
+            <h4>Modal</h4>
+          </header>
+          <div class="fs-dialog__body">
+            <p>This is a modal dialog. It really stands out from the content and forces the user to perform an action before they can continue.</p>
+          </div>
+          <footer>
+            <button class="fs-button fs-button--recommended" data-dialog-confirm>Done</button>
+            <button class="fs-button" data-dialog-dismiss>Cancel</button>
+          </footer>
+        </fs-dialog>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="fs-dialog-fixture-empty">
+      <template>
+        <fs-dialog></fs-dialog>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="fs-dialog-fixture-modeless-empty">
+      <template>
+        <fs-dialog type="modeless"></fs-dialog>
+      </template>
+    </test-fixture>
+
     <script>
-    describe('fs-dialog', function() {
-      var el, person;
-      var portraitEl, sexEl, givenNameEl, familyNameEl, fullNameEl, lifespanEl, idEl, separatorEl, sexClassEl, nameSystemClassEl;
+    function simulateEvent(type, config) {
+      var evt;
 
-      function updateSelectors() {
-        portraitEl = el.querySelector('.fs-dialog__portrait');
-        imageEl = el.querySelector('[data-test="portrait"]');
-        sexEl = el.querySelector('[data-test="sex"]');
-        givenNameEl = el.querySelector('[data-test="given-name"]');
-        familyNameEl = el.querySelector('[data-test="family-name"]');
-        fullNameEl = el.querySelector('[data-test="full-name"]');
-        lifespanEl = el.querySelector('[data-test="lifespan"]');
-        separatorEl = el.querySelector('.fs-dialog__separator');
-        idEl = el.querySelector('[data-test="pid"]');
-
-        sexClassEl = el.querySelector('.fs-dialog__sex');
-        nameSystemClassEl = el.querySelector('.fs-dialog__name');
+      try {
+        evt = new Event(type);
+      } catch(e) {
+        evt = document.createEvent('Event');
+        evt.initEvent(type, true, false);
       }
 
-      function setPerson() {
-        el.person = person;
-        updateSelectors();
+      var config = config || {};
+      for (var prop in config) {
+        evt[prop] = config[prop];
+      }
+
+      return evt;
+    }
+
+    describe('fs-dialog', function() {
+      var el, closeEl, bodyEl, headerEl, footerEl, maskEl;
+
+      function updateSelectors() {
+        closeEl = el.querySelector('.fs-dialog__close');
+        bodyEl = el.querySelector('.fs-dialog__body');
+        headerEl = el.querySelector('header');
+        footerEl = el.querySelector('footer');
+        maskEl = el.parentNode.querySelector('.fs-dialog__mask');
       }
 
       beforeEach(function() {
         el = fixture('fs-dialog-fixture');
-        person = {
-          name: 'John Doe',
-          givenName: 'John',
-          familyName: 'Doe',
-          sex: 'MALE',
-          lifespan: '1900–2000',
-          id: 'XKCD-123',
-          nameSystem: 'eruotipic',
-          portraitUrl: 'https://randomuser.me/api/portraits/men/15.jpg'
-        };
+        updateSelectors();
+      });
+
+      afterEach(function() {
+        el.close();
+        el.remove();
       });
 
 
 
 
 
-      describe('data', function() {
+      describe('attached', function() {
 
-        it('should display all passed in data via the person property', function() {
-          setPerson();
-
-          expect(portraitEl).to.not.exist;
-          expect(imageEl).to.not.exist;
-          expect(sexEl.textContent).to.equal(person.sex.toLowerCase());
-          expect(givenNameEl.textContent).to.equal(person.givenName);
-          expect(familyNameEl.textContent).to.equal(person.familyName);
-          expect(fullNameEl.textContent).to.equal(person.name);
-          expect(lifespanEl.textContent).to.equal(person.lifespan);
-          expect(idEl.textContent).to.equal(person.id);
+        it('should add a close button with an aria-label', function() {
+          expect(closeEl).to.exist;
+          expect(closeEl.hasAttribute('aria-label')).to.be.true;
         });
 
-        it('should default sex to "unknown" if not passed in', function() {
-          person.sex = null;
-          el.person = person;
-
-          expect(el.person.sex).to.equal('unknown');
+        it('should move the close button to be in the header', function() {
+          expect(closeEl.parentNode).to.equal(headerEl);
         });
 
-        it('should remove the family-name if not passed in', function() {
-          person.familyName = null;
+        it('should move the close button to be the first child of the dialog if there is no header', function() {
+          el = fixture('fs-dialog-fixture-empty');
+          updateSelectors();
 
-          setPerson();
-
-          expect(familyNameEl).to.not.exist;
+          expect(closeEl.parentNode).to.equal(el);
+          expect(el.firstChild).to.equal(closeEl);
         });
 
-        it('should default name to "[Unknown Name]" if not passed in', function() {
-          person.name = null;
-          el.person = person;
+      });
 
-          expect(el.person.name).to.equal('[Unknown Name]');
+
+
+
+
+      describe('functions', function() {
+
+        it('calling "open" should open the dialog', function() {
+          el.open();
+
+          expect(el.hasAttribute('opened')).to.be.true;
         });
 
-        it('should default name to "[Unknown Name]" if the name only contains whitespace', function() {
-          person.name = ' ';
-          el.person = person;
+        it('calling "open" should dispatch an "fs-dialog-open" event', function(done) {
+          // timeout after 1 second if the event is not triggered
+          this.timeout(1000);
 
-          expect(el.person.name).to.equal('[Unknown Name]');
+          el.addEventListener('fs-dialog-open', function(e) {
+            expect(e.target).to.equal(el);
+
+            done();
+          });
+
+          el.open();
         });
 
-        it('should default given name to "[Unknown Name]" if not passed in', function() {
-          person.givenName = null;
-          el.person = person;
+        it('calling "open" should add "tabindex" to the body if it needs to scroll', function() {
+          el.style.height = '200px';
+          bodyEl.innerHTML = `<p>This dialogs content will scroll.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu auctor diam. Donec condimentum eleifend purus at lacinia. Cras feugiat sodales pulvinar. Curabitur a aliquet eros. Integer vitae suscipit justo, vel sagittis dui. Maecenas nec porttitor arcu. Maecenas consequat lacinia dui quis vestibulum. Sed cursus consectetur erat quis eleifend. Sed consectetur imperdiet dui, nec iaculis ante lacinia nec. Nullam at nunc sed mauris convallis eleifend. Phasellus at malesuada nisi. Maecenas purus mi, pellentesque nec enim ut, venenatis congue leo. Integer porttitor sem eu nunc ornare, ac aliquet augue gravida. Cras sit amet dolor nisl.</p>
 
-          expect(el.person.givenName).to.equal('[Unknown Name]');
+    <p>Curabitur maximus, metus quis rutrum tristique, mi nunc condimentum nibh, sit amet luctus leo velit ultricies sem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque rutrum nec arcu et tincidunt. Maecenas varius convallis bibendum. Proin mattis arcu orci, id eleifend ex posuere et. Aenean faucibus scelerisque turpis, at bibendum urna sodales et. Mauris posuere ultricies nisl, sed tincidunt felis pretium ac. Suspendisse sollicitudin in lacus ut pharetra. Duis dapibus elementum sapien at scelerisque. Vivamus non ullamcorper velit, a eleifend metus. Proin velit lorem, feugiat ac justo et, congue eleifend risus.</p>
+
+    <p>Aenean convallis commodo metus. Donec euismod neque velit, at accumsan velit vulputate gravida. Duis ultricies pellentesque ante at dignissim. Sed non turpis magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam mollis sed eros vitae mattis. Suspendisse non blandit nisi. Etiam mattis sodales congue.</p>`;
+          el.open();
+
+          expect(bodyEl.getAttribute('tabindex')).to.equal('0');
         });
 
-        it('should default given name to "[Unknown Name]" if the name only contains whitespace', function() {
-          person.givenName = ' ';
-          el.person = person;
+        it('calling "close" should close the dialog', function() {
+          el.open();
+          el.close();
 
-          expect(el.person.givenName).to.equal('[Unknown Name]');
+          expect(el.hasAttribute('opened')).to.be.false;
         });
 
-        it('should render encoded names correctly', function() {
-          person.name = 'Angelo &quot;Snaps&quot; Provolone';
-          person.givenName = 'Angelo &quot;Snaps&quot;'
-          person.familyName = 'Provolone';
+        it('calling "close" should dispatch an "fs-dialog-close" event', function(done) {
+          // timeout after 1 second if the event is not triggered
+          this.timeout(1000);
 
-          setPerson();
+          el.addEventListener('fs-dialog-close', function(e) {
+            expect(e.target).to.equal(el);
 
-          expect(fullNameEl.textContent).to.equal('Angelo "Snaps" Provolone');
-          expect(givenNameEl.textContent).to.equal('Angelo "Snaps"');
-          expect(familyNameEl.textContent).to.equal('Provolone');
-        });
+            done();
+          });
 
-        it('should add the lang to the name if it doesn\'t match current language', function() {
-          person.lang = 'de';
-
-          setPerson();
-
-          expect(fullNameEl.parentElement.getAttribute('lang')).to.equal('de');
-        });
-
-        it('should not add the lang to the name if it matches current language', function() {
-          person.lang = 'en';
-
-          setPerson();
-
-          expect(fullNameEl.parentElement.hasAttribute('lang')).to.be.false;
-        });
-
-        it('should remove the lifespan and separator if not passed in', function() {
-          person.lifespan = null;
-
-          setPerson();
-
-          expect(lifespanEl).to.not.exist;
-          expect(separatorEl).to.not.exist;
-        });
-
-        it('should remove the id and separator if not passed in', function() {
-          person.id = null;
-
-          setPerson();
-
-          expect(idEl).to.not.exist;
-          expect(separatorEl).to.not.exist;
-        });
-
-        it('should not throw errors if there is no person', function() {
-          expect(el.person).to.not.exist;
-          expect(el._render).to.not.throw();
+          el.open();
+          el.close();
         });
 
       });
@@ -190,192 +194,242 @@
 
       describe('attributes', function() {
 
-        it('should display all passed in data via a JSON.stringified person attribute', function() {
-          el.setAttribute('person', JSON.stringify(person));
+        it('"opened" should open the dialog', function() {
+          el.setAttribute('opened', '');
+
+          expect(el.opened).to.be.true;
+        });
+
+        it('"opened=false" should close the dialog', function() {
+          el.opened = true;
+          el.opened = false;
+
+          expect(el.opened).to.be.false;
+        });
+
+        it('clicking on an element with "data-dialog-dismiss" should close the dialog', function() {
+          el.open();
+          el.querySelector('button').click();
+
+          el.querySelector('[data-dialog-dismiss]').click();
+        });
+
+        it('clicking on an element with "data-dialog-dismiss" should dispatch a "fs-dialog-dismiss" event', function(done) {
+          // timeout after 1 second if the event is not triggered
+          this.timeout(1000);
+
+          el.addEventListener('fs-dialog-dismiss', function(e) {
+            expect(e.target).to.equal(el);
+
+            done();
+          });
+
+          el.open();
+          el.querySelector('[data-dialog-dismiss]').click();
+        });
+
+        it('clicking on an element with "data-dialog-confirm" should not close the dialog', function() {
+          el.open();
+          el.querySelector('[data-dialog-confirm]').click();
+
+          expect(el.hasAttribute('opened')).to.be.true;
+        });
+
+        it('clicking on an element with "data-dialog-confirm" should dispatch a "fs-dialog-confirm" event', function(done) {
+          // timeout after 1 second if the event is not triggered
+          this.timeout(1000);
+
+          el.addEventListener('fs-dialog-confirm', function(e) {
+            expect(e.target).to.equal(el);
+
+            done();
+          });
+
+          el.open();
+          el.querySelector('[data-dialog-confirm]').click();
+        });
+
+      });
+
+
+
+
+
+      describe('properties', function() {
+
+        it('should have an "opened" attribute', function() {
+          expect(el.opened).to.exist;
+          expect(el.opened).to.be.false;
+        });
+
+        it('"opened=true" should open the dialog', function() {
+          el.opened = true;
+
+          expect(el.hasAttribute('opened')).to.be.true;
+        });
+
+        it('"opened=false" should close the dialog', function() {
+          el.opened = true;
+          el.opened = false;
+
+          expect(el.hasAttribute('opened')).to.be.false;
+        });
+
+      });
+
+
+
+
+
+      describe('modal', function() {
+
+        describe('attached', function() {
+
+          it('should create a mask element', function() {
+            expect(maskEl).to.exist;
+          });
+
+          it('should add "role=main" to the body if present', function() {
+            expect(bodyEl.getAttribute('role')).to.equal('main');
+          });
+
+        });
+
+
+
+
+
+        describe('functions', function() {
+
+          it('calling "open" should open the mask', function() {
+            el.open();
+
+            expect(maskEl.hasAttribute('opened')).to.be.true;
+          });
+
+          it('calling "close" should close the mask', function() {
+            el.open();
+            el.close();
+
+            expect(maskEl.hasAttribute('opened')).to.be.false;
+          });
+
+        });
+
+      });
+
+
+
+
+
+      describe('modeless', function() {
+
+        beforeEach(function() {
+          el = fixture('fs-dialog-fixture-modless');
           updateSelectors();
-
-          expect(portraitEl).to.not.exist;
-          expect(imageEl).to.not.exist;
-          expect(sexEl.textContent).to.equal(person.sex.toLowerCase());
-          expect(givenNameEl.textContent).to.equal(person.givenName);
-          expect(familyNameEl.textContent).to.equal(person.familyName);
-          expect(fullNameEl.textContent).to.equal(person.name);
-          expect(lifespanEl.textContent).to.equal(person.lifespan);
-          expect(idEl.textContent).to.equal(person.id);
         });
 
-        it('"portrait" should show the portrait', function() {
-          el.setAttribute('portrait', '');
+        describe('functions', function() {
 
-          setPerson();
+          it('calling "open" should set the transform', function() {
+            el.open();
 
-          expect(portraitEl).to.exist;
-        });
+            // have to look at the transform style because getComputedStyles.transform
+            // returns a matrix instead of the css style
+            expect(el.getAttribute('style').includes('transform: translate3d')).to.be.true;
+          });
 
-        it('"portrait" should show the image when portraitUrl is passed in', function() {
-          el.setAttribute('portrait', '');
+          it('should not change the transform if it already exists so the modal stays in the same place as when it closed', function() {
+            var regex = /translate3d\(([^)]+)\)/;
+            el.style.transform = 'translate3d(200px, 200px, 0)';
 
-          setPerson();
+            el.open();
+            expect(el.getAttribute('style').match(regex)[1]).to.equal('200px, 200px, 0px');
+          });
 
-          expect(imageEl).to.exist;
-          expect(imageEl.getAttribute('src')).to.equal(person.portraitUrl);
-        });
-
-        it('"portrait" should remove the image if portraitUrl is not passed in', function() {
-          el.setAttribute('portrait', '');
-          person.portraitUrl = null;
-
-          setPerson();
-
-          expect(imageEl).to.not.exist;
-        });
-
-        it('"orientation=portrait" should show the portrait', function() {
-          el.setAttribute('orientation', 'portrait');
-
-          setPerson();
-
-          expect(portraitEl).to.exist;
-        });
-
-        it('"orientation=portrait" should show the image when portraitUrl is passed in', function() {
-          el.setAttribute('orientation', 'portrait');
-
-          setPerson();
-
-          expect(imageEl).to.exist;
-          expect(imageEl.getAttribute('src')).to.equal(person.portraitUrl);
-        });
-
-        it('"orientation=portrait" should remove the image if portraitUrl is not passed in', function() {
-          el.setAttribute('orientation', 'portrait');
-          person.portraitUrl = null;
-
-          setPerson();
-
-          expect(imageEl).to.not.exist;
-        });
-
-        it('"no-sex" should remove the sex', function() {
-          el.setAttribute('no-sex', '');
-
-          setPerson();
-
-          expect(sexEl).to.not.exist;
-        });
-
-        it('"no-lifespan" should remove the lifespan and separator', function() {
-          el.setAttribute('no-lifespan', '');
-
-          setPerson();
-
-          expect(lifespanEl).to.not.exist;
-          expect(separatorEl).to.not.exist;
-        });
-
-        it('"no-id" should remove the id and separator', function() {
-          el.setAttribute('no-id', '');
-
-          setPerson();
-
-          expect(idEl).to.not.exist;
-          expect(separatorEl).to.not.exist;
-        });
-
-      });
-
-
-
-
-
-      describe('slots', function() {
-
-        it('"slot=name" should wrap the name with the DOM', function() {
-          el = fixture('fs-dialog-fixture-slot');
-          setPerson();
-
-          expect(fullNameEl.children.length).to.equal(1);
-
-          var slotEl = fullNameEl.children[0];
-
-          expect(slotEl.nodeName).to.equal('A');
-          expect(slotEl.getAttribute('href')).to.equal('#');
-          expect(slotEl.textContent).to.equal(person.name);
-        });
-
-      });
-
-
-
-
-
-      describe('styles', function() {
-
-        it('should add the default sex icon class', function() {
-          setPerson();
-
-          expect(sexClassEl.classList.contains('fs-icon-medium-male')).to.be.true;
         });
 
 
-        it('should add the small sex icon class for "icon-size=small"', function() {
-          el.setAttribute('icon-size', 'small');
 
-          setPerson();
 
-          expect(sexClassEl.classList.contains('fs-icon-small-male')).to.be.true;
-        });
 
-        it('should add the small sex icon class for "orientation=inline"', function() {
-          el.setAttribute('orientation', 'inline');
+        describe('drag', function() {
 
-          setPerson();
+          it('should allow dragging with "mousedown"', function() {
+            el.open();
 
-          expect(sexClassEl.classList.contains('fs-icon-small-male')).to.be.true;
-        });
+            var event = simulateEvent('mousedown', {button: 0, clientX: 10, clientY: 10});
+            headerEl.dispatchEvent(event);
 
-        it('should add the small sex icon class for "portrait"', function() {
-          el.setAttribute('portrait', '');
+            expect(el._drag).to.exist;
+          });
 
-          setPerson();
+          it('should not drag with anything but the left mouse button', function() {
+            el.open();
 
-          expect(sexClassEl.classList.contains('fs-icon-small-male')).to.be.true;
-        });
+            var event = simulateEvent('mousedown', {button: 1, clientX: 10, clientY: 10});
+            headerEl.dispatchEvent(event);
 
-        it('should add the default sex icon class when "icon-size" is invalid', function() {
-          el.setAttribute('icon-size', 'large');
+            expect(el._drag).to.not.exist;
+          });
 
-          setPerson();
+          it('should not allow drag if there is no header', function() {
+            el = fixture('fs-dialog-fixture-modeless-empty');
+            updateSelectors();
 
-          expect(sexClassEl.classList.contains('fs-icon-medium-male')).to.be.true;
-        });
+            el.open();
 
-        it('should default the sex icon to unknown if not passed in', function() {
-          person.sex = null;
+            var event = simulateEvent('mousedown', {button: 0, clientX: 10, clientY: 10});
+            el.dispatchEvent(event);
 
-          setPerson();
+            expect(el._drag).to.not.exist;
+          });
 
-          expect(sexClassEl.classList.contains('fs-icon-medium-unknown')).to.be.true;
-        });
+          it('should update the transform when dragged', function() {
+            var xPos, yPos;
+            el.open();
 
-        it('should add the nameSystem class if passed in', function() {
-          setPerson();
+            var event = simulateEvent('mousedown', {button: 0, clientX: 10, clientY: 10});
+            headerEl.dispatchEvent(event);
 
-          expect(nameSystemClassEl.classList.contains('fs-dialog__name--eruotipic')).to.be.true;
-        });
+            var event = simulateEvent('mousemove', {button: 0, clientX: 20, clientY: 20});
+            window.dispatchEvent(event);
 
-        it('should not add the nameSystem if not passed in', function() {
-          person.nameSystem = null;
+            expect(el._drag.xPos).to.not.equal(xPos);
+            expect(el._drag.yPos).to.not.equal(yPos);
+          });
 
-          setPerson();
+          it('should not move the dialog outside the window', function() {
+            el.open();
 
-          expect(nameSystemClassEl.classList.contains('fs-dialog__name--eruotipic')).to.be.false;
-        });
+            var event = simulateEvent('mousedown', {button: 0, clientX: 0, clientY: 0});
+            headerEl.dispatchEvent(event);
 
-        it('should add the lifespan to the data-lifespan attribute of the lifespan element', function() {
-          setPerson();
+            var event = simulateEvent('mousemove', {button: 0, clientX: -100000, clientY: -10000});
+            window.dispatchEvent(event);
 
-          expect(lifespanEl.getAttribute('data-lifespan')).to.equal(person.lifespan);
+            expect(el._drag.xPos).to.equal(0);
+            expect(el._drag.yPos).to.equal(0);
+
+            var event = simulateEvent('mousemove', {button: 0, clientX: 10000, clientY: 1000});
+            window.dispatchEvent(event);
+
+            expect(el._drag.xPos).to.equal(el._drag.maxX);
+            expect(el._drag.yPos).to.equal(el._drag.maxY);
+          });
+
+          it('should stop drag on mouseup', function() {
+            el.open();
+
+            var event = simulateEvent('mousedown', {button: 0, clientX: 10, clientY: 10});
+            headerEl.dispatchEvent(event);
+
+            var event = simulateEvent('mouseup', {button: 0, clientX: 20, clientY: 20});
+            window.dispatchEvent(event);
+
+            expect(el._drag).to.not.exist;
+          });
+
         });
 
       });
@@ -387,9 +441,7 @@
       describe('a11y', function() {
 
         it('should pass accessibility guidelines', function(done) {
-          el.setAttribute('portrait', '');
-
-          setPerson();
+          el.open();
 
           axe.run(function (err, results) {
             if (err) return done(err);

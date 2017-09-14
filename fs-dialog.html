@@ -37,14 +37,14 @@ fs-dialog:not([type="modeless"]) {
 }
 
 /* [1] */
-fs-dialog[open],
-.fs-dialog__mask[open] {
+fs-dialog[opened],
+.fs-dialog__mask[opened] {
   opacity: 1;
   transition: opacity 0.3s, visibility 0s linear;
   visibility: visible;
 }
 
-fs-dialog[open]:not([type="modeless"]) {
+fs-dialog[opened]:not([type="modeless"]) {
   transform: translate(-50%, -50%) scale(1);
   transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
 }
@@ -62,8 +62,8 @@ fs-dialog[open]:not([type="modeless"]) {
 }
 
 fs-dialog header {
-  border-bottom: 1px solid #ccc;
-  border-bottom: 1px solid var(--fs-color-grey-border, #ccc);
+  /*border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--fs-color-grey-border, #ccc);*/
   border-radius: 4px 4px 0 0;
   border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
   flex-shrink: 0;
@@ -119,12 +119,12 @@ fs-dialog .fs-dialog__close:active svg {
 }
 
 fs-dialog footer {
-  background: #f4f4f4;
-  background: var(--fs-color-grey-background-light, #f4f4f4);
+  /*background: #f4f4f4;
+  background: var(--fs-color-grey-background-light, #f4f4f4);*/
   border-radius: 0 0 4px 4px;
   border-radius: 0 0 var(--fs-border-radius, 4px) var(--fs-border-radius, 4px);
-  border-top: 1px solid #ccc;
-  border-top: 1px solid var(--fs-color-grey-border, #ccc);
+  /*border-top: 1px solid #ccc;
+  border-top: 1px solid var(--fs-color-grey-border, #ccc);*/
   flex-shrink: 0;
   padding: 10px 15px;
 }
@@ -142,6 +142,8 @@ fs-dialog[type="modeless"] {
 }
 
 fs-dialog[type="modeless"] header {
+  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--fs-color-grey-border, #ccc);
   cursor: move;
 }
 
@@ -252,6 +254,8 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     this.setAttribute('role', 'dialog');
     a11yEnhancer.dialog(this);
 
+    this._opened = false;
+
     // can only check for type after a11yEnhancer has run
     if (this.type === 'modal') {
 
@@ -288,7 +292,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
     // open the dialog (event fired from a11y-enhancer)
     this.addEventListener('dialog-opened', function(e) {
-      this.setAttribute('open', '');
+      this.setAttribute('opened', '');
 
       // allow multiple dialogs to be open at a time by incrementing z-index by
       // the order they were opened
@@ -308,7 +312,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       }
 
       if (this.type === 'modal') {
-        maskEl.setAttribute('open', '');
+        maskEl.setAttribute('opened', '');
         maskEl.style.zIndex = zIndex;
 
         maskEl.addEventListener('click', this._maskClickHandler);
@@ -339,14 +343,14 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
     // close the dialog (event fired from a11y-enhancer)
     this.addEventListener('dialog-closed', function(e) {
-      this.removeAttribute('open');
+      this.removeAttribute('opened');
 
       zIndex -= zIndexIncrement;
 
       this.removeEventListener('click', dialogClickHandler);
 
       if (this.type === 'modal') {
-        maskEl.removeAttribute('open');
+        maskEl.removeAttribute('opened');
         maskEl.removeEventListener('click', this._maskClickHandler);
       }
       else if (headerEl) {
@@ -361,9 +365,25 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
     }.bind(this));
 
+    Object.defineProperty(this, 'opened', {
+      get: function() {
+        return this._opened;
+      },
+      set: function(value) {
+        this._opened = value;
+
+        if (value) {
+          this.open();
+        }
+        else {
+          this.close();
+        }
+      }
+    });
+
     // start opened (needs to be done after adding the event listeners to open
     // otherwise it wont run any of that code)
-    if (this.hasAttribute('open')) {
+    if (this.hasAttribute('opened')) {
       this.open();
     }
   };
@@ -373,13 +393,14 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
    */
   fsDialog.attributeChangedCallback = function(attr, oldValue, newValue) {
 
-    // open and close the modal with the `open` attribute
-    if (attr === 'open') {
-      if (newValue !== null) {
-        this.open();
+    // open and close the modal with the `opened` attribute
+    if (attr === 'opened') {
+
+      if (newValue !== undefined && newValue !== null) {
+        this.opened = true;
       }
       else {
-        this.close();
+        this.opened = false;
       }
     }
   };
@@ -463,7 +484,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     var clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
     var clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
 
-    var dx = clientX -this._drag.clientX;
+    var dx = clientX - this._drag.clientX;
     var dy = clientY - this._drag.clientY;
 
     var x = this._drag.xPos + dx;

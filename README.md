@@ -42,9 +42,13 @@ $ bower install --save fs-webdev/fs-dialog
 
 ### Attributes
 
-* `open` - Both opens the dialog and denotes that it is open. Remove attribute to close.
+* `opened` - Both opens the dialog and denotes that it is open. Remove attribute to close.
 * `type` - The type of dialog. Values can be `modal` or `modeless`. Defaults to `modal`.
 * `transition` - Transition to use when opening a modal dialog. Values can be `from-bottom`, `from-right`, or `center`. Defaults to `center`.
+
+### Properties
+
+* `opened` - Boolean that opens the dialog and denotes that it is open. Set to `false` to close.
 
 ### Classes
 
