@@ -1,254 +1,21 @@
 <link rel="import" href="../fs-globals/fs-globals.html">
-<link rel="import" href="../fs-dialog/fs-dialog.html">
-<link rel="import" href="../a11y-enhancer/dialog.html">
-<link rel="import" href="../inert/inert.html">
+<link rel="import" href="../fs-dialog/fs-dialog-base.html">
 
-<style data-fs-dialog>
-
-  /*
-   * 1. The display property cannot be animated so we need to use opacity and visibility
-   *    to fade in
-   *    @see https://stackoverflow.com/questions/3331353/transitions-on-the-display-property
-   * 2. Delay the visibility property so we can see the dialog disappear
-   *    @see https://codepen.io/matthewlein/pen/fvrLD
-   * 3. Support a fixed modal header/footer and scrollable middle
-   * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
-   * 5. Safari's default active button color seems to be white (activebuttontext)
-   */
-  fs-popover {
-    background: #fff;
-    border-radius: 4px;
-    border-radius: var(--fs-border-radius, 4px);
-    box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);
-    display: flex; /* [3] */
-    flex-direction: column;
-    max-height: 100vh;
-    max-width: 545px;
-    opacity: 0;
-    position: fixed;
-    transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
-    visibility: hidden;
-    width: 100%;
-  }
-
-  fs-popover:not([type="modeless"]) {
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(0.7);
-    transition: opacity 0.3s, visibility 0s linear 0.3s, transform 0.3s; /* [2] */
-  }
-
-  /* [1] */
-  fs-popover[open],
-  .fs-dialog__mask[open] {
-    opacity: 1;
-    transition: opacity 0.3s, visibility 0s linear;
-    visibility: visible;
-  }
-
-  fs-popover[open]:not([type="modeless"]) {
-    transform: translate(-50%, -50%) scale(1);
-    transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
-  }
-
-  .fs-dialog__mask {
-    background: rgba(51,51,49,0.8);
-    bottom: 0;
-    left: 0;
-    opacity: 0;
-    position: fixed;
-    right: 0;
-    top: 0;
-    transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
-    visibility: hidden;
-  }
-
-  fs-popover header {
-    border-bottom: 1px solid #ccc;
-    border-bottom: 1px solid var(--fs-color-grey-border, #ccc);
-    border-radius: 4px 4px 0 0;
-    border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
-    flex-shrink: 0;
-    padding: 15px 15px 10px;
-  }
-
-  /* [4] */
-  fs-popover .fs-dialog__close {
-    background-image: none !important;
-    -webkit-appearance: none;
-    -webkit-touch-callout: none;
-    background-color: transparent;
-    background-position: center;
-    background-repeat: no-repeat;
-    border: none;
-    box-shadow: 0 0 0 transparent;
-    height: 22.75px;
-    height: 1.625rem;
-    line-height: 1;
-    opacity: 0.5;
-    padding: 0;
-    position: absolute;
-    right: 10px;
-    right: 0.714rem;
-    top: 10px;
-    top: 0.714rem;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    width: 22.75px;
-    width: 1.625rem;
-    color: inherit; /* [5] */
-    top: 15px;
-    opacity: 1;
-  }
-
-  fs-popover .fs-dialog__close:hover {
-    opacity: 1;
-  }
-
-  fs-popover .fs-dialog__close:active svg {
-    opacity: 1;
-    width: 11px;
-    height: 11px;
-  }
-
-  .fs-dialog__body {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 15px;
-    position: relative;
-  }
-
-  fs-popover footer {
-    background: #f4f4f4;
-    background: var(--fs-color-grey-background-light, #f4f4f4);
-    border-radius: 0 0 4px 4px;
-    border-radius: 0 0 var(--fs-border-radius, 4px) var(--fs-border-radius, 4px);
-    border-top: 1px solid #ccc;
-    border-top: 1px solid var(--fs-color-grey-border, #ccc);
-    flex-shrink: 0;
-    padding: 10px 15px;
-  }
-
-
-
-
-
-  /** MODELESS **/
-  fs-popover[type="modeless"] {
-    left: 0;
-    position: fixed;
-    top: 0;
-    transform: translate3d(0px, 0px, 0);
-  }
-
-  fs-popover[type="modeless"] header {
-    cursor: move;
-  }
-
-  .fs-popover--dragging {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    cursor: move;
-  }
-
-
-
-
-  /** FROM-BOTTOM **/
-  fs-popover[transition="from-bottom"]:not([type="modeless"]) {
-    top: 100%;
-    transform: translateX(-50%);
-    transition: top 0.3s;
-  }
-
-  fs-popover[transition="from-bottom"][open]:not([type="modeless"]) {
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-
-
-
-
-  /** FROM-RIGHT **/
-  fs-popover[transition="from-right"]:not([type="modeless"]) {
-    left: 100%;
-    transform: translateY(-50%);
-    transition: left 0.3s;
-  }
-
-  fs-popover[transition="from-right"][open]:not([type="modeless"]) {
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-/* HERE */
-.fs-dialog__mask[open] {
-  opacity: 0;
-  transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
-  visibility: hidden;
-}
-
-fs-popover .fs-dalog__close {
-  visibility: hidden;
-}
+<style data-fs-anchored-dialog>
 
 </style>
-
-<!-- 1. Since we're not using shadow DOM and can't use <slot> elements, we can only
-        add siblings to the user nodes and cannot move their nodes (breaks binding
-        for polymer and angular)
-     2. Use inline svg so the color can be changed with the rest of the text inside
-        the header -->
-<template id="fs-popover-template">
-
-  <fs-dialog>
-    <!-- add the contents of the fs-popover here -->
-  </fs-dialog>
-
-</template>
 
 <script>
 (function() {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
-  var template = doc.querySelector('#fs-popover-template');
-  FS._registerTranslations(/* LANG CODE */);
 
-  var zIndex = 990;
-  var zIndexIncrement = 10;
-
-  var fsPopover = Object.create(window.FS.customElements.fsDialog)
-  var window.__services__.dialogandP
-  var dialogAndPopoverStack = [];
-  // fsPopover.attachedCallback = function() {
-
-  //   this.open = function() {};
-  //   this.close = function() {};
-  // };
-  // fsPopover.attachedCallback = function() {
-  //   console.log(fsPopover);
-  //   this.__proto__.attachedCallback()
-  //   console.log('attached this:', this)
-  //   this.yellow = function() {console.log('yellow')}
-  // }
-  //   this.addEventListener('dialog-closed', function(e) {
-
-  // window.addEventListener('focus', function(evt) {window.window_focus = true;});
-  // window.addEventListener('blur', function(evt) {window.window_focus = false;});
-  // window.window_focus = true;
-  // window.specialDialog = document.querySelector('#special-dialog');
-  // window.specialDialog.addEventListener('focusout', function(e){console.log('outevent', e); console.log('outtarget', e.target); setTimeout(function(){console.log('outactive', document.activeElement); if(window.window_focus && !window.specialDialog.contains(document.activeElement)){window.specialDialog.close()}},0)});
-
+  var fsAnchoredDialog = Object.create(FS.dialog.baseDialogComponent);
 
   /**
    * Initialize the popover, add events, and accessibility features. Should only change
    * the DOM on attached callback otherwise it breaks Polymer bindings.
    */
-  fsPopover.attachedCallback = function () {
+  fsAnchoredDialog.attachedCallback = function () {
     var root = this.getRootNode();
 
     // In polyfilled browsers there is no shadow DOM so global styles still style
@@ -257,216 +24,26 @@ fs-popover .fs-dalog__close {
     // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
     // returns true when it's just a document-fragment in polyfilled browsers
     // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
-    if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-popover]')) {
-      var styles = doc.querySelector('style[data-fs-popover]').cloneNode(true);
+    if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-anchored-dialog]')) {
+      var styles = doc.querySelector('style[data-fs-anchored-dialog]').cloneNode(true);
       root.appendChild(styles);
     }
 
-    var clone = document.importNode(template.content, true);
+    // set the type="modeless" for the a11y enhancer
+    this.setAttribute('type', 'modeless')
+    this.setAttribute('dismiss-on-blur', true);
 
-    // selectors
-    var closeEl = clone.querySelector('.fs-dialog__close');
-    var bodyEl = this.querySelector('.fs-dialog__body');
-    var headerEl = this.querySelector('header');
-    var footerEl = this.querySelector('footer');
-    var maskEl;
+    fsAnchoredDialog.baseDialog.attachedCallback.bind(this)(openAnchoredFunction, closeAnchoredFunction)
 
-    // set aria-label on close button for screen readers
-    closeEl.setAttribute('aria-label', FS.i18n('fs.shared.fsPopover.CLOSE'));
-
-    // move the close button into the header or as the first child of the dialog
-    // (so it's first in the tab order)
-    if (headerEl) {
-      headerEl.appendChild(closeEl);
-    }
-    else {
-      this.insertBefore(closeEl, this.firstChild);
+    function openAnchoredFunction(x, y) {
+      console.log('Do positioning');
     }
 
-    this.appendChild(clone);
-    this.setAttribute('role', 'dialog');
-    a11yEnhancer.dialog(this);
-
-    this._opened = false;
-
-    // can only check for type after a11yEnhancer has run
-    if (this.type === 'modal') {
-
-      // each modal dialog will get its own mask so when dialogs stack we can
-      // know exactly which one to close
-      maskEl = document.createElement('div');
-      maskEl.setAttribute('data-no-inert', '');
-      maskEl.classList.add('fs-dialog__mask');
-
-      // add mask as a previous sibling to the dialog so it's below it in z-index
-      this.parentNode.insertBefore(maskEl, this);
-
-      // bind the functions that will used in event listeners to avoid losing reference
-      this._maskClickHandler = this.close.bind(this);
-
-      // add role=main to body of a modal dialog to improve accessibility for screen
-      // readers. can't just use the <main> element since modeless dialogs don't
-      // hide any <main> elements on the page
-      // @see https://web-a11y.slack.com/archives/C042TSFGN/p1499454746902809
-      if (bodyEl) {
-        bodyEl.setAttribute('role', 'main');
-      }
-    }
-    else {
-
-      // bind the functions that will used in event listeners to avoid losing reference
-      this._startDragHandler = startDragHandler.bind(this);
-      this._dragHandler = dragHandler.bind(this);
-      this._endDragHandler = endDragHandler.bind(this);
-    }
-
-
-
-
-    // open the dialog (event fired from a11y-enhancer)
-    this.addEventListener('dialog-opened', function(e) {
-      this.setAttribute('opened', '');
-
-      // allow multiple dialogs to be open at a time by incrementing z-index by
-      // the order they were opened
-      zIndex += zIndexIncrement;
-      this.style.zIndex = zIndex;
-
-      this.addEventListener('click', dialogClickHandler);
-
-      // when the body of the dialog scrolls we need to allow keyboard users to
-      // focus the scrolling content so they can use the up/down arrow keys
-      // to scroll
-      // @see https://stackoverflow.com/questions/4814398/how-can-i-check-if-a-scrollbar-is-visible
-      // @see https://github.com/angular/material/issues/2961
-      // @see https://github.com/miguelcobain/ember-paper/pull/393
-      if (bodyEl && bodyEl.scrollHeight > bodyEl.clientHeight) {
-        bodyEl.setAttribute('tabindex', 0);
-      }
-
-      if (this.type === 'modal') {
-        maskEl.setAttribute('opened', '');
-        maskEl.style.zIndex = zIndex;
-
-        maskEl.addEventListener('click', this._maskClickHandler);
-      }
-      else {
-
-        // calc center of screen for initial modeless dialog transform property
-        if (!this.style.transform) {
-          var x = (window.innerWidth / 2) - (this.offsetWidth / 2);
-          var y = (window.innerHeight / 2) - (this.offsetHeight / 2);
-          this.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
-        }
-
-        // add events to modeless dialog for dragging
-        if (headerEl) {
-          headerEl.addEventListener('mousedown', this._startDragHandler);
-          headerEl.addEventListener('touchstart', this._startDragHandler);
-          window.addEventListener('mouseup', this._endDragHandler);
-          window.addEventListener('touchend', this._endDragHandler);
-        }
-      }
-
-      this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
-    }.bind(this));
-
-
-
-
-    // close the dialog (event fired from a11y-enhancer)
-    this.addEventListener('dialog-closed', function(e) {
-      this.removeAttribute('opened');
-
-      zIndex -= zIndexIncrement;
-
-      this.removeEventListener('click', dialogClickHandler);
-
-      if (this.type === 'modal') {
-        maskEl.removeAttribute('opened');
-        maskEl.removeEventListener('click', this._maskClickHandler);
-      }
-      else if (headerEl) {
-
-        // clean up events to modeless dialog for dragging
-        headerEl.removeEventListener('mousedown', this._startDragHandler);
-        headerEl.removeEventListener('touchstart', this._startDragHandler);
-        window.removeEventListener('mouseup', this._endDragHandler);
-        window.removeEventListener('touchend', this._endDragHandler);
-      }
-
-      this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
-    }.bind(this));
-
-    Object.defineProperty(this, 'opened', {
-      get: function() {
-        return this._opened;
-      },
-      set: function(value) {
-        this._opened = value;
-
-        if (value) {
-          this.open();
-        }
-        else {
-          this.close();
-        }
-      }
-    });
-
-    // start opened (needs to be done after adding the event listeners to open
-    // otherwise it wont run any of that code)
-    if (this.hasAttribute('opened')) {
-      this.open();
+    function closeAnchoredFunction() {
+      console.log('restore positioning');
     }
   };
 
-  /**
-   * Listen to the open attribute.
-   */
-  fsDialog.attributeChangedCallback = function(attr, oldValue, newValue) {
-
-    // open and close the modal with the `opened` attribute
-    if (attr === 'opened') {
-
-      if (newValue !== undefined && newValue !== null) {
-        this.opened = true;
-      }
-      else {
-        this.opened = false;
-      }
-    }
-  };
-
-  /**
-   * Determine when to close the dialog.
-   */
-  function dialogClickHandler(e) {
-
-    // handle child elements of elements with these attributes
-    var el = e.target;
-    while (el !== this) {
-      if (el.hasAttribute('data-dialog-dismiss')) {
-        this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true}));
-
-        // stop the event from propagating to parent fs-dialogs
-        e.stopPropagation();
-        this.close();
-      }
-
-      // confirming the dialog does not close it. allow the user to determine
-      // what to do with the modal
-      if (el.hasAttribute('data-dialog-confirm')) {
-        this.dispatchEvent(new Event('fs-dialog-confirm', {bubbles: true}));
-
-        // stop the event from propagating to parent fs-dialogs
-        e.stopPropagation();
-      }
-
-      el = el.parentElement;
-    }
-  }
-
-  document.registerElement('fs-popover', {prototype: fsPopover});
+  document.registerElement('fs-anchored-dialog', {prototype: fsAnchoredDialog});
 })();
 </script>

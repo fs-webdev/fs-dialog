@@ -1,7 +1,5 @@
-<link rel="import" href="../../fs-globals/fs-globals.html">
-<link rel="import" href="../../a11y-enhancer/dialog.html">
-<link rel="import" href="../../inert/inert.html">
-<link rel="import" href="../../fs-dialog/fs-dialog-base.html">
+<link rel="import" href="../fs-globals/fs-globals.html">
+<link rel="import" href="../fs-dialog/fs-dialog-base.html">
 
 <style data-fs-modeless-dialog>
   fs-modeless-dialog {
@@ -40,13 +38,14 @@
     // set the type="modeless" for the a11y enhancer
     this.setAttribute('type', 'modeless')
 
+    var root = this.getRootNode();
+
     // In polyfilled browsers there is no shadow DOM so global styles still style
     // the "fake" shadow DOM. We need to test for truly native support so we know
     // when to inject styles into the shadow DOM. The best way I've found to do that
     // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
     // returns true when it's just a document-fragment in polyfilled browsers
     // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
-    var root = this.getRootNode();
     if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-modeless-dialog]')) {
       var styles = doc.querySelector('style[data-fs-modeless-dialog]').cloneNode(true);
       root.appendChild(styles);

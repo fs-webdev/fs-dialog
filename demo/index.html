@@ -75,15 +75,15 @@
 <button class="fs-button modeless">Open Dialog</button>
 
 <h5>transition=from-bottom</h5>
-<fs-modal-dialog transition="from-bottom">
+<fs-anchored-dialog transition="from-bottom" dismiss-on-blur="true">
   <header>
     <h4>From-bottom</h4>
   </header>
-</fs-modal-dialog>
-<button class="modal fs-button">Open Dialog</button>
+</fs-anchored-dialog>
+<button class="anchored fs-button">Open Dialog</button>
 
 <h5>transition=from-right</h5>
-<fs-modal-dialog transition="from-right">
+<fs-modal-dialog transition="from-right" dismiss-on-blur="true">
   <header>
     <h4>From-right</h4>
   </header>
@@ -134,7 +134,7 @@
     <p>Dialogs will automatically stack based on order opened.
     <div class="demo-snippet fs-card">
       <div class="demo">
-<fs-modal-dialog>
+<fs-modal-dialog dismiss-on-blur="true">
   <header>
     <h4>Bottom Dialog</h4>
   </header>
@@ -150,7 +150,7 @@
 
 <button class="modal fs-button">Open Dialog</button>
 
-<fs-modal-dialog id="stacking-dialog">
+<fs-modal-dialog id="stacking-dialog" dismiss-on-blur="true">
   <header>
     <h4>Top Dialog</h4>
   </header>
@@ -217,10 +217,10 @@
     </script>
     <script src="https://cdn.jsdelivr.net/prism/1.6.0/prism.js"></script>
 
-    <!-- by importing the element last, the code output script can run before it gets
+    <!-- by importing the elements last, the code output script can run before it gets
          populated -->
-    <link rel='import' href='../src/fs-modeless-dialog.html'>
-    <link rel='import' href='../src/fs-modal-dialog.html'>
-    <!-- <link rel='import' href='../src/fs-anchored-dialog.html'> -->
+    <link rel='import' href='../fs-modeless-dialog.html'>
+    <link rel='import' href='../fs-modal-dialog.html'>
+    <link rel='import' href='../fs-anchored-dialog.html'>
   </body>
 </html>

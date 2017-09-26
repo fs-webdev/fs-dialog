@@ -2,6 +2,7 @@
 <link rel="import" href="../a11y-enhancer/dialog.html">
 <link rel="import" href="../inert/inert.html">
 
+<script src="../fs-dialog/fs-dialog-service.js"></script>
 <style data-fs-dialog>
 /*
  * 1. The display property cannot be animated so we need to use opacity and visibility
@@ -15,7 +16,7 @@
  */
 fs-modeless-dialog,
 fs-modal-dialog,
-fs-anchor-dialog {
+fs-anchored-dialog {
   background: #fff;
   border-radius: 4px;
   border-radius: var(--fs-border-radius, 4px);
@@ -41,7 +42,7 @@ fs-modal-dialog {
 /* [1] */
 fs-modeless-dialog[opened],
 fs-modal-dialog[opened],
-fs-anchor-dialog[opened],
+fs-anchored-dialog[opened],
 .fs-dialog__mask[opened] {
   opacity: 1;
   transition: opacity 0.3s, visibility 0s linear;
@@ -244,18 +245,38 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     this.setAttribute('role', 'dialog');
     a11yEnhancer.dialog(this);
 
-    this._opened = false;
+    this._a11yOpenFunction = this.open;
+    this._a11yCloseFunction = this.close;
 
-    // open the dialog (event fired from a11y-enhancer)
-    this.addEventListener('dialog-opened', function(e) {
-      this.setAttribute('opened', '');
+    this._opened = false;
+    this._focusoutHandler = focusoutHandler.bind(this);
+
+    // open the dialog
+    this.open = function() {
+
+      // add dialog to the stack
+      FS.dialog.service.addDialogToStack(this);
+
+      // call base a11y open function
+      this._a11yOpenFunction();
 
       // allow multiple dialogs to be open at a time by incrementing z-index by
       // the order they were opened
       zIndex += zIndexIncrement;
       this.style.zIndex = zIndex;
 
+      // call dialog-type specific open logic
+      onOpenDialogFunction.bind(this)()
+
+      // this triggers the css changes to show the dialog
+      this.setAttribute('opened', '');
+
+      // setup event listeners
       this.addEventListener('click', dialogClickHandler);
+
+      if (this.dismissOnBlur) {
+        this.addEventListener('focusout', this._focusoutHandler);
+      }
 
       // when the body of the dialog scrolls we need to allow keyboard users to
       // focus the scrolling content so they can use the up/down arrow keys
@@ -263,27 +284,41 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       // @see https://stackoverflow.com/questions/4814398/how-can-i-check-if-a-scrollbar-is-visible
       // @see https://github.com/angular/material/issues/2961
       // @see https://github.com/miguelcobain/ember-paper/pull/393
+      // TODO: in cases like the temple flyout this may actually just always need to be set since
+      //       the dialog will change its size after it gets more data
       if (bodyEl && bodyEl.scrollHeight > bodyEl.clientHeight) {
         bodyEl.setAttribute('tabindex', 0);
       }
 
-      onOpenDialogFunction.bind(this)()
-
+      // fire an event for the outside world to hear
       this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
-    }.bind(this));
+    };
 
     // close the dialog (event fired from a11y-enhancer)
-    this.addEventListener('dialog-closed', function(e) {
+    this.close = function() {
+      // remove dialog from stack
+      FS.dialog.service.removeDialogFromStack(this);
+
+      // call base a11y close function
+      this._a11yCloseFunction();
+
+      // call dialog-type specific open logic
+      onCloseDialogFunction.bind(this)();
+
+      // css to close the dialogs
       this.removeAttribute('opened');
 
       zIndex -= zIndexIncrement;
 
+      // remove event listeners
+      if (this.dismissOnBlur) {
+        this.removeEventListener('focusout', this._focusoutHandler);
+      }
       this.removeEventListener('click', dialogClickHandler);
 
-      onCloseDialogFunction.bind(this)()
-
+      // fire an event for the outside world to hear
       this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
-    }.bind(this));
+    };
 
     Object.defineProperty(this, 'opened', {
       get: function() {
@@ -301,11 +336,17 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       }
     });
 
+    // set the initial dismissOnBlur value
+    if (this.hasAttribute('dismiss-on-blur')) {
+      this.dismissOnBlur = true;
+    }
     // start opened (needs to be done after adding the event listeners to open
     // otherwise it wont run any of that code)
     if (this.hasAttribute('opened')) {
       this.open();
     }
+
+
   };
 
   /**
@@ -321,6 +362,17 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       }
       else {
         this.opened = false;
+      }
+    }
+
+    // dismiss when the dialog loses focus
+    if (attr === 'dismissOnBlur') {
+
+      if (newValue !== undefined && newValue !== null) {
+        this.dismissOnBlur = true;
+      }
+      else {
+        this.dismissOnBlur = false;
       }
     }
   };
@@ -353,6 +405,32 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       el = el.parentElement;
     }
   }
+
+  function windowFocusListener(e) {
+    FS.dialog.service.windowHasFocus = true;
+  }
+  function windowBlurListener(e) {
+    FS.dialog.service.windowHasFocus = false;
+  }
+  function focusoutHandler(e) {
+    var dialog = this
+    window.removeEventListener('focus', dialog._focusoutHandler);
+    // use setTimout so that we get the correct document.activeElement
+    if (FS.dialog.service.dialogIsOnTop(dialog)) {
+      setTimeout(function(){
+        if (!FS.dialog.service.windowHasFocus) {
+          // listen for when the window does get focus and run this function again
+          window.addEventListener('focus', dialog._focusoutHandler);
+        } else if (!dialog.contains(document.activeElement)) {
+          dialog.close();
+        }
+      },0)
+    }
+  }
+
+  // keep track of if the window has focus or not
+  window.addEventListener('focus', windowFocusListener);
+  window.addEventListener('blur', windowBlurListener);
 
   FS.dialog.baseDialogComponent = fsDialog;
 })();
