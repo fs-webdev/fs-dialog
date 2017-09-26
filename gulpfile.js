@@ -24,8 +24,7 @@ gulp.task('build', function(done) {
     // console.log(JSON.stringify(langObj,null,2));
     // done();
 
-    // TODO: build all the files into non src folder
-    gulp.src('./src/*').pipe(gulp.dest('./*'));
+    gulp.src(['./src/*', '!./src/fs-dialog-base.html']).pipe(gulp.dest('./'));
     fs.readFile('./src/fs-dialog-base.html', 'utf-8', function(err, file) {
       if (err) done(err);
 
