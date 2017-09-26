@@ -24,12 +24,13 @@ gulp.task('build', function(done) {
     // console.log(JSON.stringify(langObj,null,2));
     // done();
 
-    fs.readFile('./src/fs-dialog.html', 'utf-8', function(err, file) {
+    gulp.src(['./src/*', '!./src/fs-dialog-base.html']).pipe(gulp.dest('./'));
+    fs.readFile('./src/fs-dialog-base.html', 'utf-8', function(err, file) {
       if (err) done(err);
 
       file = file.replace('/* LANG CODE */', JSON.stringify(langObj));
 
-      fs.writeFile('./fs-dialog.html', file, 'utf-8', done);
+      fs.writeFile('./fs-dialog-base.html', file, 'utf-8', done);
     });
   });
 });
