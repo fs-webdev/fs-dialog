@@ -39,7 +39,7 @@
     <h3>Default Use</h3>
     <div class="demo-snippet fs-card">
       <div class="demo">
-<fs-dialog>
+<fs-modal-dialog>
   <header>
     <h4>Modal</h4>
   </header>
@@ -49,9 +49,9 @@
   <footer>
     <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
   </footer>
-</fs-dialog>
+</fs-modal-dialog>
 
-<button class="fs-button">Open Dialog</button>
+<button class="modal fs-button">Open Dialog</button>
       </div>
     </div>
 
@@ -63,32 +63,32 @@
     <div class="demo-snippet fs-card">
       <div class="demo">
 <h5>type=modeless</h5>
-<fs-dialog type="modeless">
+<fs-modeless-dialog>
   <header>
     <h4>Modeless Dialog</h4>
   </header>
   <div class="fs-dialog__body">
     <p>Can be moved and doesn't prevent user interaction of the page.</p>
   </div>
-</fs-dialog>
+</fs-modeless-dialog>
 
-<button class="fs-button">Open Dialog</button>
+<button class="fs-button modeless">Open Dialog</button>
 
 <h5>transition=from-bottom</h5>
-<fs-dialog transition="from-bottom">
+<fs-modal-dialog transition="from-bottom">
   <header>
     <h4>From-bottom</h4>
   </header>
-</fs-dialog>
-<button class="fs-button">Open Dialog</button>
+</fs-modal-dialog>
+<button class="modal fs-button">Open Dialog</button>
 
 <h5>transition=from-right</h5>
-<fs-dialog transition="from-right">
+<fs-modal-dialog transition="from-right">
   <header>
     <h4>From-right</h4>
   </header>
-</fs-dialog>
-<button class="fs-button">Open Dialog</button>
+</fs-modal-dialog>
+<button class="modal fs-button">Open Dialog</button>
       </div>
     </div>
 
@@ -105,7 +105,7 @@
 }
 </style>
 
-<fs-dialog id="scrolling-dialog">
+<fs-modal-dialog id="scrolling-dialog">
   <header>
     <h4>Scroll</h4>
   </header>
@@ -120,9 +120,9 @@
   <footer>
     <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
   </footer>
-</fs-dialog>
+</fs-modal-dialog>
 
-<button class="fs-button">Open Dialog</button>
+<button class="modal fs-button">Open Dialog</button>
       </div>
     </div>
 
@@ -134,7 +134,7 @@
     <p>Dialogs will automatically stack based on order opened.
     <div class="demo-snippet fs-card">
       <div class="demo">
-<fs-dialog>
+<fs-modal-dialog>
   <header>
     <h4>Bottom Dialog</h4>
   </header>
@@ -146,11 +146,11 @@
     <button class="fs-button fs-button--recommended" id="stacking-button">Open Another</button>
     <button class="fs-button fs-button--minor" data-dialog-dismiss>Close</button>
   </footer>
-</fs-dialog>
+</fs-modal-dialog>
 
-<button class="fs-button">Open Dialog</button>
+<button class="modal fs-button">Open Dialog</button>
 
-<fs-dialog id="stacking-dialog">
+<fs-modal-dialog id="stacking-dialog">
   <header>
     <h4>Top Dialog</h4>
   </header>
@@ -160,7 +160,7 @@
   <footer>
     <button class="fs-button fs-button--recommended" data-dialog-dismiss>Close</button>
   </footer>
-</fs-dialog>
+</fs-modal-dialog>
       </div>
     </div>
 
@@ -185,14 +185,29 @@
       });
 
       // find each button and open the previous sibling dialog
-      var dialogs = document.querySelectorAll('.demo > fs-dialog');
-      var buttons = document.querySelectorAll('.demo > button');
+      var modelessDialogs = document.querySelectorAll('.demo > fs-modeless-dialog');
+      var modelessButtons = document.querySelectorAll('.demo > button.modeless');
+      var modalDialogs = document.querySelectorAll('.demo > fs-modal-dialog');
+      var modalButtons = document.querySelectorAll('.demo > button.modal');
+      var anchoredDialogs = document.querySelectorAll('.demo > fs-anchored-dialog');
+      var anchoredButtons = document.querySelectorAll('.demo > button.anchored');
 
-      Array.from(buttons).forEach(function(button, index) {
+      Array.from(modelessButtons).forEach(function(button, index) {
         button.addEventListener('click', function() {
-          dialogs[index].open();
+          modelessDialogs[index].open();
         });
       });
+      Array.from(modalButtons).forEach(function(button, index) {
+        button.addEventListener('click', function() {
+          modalDialogs[index].open();
+        });
+      });
+      Array.from(anchoredButtons).forEach(function(button, index) {
+        button.addEventListener('click', function() {
+          anchoredDialogs[index].open();
+        });
+      });
+
 
       // stacking click
       document.getElementById('stacking-button').addEventListener('click', function() {
@@ -204,6 +219,8 @@
 
     <!-- by importing the element last, the code output script can run before it gets
          populated -->
-    <link rel='import' href='../fs-dialog.html'>
+    <link rel='import' href='../src/fs-modeless-dialog.html'>
+    <link rel='import' href='../src/fs-modal-dialog.html'>
+    <!-- <link rel='import' href='../src/fs-anchored-dialog.html'> -->
   </body>
 </html>

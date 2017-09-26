@@ -13,7 +13,9 @@
  * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
  * 5. Safari's default active button color seems to be white (activebuttontext)
  */
-fs-dialog {
+fs-modeless-dialog,
+fs-modal-dialog,
+fs-anchor-dialog {
   background: #fff;
   border-radius: 4px;
   border-radius: var(--fs-border-radius, 4px);
@@ -29,7 +31,7 @@ fs-dialog {
   width: 100%;
 }
 
-fs-dialog:not([type="modeless"]) {
+fs-modal-dialog {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%) scale(0.7);
@@ -37,14 +39,16 @@ fs-dialog:not([type="modeless"]) {
 }
 
 /* [1] */
-fs-dialog[opened],
+fs-modeless-dialog[opened],
+fs-modal-dialog[opened],
+fs-anchor-dialog[opened],
 .fs-dialog__mask[opened] {
   opacity: 1;
   transition: opacity 0.3s, visibility 0s linear;
   visibility: visible;
 }
 
-fs-dialog[opened]:not([type="modeless"]) {
+fs-modal-dialog[opened] {
   transform: translate(-50%, -50%) scale(1);
   transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
 }
@@ -61,7 +65,9 @@ fs-dialog[opened]:not([type="modeless"]) {
   visibility: hidden;
 }
 
-fs-dialog header {
+fs-anchored-dialog header,
+fs-modeless-dialog header,
+fs-modal-dialog header {
   /*border-bottom: 1px solid #ccc;
   border-bottom: 1px solid var(--fs-color-grey-border, #ccc);*/
   border-radius: 4px 4px 0 0;
@@ -71,7 +77,9 @@ fs-dialog header {
 }
 
 /* [4] */
-fs-dialog .fs-dialog__close {
+fs-anchored-dialog .fs-dialog__close,
+fs-modeless-dialog .fs-dialog__close,
+fs-modal-dialog .fs-dialog__close {
   background-image: none !important;
   -webkit-appearance: none;
   -webkit-touch-callout: none;
@@ -101,11 +109,15 @@ fs-dialog .fs-dialog__close {
   opacity: 1;
 }
 
-fs-dialog .fs-dialog__close:hover {
+fs-anchored-dialog .fs-dialog__close:hover,
+fs-modeless-dialog .fs-dialog__close:hover,
+fs-modal-dialog .fs-dialog__close:hover {
   opacity: 1;
 }
 
-fs-dialog .fs-dialog__close:active svg {
+fs-anchored-dialog .fs-dialog__close:active svg,
+fs-modeless-dialog .fs-dialog__close:active svg,
+fs-modal-dialog .fs-dialog__close:active svg {
   opacity: 1;
   width: 11px;
   height: 11px;
@@ -118,7 +130,9 @@ fs-dialog .fs-dialog__close:active svg {
   position: relative;
 }
 
-fs-dialog footer {
+fs-modal-dialog footer,
+fs-modeless-dialog footer,
+fs-anchored-dialog footer {
   /*background: #f4f4f4;
   background: var(--fs-color-grey-background-light, #f4f4f4);*/
   border-radius: 0 0 4px 4px;
@@ -131,32 +145,7 @@ fs-dialog footer {
 
 
 
-
-
-/** MODELESS **/
-fs-dialog[type="modeless"] {
-  left: 0;
-  position: fixed;
-  top: 0;
-  transform: translate3d(0px, 0px, 0);
-}
-
-fs-dialog[type="modeless"] header {
-  border-bottom: 1px solid #ccc;
-  border-bottom: 1px solid var(--fs-color-grey-border, #ccc);
-  cursor: move;
-}
-
-.fs-dialog--dragging {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  cursor: move;
-}
-
-
-
+/** TODO: update from-bottom and from-right styles **/
 
 /** FROM-BOTTOM **/
 fs-dialog[transition="from-bottom"]:not([type="modeless"]) {
@@ -204,18 +193,19 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 (function() {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
   var template = doc.querySelector('#fs-dialog-template');
-  FS._registerTranslations({"de":{"_LRM_PKTAG439":"fs-dialog_1_146 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Schließen"},"en":{"fs.shared.fsDialog.CLOSE":"Close"},"eo":{"fs.shared.fsDialog.CLOSE":"[Çļöšé--- П國カ내]"},"es":{"_LRM_PKTAG33":"fs-dialog_2_101 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Cerrar"},"fr":{"_LRM_PKTAG930":"fs-dialog_1_102 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fermer"},"it":{"_LRM_PKTAG257":"fs-dialog_1_103 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Chiudi"},"ja":{"_LRM_PKTAG68":"fs-dialog_1_104 - FULL-FILE","fs.shared.fsDialog.CLOSE":"閉じる"},"ko":{"_LRM_PKTAG569":"fs-dialog_1_105 - FULL-FILE","fs.shared.fsDialog.CLOSE":"닫기"},"pt":{"_LRM_PKTAG662":"fs-dialog_1_106 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fechar"},"ru":{"_LRM_PKTAG275":"fs-dialog_1_107 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Закрыть"},"zh":{"_LRM_PKTAG645":"fs-dialog_1_108 - FULL-FILE","fs.shared.fsDialog.CLOSE":"關閉"}});
+  FS._registerTranslations(/* LANG CODE */);
 
   var zIndex = 990;
   var zIndexIncrement = 10;
 
   var fsDialog = Object.create(HTMLElement.prototype);
 
+  fsDialog.baseDialog = {};
   /**
    * Initialize the dialog, add events, and accessibility features. Should only change
    * the DOM on attached callback otherwise it breaks Polymer bindings.
    */
-  fsDialog.attachedCallback = function () {
+  fsDialog.baseDialog.attachedCallback = function (onOpenDialogFunction, onCloseDialogFunction) {
     var root = this.getRootNode();
 
     // In polyfilled browsers there is no shadow DOM so global styles still style
@@ -256,40 +246,6 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
     this._opened = false;
 
-    // can only check for type after a11yEnhancer has run
-    if (this.type === 'modal') {
-
-      // each modal dialog will get its own mask so when dialogs stack we can
-      // know exactly which one to close
-      maskEl = document.createElement('div');
-      maskEl.setAttribute('data-no-inert', '');
-      maskEl.classList.add('fs-dialog__mask');
-
-      // add mask as a previous sibling to the dialog so it's below it in z-index
-      this.parentNode.insertBefore(maskEl, this);
-
-      // bind the functions that will used in event listeners to avoid losing reference
-      this._maskClickHandler = this.close.bind(this);
-
-      // add role=main to body of a modal dialog to improve accessibility for screen
-      // readers. can't just use the <main> element since modeless dialogs don't
-      // hide any <main> elements on the page
-      // @see https://web-a11y.slack.com/archives/C042TSFGN/p1499454746902809
-      if (bodyEl) {
-        bodyEl.setAttribute('role', 'main');
-      }
-    }
-    else {
-
-      // bind the functions that will used in event listeners to avoid losing reference
-      this._startDragHandler = startDragHandler.bind(this);
-      this._dragHandler = dragHandler.bind(this);
-      this._endDragHandler = endDragHandler.bind(this);
-    }
-
-
-
-
     // open the dialog (event fired from a11y-enhancer)
     this.addEventListener('dialog-opened', function(e) {
       this.setAttribute('opened', '');
@@ -311,35 +267,10 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
         bodyEl.setAttribute('tabindex', 0);
       }
 
-      if (this.type === 'modal') {
-        maskEl.setAttribute('opened', '');
-        maskEl.style.zIndex = zIndex;
-
-        maskEl.addEventListener('click', this._maskClickHandler);
-      }
-      else {
-
-        // calc center of screen for initial modeless dialog transform property
-        if (!this.style.transform) {
-          var x = (window.innerWidth / 2) - (this.offsetWidth / 2);
-          var y = (window.innerHeight / 2) - (this.offsetHeight / 2);
-          this.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
-        }
-
-        // add events to modeless dialog for dragging
-        if (headerEl) {
-          headerEl.addEventListener('mousedown', this._startDragHandler);
-          headerEl.addEventListener('touchstart', this._startDragHandler);
-          window.addEventListener('mouseup', this._endDragHandler);
-          window.addEventListener('touchend', this._endDragHandler);
-        }
-      }
+      onOpenDialogFunction.bind(this)()
 
       this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
     }.bind(this));
-
-
-
 
     // close the dialog (event fired from a11y-enhancer)
     this.addEventListener('dialog-closed', function(e) {
@@ -349,18 +280,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
       this.removeEventListener('click', dialogClickHandler);
 
-      if (this.type === 'modal') {
-        maskEl.removeAttribute('opened');
-        maskEl.removeEventListener('click', this._maskClickHandler);
-      }
-      else if (headerEl) {
-
-        // clean up events to modeless dialog for dragging
-        headerEl.removeEventListener('mousedown', this._startDragHandler);
-        headerEl.removeEventListener('touchstart', this._startDragHandler);
-        window.removeEventListener('mouseup', this._endDragHandler);
-        window.removeEventListener('touchend', this._endDragHandler);
-      }
+      onCloseDialogFunction.bind(this)()
 
       this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
     }.bind(this));
@@ -391,7 +311,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
   /**
    * Listen to the open attribute.
    */
-  fsDialog.attributeChangedCallback = function(attr, oldValue, newValue) {
+  fsDialog.baseDialog.attributeChangedCallback = function(attr, oldValue, newValue) {
 
     // open and close the modal with the `opened` attribute
     if (attr === 'opened') {
@@ -434,97 +354,6 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     }
   }
 
-  /**
-   * Set up dragging for the dialog.
-   * @see http://jsfiddle.net/Lk2hLt
-   * @see http://interactjs.io/
-   */
-  function startDragHandler(e) {
-
-    // only activate drag with left mouse button
-    if (e.type === 'mousedown' && e.button !== 0) return true;
-
-    // normalize mousedown and touchstart x/y position
-    var clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
-    var clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
-
-    // store the current x/y position as well as the start x/y of the event
-    // (getBoundingClientRect takes into account transform x/y)
-    // @see https://stackoverflow.com/a/22360535/2124254
-    var rect = this.getBoundingClientRect();
-    this._drag = {
-      xPos: rect.left,
-      yPos: rect.top,
-      clientX: clientX,
-      clientY: clientY,
-
-      // don't let the dialog go outside of the window
-      maxX: window.innerWidth - this.offsetWidth,
-      maxY: window.innerHeight - this.offsetHeight
-    };
-
-    window.addEventListener('mousemove', this._dragHandler, true);
-    window.addEventListener('touchmove', this._dragHandler, true);
-  }
-
-  /**
-   * Update the x/y position of the dialog while dragging.
-   */
-  function dragHandler(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // prevent user highlighting while dragging by disabling user-select through css
-    if (!this._drag.isDragging) {
-      document.body.classList.add('fs-dialog--dragging');
-      this._drag.isDragging = true;
-    }
-
-    // normalize mousedown and touchstart x and y position
-    var clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
-    var clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
-
-    var dx = clientX - this._drag.clientX;
-    var dy = clientY - this._drag.clientY;
-
-    var x = this._drag.xPos + dx;
-    var y = this._drag.yPos + dy;
-
-    // bind x/y to window
-    if (x < 0) {
-      x = 0;
-    }
-    else if (x > this._drag.maxX) {
-      x = this._drag.maxX
-    }
-
-    if (y < 0) {
-      y = 0;
-    }
-    else if (y > this._drag.maxY) {
-      y = this._drag.maxY;
-    }
-
-    this.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
-
-    // update x/y position
-    this._drag.clientX = clientX;
-    this._drag.clientY = clientY;
-    this._drag.xPos = x;
-    this._drag.yPos = y;
-  }
-
-  /**
-   * Clean up events and properties when drag is finished.
-   */
-  function endDragHandler() {
-    document.body.classList.remove('fs-dialog--dragging');
-    this._drag = null;
-
-    window.removeEventListener('mousemove', this._dragHandler, true);
-    window.removeEventListener('touchmove', this._dragHandler, true);
-  }
-
-  document.registerElement('fs-dialog', {prototype: fsDialog});
+  FS.dialog.baseDialogComponent = fsDialog;
 })();
 </script>
