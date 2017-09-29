@@ -21,9 +21,17 @@
     return index === lastIndex;
   };
 
+  // not 100% sure if this is needed
   FS.dialog.service.isDialogInStack = function(dialogElement) {
     return dialogStack.indexOf(dialogElement) > -1;
   };
+
+  FS.dialog.service.closeAllDialogs = function() {
+    var reverseStack = dialogStack.reverse();
+    reverseStack.forEach(function(dialog) {
+      dialog.close();
+    })
+  }
 
   FS.dialog.service.windowHasFocus = true;
   FS.dialog.service.mobileBreakpoint = 480;

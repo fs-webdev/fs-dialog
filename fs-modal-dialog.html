@@ -73,9 +73,6 @@ fs-modal-dialog[opened] {
       // add mask as a previous sibling to the dialog so it's below it in z-index
       this.parentNode.insertBefore(maskEl, this);
 
-      // bind the functions that will used in event listeners to avoid losing reference
-      this._maskClickHandler = this.close.bind(this);
-
       // add role=main to body of a modal dialog to improve accessibility for screen
       // readers. can't just use the <main> element since modeless dialogs don't
       // hide any <main> elements on the page
@@ -96,6 +93,8 @@ fs-modal-dialog[opened] {
     }
 
   };
+
+  fsModalDialog.attributeChangedCallback = fsModalDialog.baseDialog.attributeChangedCallback;
 
   document.registerElement('fs-modal-dialog', {prototype: fsModalDialog});
 })();
