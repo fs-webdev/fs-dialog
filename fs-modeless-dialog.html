@@ -2,11 +2,19 @@
 <link rel="import" href="../fs-dialog/fs-dialog-base.html">
 
 <style data-fs-modeless-dialog>
+  /*
+   * 1. Touch-action is not supported in safari but is the recommended solution
+   *    to prevent touch events from scrolling the page - preventDefault() will
+   *    no longer work. We still want to allow the user to zoom in on the modal
+   *    though so they can have a comfortable reading experience.
+   *    @see https://developers.google.com/web/updates/2017/01/scrolling-intervention#breakage_and_guidance
+   */
   fs-modeless-dialog {
     left: 0;
     position: fixed;
     top: 0;
     transform: translateX(0px) translateY(0px);
+    touch-action: pinch-zoom; /* [1] */
   }
 
   fs-modeless-dialog header {
@@ -101,6 +109,12 @@
    */
   function startDragHandler(e) {
 
+    // prevent default will be ignored by any browser that supports the CSS
+    // touch-action property, but will continue to work in browsers that don't
+    // support it for proper progressive enhancement
+    // @see https://developers.google.com/web/updates/2017/01/scrolling-intervention#breakage_and_guidance
+    e.preventDefault();
+
     // only activate drag with left mouse button
     if (e.type === 'mousedown' && e.button !== 0) return true;
 
@@ -177,7 +191,9 @@
   /**
    * Clean up events and properties when drag is finished.
    */
-  function endDragHandler() {
+  function endDragHandler(e) {
+    e.preventDefault();
+
     document.body.classList.remove('fs-dialog--dragging');
     this._drag = null;
 
