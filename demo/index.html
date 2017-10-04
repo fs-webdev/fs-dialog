@@ -75,12 +75,14 @@
 <button class="fs-button modeless">Open Dialog</button>
 
 <h5>transition=from-bottom</h5>
+
 <fs-anchored-dialog transition="from-bottom" dismiss-on-blur="true">
+
   <header>
     <h4>From-bottom</h4>
   </header>
   <div class="fs-dialog__body">
-        <p>This dialogs content will scroll.</p>
+    <p>This dialogs content will scroll.</p>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu auctor diam. Donec condimentum eleifend purus at lacinia. Cras feugiat sodales pulvinar. Curabitur a aliquet eros. Integer vitae suscipit justo, vel sagittis dui. Maecenas nec porttitor arcu. Maecenas consequat lacinia dui quis vestibulum. Sed cursus consectetur erat quis eleifend. Sed consectetur imperdiet dui, nec iaculis ante lacinia nec. Nullam at nunc sed mauris convallis eleifend. Phasellus at malesuada nisi. Maecenas purus mi, pellentesque nec enim ut, venenatis congue leo. Integer porttitor sem eu nunc ornare, ac aliquet augue gravida. Cras sit amet dolor nisl.</p>
 
     <p>Curabitur maximus, metus quis rutrum tristique, mi nunc condimentum nibh, sit amet luctus leo velit ultricies sem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque rutrum nec arcu et tincidunt. Maecenas varius convallis bibendum. Proin mattis arcu orci, id eleifend ex posuere et. Aenean faucibus scelerisque turpis, at bibendum urna sodales et. Mauris posuere ultricies nisl, sed tincidunt felis pretium ac. Suspendisse sollicitudin in lacus ut pharetra. Duis dapibus elementum sapien at scelerisque. Vivamus non ullamcorper velit, a eleifend metus. Proin velit lorem, feugiat ac justo et, congue eleifend risus.</p>
@@ -182,6 +184,11 @@
 
     <p>Aenean convallis commodo metus. Donec euismod neque velit, at accumsan velit vulputate gravida. Duis ultricies pellentesque ante at dignissim. Sed non turpis magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam mollis sed eros vitae mattis. Suspendisse non blandit nisi. Etiam mattis sodales congue.</p>
   </div>
+  <footer>
+    <button class="anchored fs-button mixed-anchored-anchor">Open Dialog</button>
+  </footer>
+
+
 </fs-anchored-dialog>
 <button class="anchored fs-button">Open Dialog</button>
 
@@ -264,6 +271,32 @@
     <button class="fs-button fs-button--recommended" data-dialog-dismiss>Close</button>
   </footer>
 </fs-modal-dialog>
+
+
+<fs-modal-dialog id="mixed-anchored-modal">
+  <header>
+    <h4>Modal</h4>
+  </header>
+  <div class="fs-dialog__body">
+    <p>This is a modal dialog. It really stands out from the content and forces the user to perform an action before they can continue.</p>
+  </div>
+  <footer>
+    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
+  </footer>
+</fs-modal-dialog>
+
+<fs-anchored-dialog id="mixed-anchored-anchor" transition="from-bottom" dismiss-on-blur="true">
+  <header>
+    <h4>From-bottom</h4>
+  </header>
+  <div class="fs-dialog__body">
+    body text
+  </div>
+  <footer>
+    <button class="modal fs-button mixed-anchored-modal">Open Dialog</button>
+  </footer>
+</fs-anchored-dialog>
+
       </div>
     </div>
 
@@ -306,14 +339,32 @@
         });
       });
       Array.from(anchoredButtons).forEach(function(button, index) {
+      // for(var i=0; i < anchoredButtons.length; i++) {
+        // var index = i;
+        // var button = anchoredButtons[i];
+        var counter = 1;
         button.addEventListener('click', function(event) {
           var forcedArrowDirection = ['up', 'down', 'left', 'right'][Math.round(Math.random()*3)];
-          anchoredDialogs[index].open({attachToElement: button, forcedArrowDirection: forcedArrowDirection});
+          if (counter%2 === 0) {
+            console.log('FORCED DIRECTION:', forcedArrowDirection)
+            anchoredDialogs[index].open({attachToElement: button, forcedArrowDirection: forcedArrowDirection});
+          } else {
+            console.log('AUTO CHOOSE DIRECTION')
+            anchoredDialogs[index].open({attachToElement: button});
+          }
+          counter++;
         });
+      // }
       });
 
 
       // stacking click
+      document.querySelector('button.mixed-anchored-anchor').addEventListener('click', function() {
+        document.getElementById('mixed-anchored-anchor').open({attachToElement: document.querySelector('button.mixed-anchored-anchor')});
+      });
+      document.querySelector('button.mixed-anchored-modal').addEventListener('click', function() {
+        document.getElementById('mixed-anchored-modal').open();
+      });
       document.getElementById('stacking-button').addEventListener('click', function() {
         document.getElementById('stacking-dialog').open();
       });

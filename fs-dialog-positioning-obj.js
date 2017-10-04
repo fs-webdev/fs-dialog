@@ -3,137 +3,138 @@
   var TALL_ARROW_INSET = 50;
   var WIDE_ARROW_HEIGHT = 16;
   var WIDE_ARROW_WIDTH = 32;
-  var INSET = 15;
+  // var INSET = 15;
+  var INSET = 0;
   var INSET2 = INSET*2;
 
   /*********************/
   /* PRIVATE FUNCITONS */
   /*********************/
 
-  // // Calculate scores based on what percentage of the dialog will be on the screen
-  // function fsCalculateDialogScores(sourceElement, doNotAllowVerticalScroll, dialogContentElement) {
-  //   var scores = {};
-  //   var containingRect = doNotAllowVerticalScroll ? fsGetWindowRect() : fsGetBodyRect();
-  //   var rectToAttachTo = fsLocalToGlobal(sourceElement);
-  //   var width = dialogContentElement.scrollWidth;
-  //   var height = dialogContentElement.scrollHeight;
-  //   var xOffset = 0;
-  //   var yOffset = 0;
+  // Calculate scores based on what percentage of the dialog will be on the screen
+  function fsCalculateDialogScores(sourceElement, doNotAllowVerticalScroll, dialogContentElement) {
+    var scores = {};
+    var containingRect = doNotAllowVerticalScroll ? fsGetWindowRect() : fsGetBodyRect();
+    var rectToAttachTo = fsLocalToGlobal(sourceElement);
+    var width = dialogContentElement.scrollWidth;
+    var height = dialogContentElement.scrollHeight;
+    var xOffset = 0;
+    var yOffset = 0;
 
-  //   // where is the arrow going to sit?
-  //   var tallArrowBottomPos = rectToAttachTo.top + (rectToAttachTo.height / 2) + (WIDE_ARROW_WIDTH / 2);
-  //   var wideArrowRightPos = rectToAttachTo.left + (rectToAttachTo.width / 2) + (WIDE_ARROW_WIDTH / 2);
+    // where is the arrow going to sit?
+    var tallArrowBottomPos = rectToAttachTo.top + (rectToAttachTo.height / 2) + (WIDE_ARROW_WIDTH / 2);
+    var wideArrowRightPos = rectToAttachTo.left + (rectToAttachTo.width / 2) + (WIDE_ARROW_WIDTH / 2);
 
-  //   // If the callout goes to the left, where is the top of it?
-  //   var leftRectTop = rectToAttachTo.top + (rectToAttachTo.height / 2) - (height / 2);
+    // If the callout goes to the left, where is the top of it?
+    var leftRectTop = rectToAttachTo.top + (rectToAttachTo.height / 2) - (height / 2);
 
-  //   // If the callout goes to the top, where is the left side?
-  //   var topRectLeft = rectToAttachTo.left + (rectToAttachTo.width / 2) - (width / 2);
+    // If the callout goes to the top, where is the left side?
+    var topRectLeft = rectToAttachTo.left + (rectToAttachTo.width / 2) - (width / 2);
 
-  //   // add an offset to pull it on screen if it will hang off
-  //   if (leftRectTop < containingRect.top) {
-  //     yOffset = containingRect.top - leftRectTop;
-  //   } else if (leftRectTop + height > containingRect.bottom) {
-  //     yOffset = containingRect.bottom - leftRectTop - height;
-  //   }
+    // add an offset to pull it on screen if it will hang off
+    if (leftRectTop < containingRect.top) {
+      yOffset = containingRect.top - leftRectTop;
+    } else if (leftRectTop + height > containingRect.bottom) {
+      yOffset = containingRect.bottom - leftRectTop - height;
+    }
 
-  //   if (topRectLeft < containingRect.left) {
-  //     xOffset = containingRect.left - topRectLeft;
-  //   } else if (topRectLeft + width > containingRect.right) {
-  //     xOffset = containingRect.right - topRectLeft - width;
-  //   }
+    if (topRectLeft < containingRect.left) {
+      xOffset = containingRect.left - topRectLeft;
+    } else if (topRectLeft + width > containingRect.right) {
+      xOffset = containingRect.right - topRectLeft - width;
+    }
 
-  //   // If the arrow will be outside of the dialog's inset we need to adjust the offset to compensate
-  //   // This may move part of the dialog back off screen, but it's important that the arrow stays with the dialog
-  //   if (leftRectTop + yOffset + height - TALL_ARROW_INSET < tallArrowBottomPos) {
-  //     yOffset = tallArrowBottomPos - leftRectTop - height + TALL_ARROW_INSET;
-  //   } else if (leftRectTop + yOffset + TALL_ARROW_INSET > tallArrowBottomPos - WIDE_ARROW_WIDTH) {
-  //     yOffset = tallArrowBottomPos - WIDE_ARROW_WIDTH - leftRectTop - TALL_ARROW_INSET;
-  //   }
-  //   if (topRectLeft + xOffset + width - WIDE_ARROW_INSET < wideArrowRightPos) {
-  //     xOffset = wideArrowRightPos - topRectLeft - width + WIDE_ARROW_INSET;
-  //   } else if (topRectLeft + xOffset + WIDE_ARROW_INSET > wideArrowRightPos - WIDE_ARROW_WIDTH) {
-  //     xOffset = wideArrowRightPos - WIDE_ARROW_WIDTH - topRectLeft - WIDE_ARROW_INSET;
-  //   }
+    // If the arrow will be outside of the dialog's inset we need to adjust the offset to compensate
+    // This may move part of the dialog back off screen, but it's important that the arrow stays with the dialog
+    if (leftRectTop + yOffset + height - TALL_ARROW_INSET < tallArrowBottomPos) {
+      yOffset = tallArrowBottomPos - leftRectTop - height + TALL_ARROW_INSET;
+    } else if (leftRectTop + yOffset + TALL_ARROW_INSET > tallArrowBottomPos - WIDE_ARROW_WIDTH) {
+      yOffset = tallArrowBottomPos - WIDE_ARROW_WIDTH - leftRectTop - TALL_ARROW_INSET;
+    }
+    if (topRectLeft + xOffset + width - WIDE_ARROW_INSET < wideArrowRightPos) {
+      xOffset = wideArrowRightPos - topRectLeft - width + WIDE_ARROW_INSET;
+    } else if (topRectLeft + xOffset + WIDE_ARROW_INSET > wideArrowRightPos - WIDE_ARROW_WIDTH) {
+      xOffset = wideArrowRightPos - WIDE_ARROW_WIDTH - topRectLeft - WIDE_ARROW_INSET;
+    }
 
-  //   // calculate the left and top positions for each rect
-  //   var leftRectLeft = rectToAttachTo.left - (width + WIDE_ARROW_HEIGHT);
-  //   var rightRectLeft = rectToAttachTo.right + WIDE_ARROW_HEIGHT;
-  //   topRectLeft = topRectLeft + xOffset;
-  //   var bottomRectLeft = topRectLeft;
-  //   leftRectTop = leftRectTop + yOffset;
-  //   var rightRectTop = leftRectTop;
-  //   var topRectTop = rectToAttachTo.top - height - WIDE_ARROW_HEIGHT;
-  //   var bottomRectTop = rectToAttachTo.bottom + WIDE_ARROW_HEIGHT;
+    // calculate the left and top positions for each rect
+    var leftRectLeft = rectToAttachTo.left - (width + WIDE_ARROW_HEIGHT);
+    var rightRectLeft = rectToAttachTo.right + WIDE_ARROW_HEIGHT;
+    topRectLeft = topRectLeft + xOffset;
+    var bottomRectLeft = topRectLeft;
+    leftRectTop = leftRectTop + yOffset;
+    var rightRectTop = leftRectTop;
+    var topRectTop = rectToAttachTo.top - height - WIDE_ARROW_HEIGHT;
+    var bottomRectTop = rectToAttachTo.bottom + WIDE_ARROW_HEIGHT;
 
-  //   // get the new rects so we can calculate their scores
-  //   var leftRect = new fsRect(leftRectLeft, leftRectTop, width, height);
-  //   var rightRect = new fsRect(rightRectLeft, rightRectTop, width, height);
-  //   var topRect = new fsRect(topRectLeft, topRectTop, width, height);
-  //   var bottomRect = new fsRect(bottomRectLeft, bottomRectTop, width, height);
+    // get the new rects so we can calculate their scores
+    var leftRect = new fsRect(leftRectLeft, leftRectTop, width, height);
+    var rightRect = new fsRect(rightRectLeft, rightRectTop, width, height);
+    var topRect = new fsRect(topRectLeft, topRectTop, width, height);
+    var bottomRect = new fsRect(bottomRectLeft, bottomRectTop, width, height);
 
-  //   // now calculate the percentage on screen for each
-  //   // the scores will be between 0 and 1.
-  //   scores.left = fsCalculatePercentageVisible(leftRect, containingRect);
-  //   scores.right = fsCalculatePercentageVisible(rightRect, containingRect);
-  //   scores.top = fsCalculatePercentageVisible(topRect, containingRect);
-  //   scores.bottom = fsCalculatePercentageVisible(bottomRect, containingRect);
+    // now calculate the percentage on screen for each
+    // the scores will be between 0 and 1.
+    scores.left = fsCalculatePercentageVisible(leftRect, containingRect);
+    scores.right = fsCalculatePercentageVisible(rightRect, containingRect);
+    scores.top = fsCalculatePercentageVisible(topRect, containingRect);
+    scores.bottom = fsCalculatePercentageVisible(bottomRect, containingRect);
 
-  //   return {scores: scores, xOffset: xOffset, yOffset: yOffset};
-  // }
+    return {scores: scores, xOffset: xOffset, yOffset: yOffset};
+  }
 
-  // function fsCalculatePercentageVisible(rect, containingRect) {
-  //   if (rect.left >= containingRect.left && rect.right <= containingRect.right && rect.top >= containingRect.top && rect.bottom <= containingRect.bottom) {
-  //     // the entire rect is on screen
-  //     return 1;
-  //   } else {
-  //     var area = rect.width * rect.height;
-  //     var visibleWidth = rect.width;
-  //     var visibleHeight = rect.height;
-  //     var visibleArea;
-  //     var score = 0;
-  //     // where are the sides in relation to the containing rect?
-  //     var left = rect.left - containingRect.left;
-  //     var right = containingRect.right - rect.right;
-  //     var top = rect.top - containingRect.top;
-  //     var bottom = containingRect.bottom - rect.bottom;
+  function fsCalculatePercentageVisible(rect, containingRect) {
+    if (rect.left >= containingRect.left && rect.right <= containingRect.right && rect.top >= containingRect.top && rect.bottom <= containingRect.bottom) {
+      // the entire rect is on screen
+      return 1;
+    } else {
+      var area = rect.width * rect.height;
+      var visibleWidth = rect.width;
+      var visibleHeight = rect.height;
+      var visibleArea;
+      var score = 0;
+      // where are the sides in relation to the containing rect?
+      var left = rect.left - containingRect.left;
+      var right = containingRect.right - rect.right;
+      var top = rect.top - containingRect.top;
+      var bottom = containingRect.bottom - rect.bottom;
 
-  //     if (left < 0) {
-  //       // it's hanging off the left side of the screen
-  //       visibleWidth = visibleWidth + left;
-  //     }
-  //     if (right < 0) {
-  //       // it's hanging off the right side of the screen
-  //       visibleWidth = visibleWidth + right;
-  //     }
-  //     if (top < 0) {
-  //       // it's hanging off the top of the screen
-  //       visibleHeight = visibleHeight + top;
-  //     }
-  //     if (bottom < 0) {
-  //       // it's hanging off the bottom of the screen
-  //       visibleHeight = visibleHeight + bottom;
-  //     }
+      if (left < 0) {
+        // it's hanging off the left side of the screen
+        visibleWidth = visibleWidth + left;
+      }
+      if (right < 0) {
+        // it's hanging off the right side of the screen
+        visibleWidth = visibleWidth + right;
+      }
+      if (top < 0) {
+        // it's hanging off the top of the screen
+        visibleHeight = visibleHeight + top;
+      }
+      if (bottom < 0) {
+        // it's hanging off the bottom of the screen
+        visibleHeight = visibleHeight + bottom;
+      }
 
-  //     // if we have a negative visible width/height, reset to zero - it just means it's far off the screen.
-  //     if (visibleWidth < 0) {
-  //       visibleWidth = 0;
-  //     }
-  //     if (visibleHeight < 0) {
-  //       visibleHeight = 0;
-  //     }
+      // if we have a negative visible width/height, reset to zero - it just means it's far off the screen.
+      if (visibleWidth < 0) {
+        visibleWidth = 0;
+      }
+      if (visibleHeight < 0) {
+        visibleHeight = 0;
+      }
 
-  //     visibleArea = visibleWidth * visibleHeight;
+      visibleArea = visibleWidth * visibleHeight;
 
-  //     if (visibleArea === area) {
-  //       score = 1;
-  //     } else if (visibleArea < area) {
-  //       score = visibleArea / area;
-  //     }
+      if (visibleArea === area) {
+        score = 1;
+      } else if (visibleArea < area) {
+        score = visibleArea / area;
+      }
 
-  //     return score;
-  //   }
-  // }
+      return score;
+    }
+  }
 
   // function getScrollingParentOffsets(element) {
   //   var parent = element.offsetParent;
@@ -273,6 +274,7 @@
   FS.dialog.service.positioningObj = {
     fp2: fp2,
     fsRect: fsRect,
+    fsCalculatePercentageVisible: fsCalculatePercentageVisible,
     // fsGetBodyRect: fsGetBodyRect,
     windowTop: windowTop,
     windowLeft: windowLeft,

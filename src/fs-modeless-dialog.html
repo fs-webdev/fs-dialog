@@ -46,18 +46,18 @@
     // set the type="modeless" for the a11y enhancer
     this.setAttribute('type', 'modeless')
 
-    var root = this.getRootNode();
+    // var root = this.getRootNode();
 
-    // In polyfilled browsers there is no shadow DOM so global styles still style
-    // the "fake" shadow DOM. We need to test for truly native support so we know
-    // when to inject styles into the shadow DOM. The best way I've found to do that
-    // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
-    // returns true when it's just a document-fragment in polyfilled browsers
-    // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
-    if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-modeless-dialog]')) {
-      var styles = doc.querySelector('style[data-fs-modeless-dialog]').cloneNode(true);
-      root.appendChild(styles);
-    }
+    // // In polyfilled browsers there is no shadow DOM so global styles still style
+    // // the "fake" shadow DOM. We need to test for truly native support so we know
+    // // when to inject styles into the shadow DOM. The best way I've found to do that
+    // // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
+    // // returns true when it's just a document-fragment in polyfilled browsers
+    // // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
+    // if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-modeless-dialog]')) {
+    //   var styles = doc.querySelector('style[data-fs-modeless-dialog]').cloneNode(true);
+    //   root.appendChild(styles);
+    // }
 
     // use the attachedCallback for the base dialog and pass in our open and close functions
     fsModelessDialog.baseDialog.attachedCallback.bind(this)(openModelessFunction, closeModelessFunction)
@@ -81,6 +81,7 @@
       }
 
       // add events to modeless dialog for dragging
+      // TODO: add an opt out for dragging (?)
       if (headerEl) {
         headerEl.addEventListener('mousedown', this._startDragHandler);
         headerEl.addEventListener('touchstart', this._startDragHandler);

@@ -127,10 +127,12 @@ fs-modal-dialog .fs-dialog__close:active svg {
 }
 
 .fs-dialog__body {
-  flex-grow: 1;
+  flex-grow: 3;
   overflow-y: auto;
   padding: 15px;
   position: relative;
+  background-color: #fff;
+  z-index: 1;
 }
 
 fs-modal-dialog footer,
@@ -147,29 +149,21 @@ fs-anchored-dialog footer {
 }
 
 /** FULLSCREEN ON MOBILE **/
+/********* CAVEAT *********/
+/** This isn't going to  **/
+/** work on all dialogs  **/
+/** who have parents who **/
+/** are going to contain **/
+/** a fixed child        **/
 
 @media screen and (max-width:480px) {
-  fs-modeless-dialog[fullscreen-on-mobile],
-  fs-modal-dialog[fullscreen-on-mobile],
-  fs-anchored-dialog[fullscreen-on-mobile] {
-    /* there is a meta tag that if it is missing might not make this work - viewport scalable size or something */
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-  }
-
-
-  /* How do we make this style bleed up and out? */
-  .fullscreen-mobile-dialog-parent {
-    position: fixed !important;
+  fs-modal-dialog:not([fullscreen-on-mobile="false"]),
+  fs-anchored-dialog:not([fullscreen-on-mobile="false"]) {
     top: 0 !important;
     left: 0 !important;
-    right: 0 !important;
     bottom: 0 !important;
-    transform: none !important;
-    z-index: 1000 !important;
+    right: 0 !important;
+    position: fixed;
   }
 }
 /** TODO: update from-bottom and from-right styles **/
@@ -217,7 +211,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 </template>
 
 <script>
-(function() {
+(function(window, document) {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
   var template = doc.querySelector('#fs-dialog-template');
   FS._registerTranslations(/* LANG CODE */);
@@ -233,18 +227,18 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
    * the DOM on attached callback otherwise it breaks Polymer bindings.
    */
   fsDialog.baseDialog.attachedCallback = function (onOpenDialogFunction, onCloseDialogFunction) {
-    var root = this.getRootNode();
+    // var root = this.getRootNode();
 
-    // In polyfilled browsers there is no shadow DOM so global styles still style
-    // the "fake" shadow DOM. We need to test for truly native support so we know
-    // when to inject styles into the shadow DOM. The best way I've found to do that
-    // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
-    // returns true when it's just a document-fragment in polyfilled browsers
-    // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
-    if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-dialog]')) {
-      var styles = doc.querySelector('style[data-fs-dialog]').cloneNode(true);
-      root.appendChild(styles);
-    }
+    // // In polyfilled browsers there is no shadow DOM so global styles still style
+    // // the "fake" shadow DOM. We need to test for truly native support so we know
+    // // when to inject styles into the shadow DOM. The best way I've found to do that
+    // // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
+    // // returns true when it's just a document-fragment in polyfilled browsers
+    // // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
+    // if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-dialog]')) {
+    //   var styles = doc.querySelector('style[data-fs-dialog]').cloneNode(true);
+    //   root.appendChild(styles);
+    // }
 
     var clone = document.importNode(template.content, true);
 
@@ -271,10 +265,12 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     this.setAttribute('role', 'dialog');
     a11yEnhancer.dialog(this);
 
+    // save off the ally open and close functions that it added for us. We will call them later, but they
+    // don't provide us with hooks, so we run into timing issues if we just wait for their events.
     this._a11yOpenFunction = this.open;
     this._a11yCloseFunction = this.close;
 
-    this._opened = false;
+    // this._opened = false;
     this._focusoutHandler = focusoutHandler.bind(this);
 
     // open the dialog
@@ -333,9 +329,11 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       if (!this.opened) return;
 
       // remove event listeners
+      // consider reducing event listeners by putting them in the service
       if (this.dismissOnBlur) {
         this.removeEventListener('focusout', this._focusoutHandler);
       }
+      // do these functions need to be bound to this/be added to this?
       this.removeEventListener('click', dialogClickHandler);
       this.removeEventListener('keydown', checkCloseDialog);
 
@@ -343,6 +341,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       this.removeAttribute('opened');
 
       // call dialog-type specific close logic
+      // TODO: this needs to check if it exists before trying to run it
       onCloseDialogFunction.bind(this)();
 
       zIndex -= zIndexIncrement;
@@ -357,21 +356,21 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
     };
 
-    Object.defineProperty(this, 'opened', {
-      get: function() {
-        return this._opened;
-      },
-      set: function(value) {
-        this._opened = value;
+    // Object.defineProperty(this, 'opened', {
+    //   get: function() {
+    //     return this._opened;
+    //   },
+    //   set: function(value) {
+    //     this._opened = value;
 
-        // if (value) {
-        //   this.open();
-        // }
-        // else {
-        //   this.close();
-        // }
-      }
-    });
+    //     // if (value) {
+    //     //   this.open();
+    //     // }
+    //     // else {
+    //     //   this.close();
+    //     // }
+    //   }
+    // });
 
     // set the initial dismissOnBlur value
     if (this.hasAttribute('dismiss-on-blur')) {
@@ -454,7 +453,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
   }
   function focusoutHandler(e) {
     var dialog = this
-    console.log('focusout', e)
+    // console.log('focusout', e)
     window.removeEventListener('focus', dialog._focusoutHandler);
     // use setTimout so that we get the correct document.activeElement
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
@@ -475,6 +474,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
    * Check for events that should close the dialog.
    * @param {Event} e
    */
+  // TODO: rename
   function checkCloseDialog(e) {
     // 27 is the code for the escape key
     if (e.which === 27) {
@@ -487,5 +487,5 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
   window.addEventListener('blur', windowBlurListener);
 
   FS.dialog.baseDialogComponent = fsDialog;
-})();
+})(window, document);
 </script>

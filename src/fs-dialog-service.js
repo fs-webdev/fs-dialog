@@ -5,14 +5,13 @@
   FS.dialog.service = {};
 
   FS.dialog.service.addDialogToStack = function(dialogElement) {
+    FS.dialog.service.removeDialogFromStack(dialogElement)
     dialogStack.push(dialogElement);
-    console.log('newStack', dialogStack)
   };
 
   FS.dialog.service.removeDialogFromStack = function(dialogElement) {
     var index = dialogStack.indexOf(dialogElement);
     if (index > -1) dialogStack.splice(index, 1);
-    console.log('newStack', dialogStack)
   };
 
   FS.dialog.service.dialogIsOnTop = function(dialogElement) {
@@ -34,5 +33,6 @@
   }
 
   FS.dialog.service.windowHasFocus = true;
+  // not 100% sure if this is needed
   FS.dialog.service.mobileBreakpoint = 480;
 })();
