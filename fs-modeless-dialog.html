@@ -194,8 +194,6 @@
    * Clean up events and properties when drag is finished.
    */
   function endDragHandler(e) {
-    e.preventDefault();
-
     document.body.classList.remove('fs-dialog--dragging');
     this._drag = null;
 

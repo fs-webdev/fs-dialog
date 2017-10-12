@@ -154,7 +154,7 @@ fs-anchored-dialog footer {
 /** work on all dialogs  **/
 /** who have parents who **/
 /** are going to contain **/
-/** a fixed child        **/
+/** an absolute child    **/
 
 @media screen and (max-width:480px) {
   fs-modal-dialog:not([fullscreen-on-mobile="false"]),
@@ -163,7 +163,8 @@ fs-anchored-dialog footer {
     left: 0 !important;
     bottom: 0 !important;
     right: 0 !important;
-    position: fixed;
+    transform: translate(0, 0) !important;
+    position: absolute;
   }
 }
 /** TODO: update from-bottom and from-right styles **/
@@ -303,7 +304,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
       // setup event listeners
       this.addEventListener('click', dialogClickHandler);
-      this.addEventListener('keydown', checkCloseDialog);
+      this.addEventListener('keydown', closeDialogOnEscKey);
 
       if (this.dismissOnBlur) {
         this.addEventListener('focusout', this._focusoutHandler);
@@ -337,7 +338,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       }
       // do these functions need to be bound to this/be added to this?
       this.removeEventListener('click', dialogClickHandler);
-      this.removeEventListener('keydown', checkCloseDialog);
+      this.removeEventListener('keydown', closeDialogOnEscKey);
 
       // css to close the dialogs
       this.removeAttribute('opened');
@@ -415,6 +416,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     }
   };
 
+
   /**
    * Determine when to close the dialog.
    */
@@ -455,9 +457,10 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
   }
   function focusoutHandler(e) {
     var dialog = this;
-    console.log('focusout', e);
-    console.log('focusout', e.target);
-    console.log('focusout', e.relatedTarget);
+    // console.log('focusout dialog', this);
+    // console.log('focusout event', e);
+    // console.log('focusout target', e.target);
+    // console.log('focusout relatedTarget', e.relatedTarget);
     window.removeEventListener('focus', dialog._focusoutHandler);
     // use setTimout so that we get the correct document.activeElement
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
@@ -467,12 +470,11 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
           // listen for when the window does get focus and run this function again
           window.addEventListener('focus', dialog._focusoutHandler);
         } else if (!dialog.contains(activeElement)) {
-          dialog.close();
           // cascade down stack until we hit a dialog that has the active element or does not have click away
           var stack = FS.dialog.service.getStack();
-          stack.some(function(dlg) {
-            if (dlg.dismissOnBlur && !dlg.contains(activeElement)) {
-              dlg.close();
+          stack.some(function(dialog) {
+            if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
+              dialog.close();
               return;
             } else {
               return true;
@@ -488,13 +490,14 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
    * Check for events that should close the dialog.
    * @param {Event} e
    */
-  // TODO: rename
-  function checkCloseDialog(e) {
+  function closeDialogOnEscKey(e) {
     // 27 is the code for the escape key
     if (e.which === 27) {
       this.close();
     }
   }
+
+  fsDialog.baseDialog.closeDialogOnEscKey = closeDialogOnEscKey;
 
   // keep track of if the window has focus or not
   window.addEventListener('focus', windowFocusListener);
