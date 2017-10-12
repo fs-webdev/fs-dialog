@@ -30,7 +30,11 @@
     reverseStack.forEach(function(dialog) {
       dialog.close();
     })
-  }
+  };
+
+  FS.dialog.service.getStack = function() {
+    return dialogStack;
+  };
 
   FS.dialog.service.windowHasFocus = true;
   // not 100% sure if this is needed

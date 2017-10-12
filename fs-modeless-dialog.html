@@ -45,6 +45,7 @@
   fsModelessDialog.attachedCallback = function () {
     // set the type="modeless" for the a11y enhancer
     this.setAttribute('type', 'modeless')
+    this.doNotUseInStack = true;
 
     // var root = this.getRootNode();
 

@@ -282,8 +282,10 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       //   focusBackElement
       // }
 
-      // add dialog to the stack
-      FS.dialog.service.addDialogToStack(this);
+      // add dialog to the stack unless it is a modeless dialog
+      if (!this.doNotUseInStack) {
+        FS.dialog.service.addDialogToStack(this);
+      }
 
       // call base a11y open function
       this._a11yOpenFunction();
@@ -452,18 +454,30 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     FS.dialog.service.windowHasFocus = false;
   }
   function focusoutHandler(e) {
-    var dialog = this
-    // console.log('focusout', e)
+    var dialog = this;
+    console.log('focusout', e);
+    console.log('focusout', e.target);
+    console.log('focusout', e.relatedTarget);
     window.removeEventListener('focus', dialog._focusoutHandler);
     // use setTimout so that we get the correct document.activeElement
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
       setTimeout(function(){
+        var activeElement = document.activeElement;
         if (!FS.dialog.service.windowHasFocus) {
           // listen for when the window does get focus and run this function again
           window.addEventListener('focus', dialog._focusoutHandler);
-        } else if (!dialog.contains(document.activeElement)) {
-          // cascade down stack until we hit a dialog that has the active element
+        } else if (!dialog.contains(activeElement)) {
           dialog.close();
+          // cascade down stack until we hit a dialog that has the active element or does not have click away
+          var stack = FS.dialog.service.getStack();
+          stack.some(function(dlg) {
+            if (dlg.dismissOnBlur && !dlg.contains(activeElement)) {
+              dlg.close();
+              return;
+            } else {
+              return true;
+            }
+          })
           // if there is a related target, cancel the foucsback
         }
       },0)

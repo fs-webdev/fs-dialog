@@ -107,7 +107,7 @@
     if (doNotDismissOnBlur) {
       this.removeAttribute('dismiss-on-blur');
     } else {
-      this.setAttribute('dismiss-on-blur');
+      this.setAttribute('dismiss-on-blur', '');
     }
 
     fsAnchoredDialog.baseDialog.attachedCallback.bind(this)(openAnchoredFunction, closeAnchoredFunction)
@@ -323,7 +323,7 @@
             if (newDialogRect.top > newPointerRect.top - PADDING) {
               newDialogRect.top = newPointerRect.top - PADDING;
             } else if (newDialogRect.bottom < newPointerRect.bottom + PADDING) {
-              newDialogRect.top = newDialogRect.top + (newPointerRect.bottom + PADDING - newDialogRect.bottom + PADDING);
+              newDialogRect.top = newDialogRect.top + (newPointerRect.bottom + PADDING - newDialogRect.bottom);
             }
             break;
         }
@@ -343,14 +343,14 @@
             case UP:
             case DOWN:
               newPointerRectLeft = srcRect.left + ((srcRect.width - ARROW_BASE)/2);
-              pointerHeight = ARROW_BASE;
-              pointerWidth = ARROW_ALTITUDE;
+              pointerHeight = ARROW_ALTITUDE;
+              pointerWidth = ARROW_BASE;
               break;
             case LEFT:
             case RIGHT:
               newPointerRectTop = srcRect.top+((srcRect.height - ARROW_BASE)/2) - topOffset;
-              pointerHeight = ARROW_ALTITUDE;
-              pointerWidth = ARROW_BASE;
+              pointerHeight = ARROW_BASE;
+              pointerWidth = ARROW_ALTITUDE;
               break;
           }
           return newPointerRect = new positioningObj.fsRect(newPointerRectLeft, newPointerRectTop, pointerWidth, pointerHeight);
