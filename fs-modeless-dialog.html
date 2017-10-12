@@ -1,0 +1,208 @@
+<link rel="import" href="../fs-globals/fs-globals.html">
+<link rel="import" href="../fs-dialog/fs-dialog-base.html">
+
+<style data-fs-modeless-dialog>
+  /*
+   * 1. Touch-action is not supported in safari but is the recommended solution
+   *    to prevent touch events from scrolling the page - preventDefault() will
+   *    no longer work. We still want to allow the user to zoom in on the modal
+   *    though so they can have a comfortable reading experience.
+   *    @see https://developers.google.com/web/updates/2017/01/scrolling-intervention#breakage_and_guidance
+   */
+  fs-modeless-dialog {
+    left: 0;
+    position: fixed;
+    top: 0;
+    transform: translateX(0px) translateY(0px);
+    touch-action: pinch-zoom; /* [1] */
+  }
+
+  fs-modeless-dialog header {
+    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--fs-color-grey-border, #ccc);
+    cursor: move;
+  }
+
+  .fs-dialog--dragging {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: move;
+  }
+</style>
+
+<script>
+(function() {
+  var doc = (document._currentScript || document.currentScript).ownerDocument;
+
+  var fsModelessDialog = Object.create(FS.dialog.baseDialogComponent);
+
+  /**
+   * Initialize the dialog, add events, and accessibility features. Should only change
+   * the DOM on attached callback otherwise it breaks Polymer bindings.
+   */
+  fsModelessDialog.attachedCallback = function () {
+    // set the type="modeless" for the a11y enhancer
+    this.setAttribute('type', 'modeless')
+    this.doNotUseInStack = true;
+
+    // var root = this.getRootNode();
+
+    // // In polyfilled browsers there is no shadow DOM so global styles still style
+    // // the "fake" shadow DOM. We need to test for truly native support so we know
+    // // when to inject styles into the shadow DOM. The best way I've found to do that
+    // // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
+    // // returns true when it's just a document-fragment in polyfilled browsers
+    // // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
+    // if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-modeless-dialog]')) {
+    //   var styles = doc.querySelector('style[data-fs-modeless-dialog]').cloneNode(true);
+    //   root.appendChild(styles);
+    // }
+
+    // use the attachedCallback for the base dialog and pass in our open and close functions
+    fsModelessDialog.baseDialog.attachedCallback.bind(this)(openModelessFunction, closeModelessFunction)
+
+    // bind the functions that will be used in event listeners to avoid losing reference
+    this._startDragHandler = startDragHandler.bind(this);
+    this._dragHandler = dragHandler.bind(this);
+    this._endDragHandler = endDragHandler.bind(this);
+
+    // selector for open and close functions
+    var headerEl = this.querySelector('header');
+
+    // modeless specific logic to do on open
+    function openModelessFunction() {
+
+      // calc center of screen for initial modeless dialog transform property
+      if (!this.style.transform) {
+        var x = (window.innerWidth / 2) - (this.offsetWidth / 2);
+        var y = (window.innerHeight / 2) - (this.offsetHeight / 2);
+        this.style.transform = 'translateX(' + x + 'px) translateY(' + y + 'px)';
+      }
+
+      // add events to modeless dialog for dragging
+      // TODO: add an opt out for dragging (?)
+      if (headerEl) {
+        headerEl.addEventListener('mousedown', this._startDragHandler);
+        headerEl.addEventListener('touchstart', this._startDragHandler);
+        window.addEventListener('mouseup', this._endDragHandler);
+        window.addEventListener('touchend', this._endDragHandler);
+      }
+    }
+
+    // modeless specific logic to do on close
+    function closeModelessFunction() {
+      // clean up events to modeless dialog for dragging
+      headerEl.removeEventListener('mousedown', this._startDragHandler);
+      headerEl.removeEventListener('touchstart', this._startDragHandler);
+      window.removeEventListener('mouseup', this._endDragHandler);
+      window.removeEventListener('touchend', this._endDragHandler);
+    }
+
+  };
+
+  fsModelessDialog.attributeChangedCallback = fsModelessDialog.baseDialog.attributeChangedCallback;
+
+  /**
+   * Set up dragging for the dialog.
+   * @see http://jsfiddle.net/Lk2hLt
+   * @see http://interactjs.io/
+   */
+  function startDragHandler(e) {
+
+    // prevent default will be ignored by any browser that supports the CSS
+    // touch-action property, but will continue to work in browsers that don't
+    // support it for proper progressive enhancement
+    // @see https://developers.google.com/web/updates/2017/01/scrolling-intervention#breakage_and_guidance
+    e.preventDefault();
+
+    // only activate drag with left mouse button
+    if (e.type === 'mousedown' && e.button !== 0) return true;
+
+    // normalize mousedown and touchstart x/y position
+    var clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+    var clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+
+    // store the current x/y position as well as the start x/y of the event
+    // (getBoundingClientRect takes into account transform x/y)
+    // @see https://stackoverflow.com/a/22360535/2124254
+    var rect = this.getBoundingClientRect();
+    this._drag = {
+      xPos: rect.left,
+      yPos: rect.top,
+      clientX: clientX,
+      clientY: clientY,
+
+      // don't let the dialog go outside of the window
+      maxX: window.innerWidth - this.offsetWidth,
+      maxY: window.innerHeight - this.offsetHeight
+    };
+
+    window.addEventListener('mousemove', this._dragHandler, true);
+    window.addEventListener('touchmove', this._dragHandler, true);
+  }
+
+  /**
+   * Update the x/y position of the dialog while dragging.
+   */
+  function dragHandler(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // prevent user highlighting while dragging by disabling user-select through css
+    if (!this._drag.isDragging) {
+      document.body.classList.add('fs-dialog--dragging');
+      this._drag.isDragging = true;
+    }
+
+    // normalize mousedown and touchstart x and y position
+    var clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+    var clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
+
+    var dx = clientX - this._drag.clientX;
+    var dy = clientY - this._drag.clientY;
+
+    var x = this._drag.xPos + dx;
+    var y = this._drag.yPos + dy;
+
+    // bind x/y to window
+    if (x < 0) {
+      x = 0;
+    }
+    else if (x > this._drag.maxX) {
+      x = this._drag.maxX
+    }
+
+    if (y < 0) {
+      y = 0;
+    }
+    else if (y > this._drag.maxY) {
+      y = this._drag.maxY;
+    }
+
+    this.style.transform = 'translateX(' + x + 'px) translateY(' + y + 'px)';
+
+    // update x/y position
+    this._drag.clientX = clientX;
+    this._drag.clientY = clientY;
+    this._drag.xPos = x;
+    this._drag.yPos = y;
+  }
+
+  /**
+   * Clean up events and properties when drag is finished.
+   */
+  function endDragHandler(e) {
+    e.preventDefault();
+
+    document.body.classList.remove('fs-dialog--dragging');
+    this._drag = null;
+
+    window.removeEventListener('mousemove', this._dragHandler, true);
+    window.removeEventListener('touchmove', this._dragHandler, true);
+  }
+
+  document.registerElement('fs-modeless-dialog', {prototype: fsModelessDialog});
+})();
+</script>

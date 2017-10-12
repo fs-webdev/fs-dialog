@@ -39,7 +39,7 @@
     <h3>Default Use</h3>
     <div class="demo-snippet fs-card">
       <div class="demo">
-<fs-dialog>
+<fs-modal-dialog>
   <header>
     <h4>Modal</h4>
   </header>
@@ -49,9 +49,9 @@
   <footer>
     <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
   </footer>
-</fs-dialog>
+</fs-modal-dialog>
 
-<button class="fs-button">Open Dialog</button>
+<button class="modal fs-button">Open Dialog</button>
       </div>
     </div>
 
@@ -61,34 +61,45 @@
 
     <h3>Attributes</h3>
     <div class="demo-snippet fs-card">
-      <div class="demo">
+      <div class="demo" >
 <h5>type=modeless</h5>
-<fs-dialog type="modeless">
+<fs-modeless-dialog>
   <header>
     <h4>Modeless Dialog</h4>
   </header>
   <div class="fs-dialog__body">
     <p>Can be moved and doesn't prevent user interaction of the page.</p>
   </div>
-</fs-dialog>
+</fs-modeless-dialog>
 
-<button class="fs-button">Open Dialog</button>
+<button class="fs-button modeless">Open Dialog</button>
 
 <h5>transition=from-bottom</h5>
-<fs-dialog transition="from-bottom">
+
+<fs-anchored-dialog transition="from-bottom" dismiss-on-blur="true">
+
   <header>
     <h4>From-bottom</h4>
   </header>
-</fs-dialog>
-<button class="fs-button">Open Dialog</button>
+  <div class="fs-dialog__body">
+    <p>This dialog's content will scroll.</p>
+    <p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br><br>It looks like an Imperial cruiser. Our passengers must be hotter than I thought. Try and hold them off. Angle the deflector shield while I make the calculations for the jump to light speed. Stay sharp! There are two more coming in, they're going to try to cut us off. Why don't you outrun them? I thought you said this thing was fast. Watch your mouth, kid, or you're going to find yourself floating home. We'll be safe enough once we make the jump to hyperspace. Besides, I know a few maneuvers. We'll lose them! Here's where the fun begins!<br><br>I'm not going anywhere. They're going to execute her. Look, a few minutes ago you said you didn't want to just wait here to be captured. Now all you want to do is stay. Marching into the detention area is not what I had in mind. But they're going to kill her! Better her than me... She's rich. Rich? Yes. Rich, powerful! Listen, if you were to rescue her, the reward would be... What? Well more wealth that you can imagine. I don't know, I can imagine quite a bit! You'll get it! I better! You will...<br><br>I can't see a thing in this helmet. This is not going to work. Why didn't you say so before? I did say so before! Where are you taking this...thing? Prisoner transfer from Block one-one-three-eight. I wasn't notified. I'll have to clear it. Look out! We've got to find out which cell this princess of yours is in. Here it is...cell twenty-one-eight-seven. You go get her. I'll hold them here. Everything is under control. Situation normal. What happened? Uh...had a slight weapons malfunction. But, uh, everything's perfectly all right now. We're fine. We're all fine here, now, thank you. How are you? We're sending a squad up. Uh, uh, negative. We had a reactor leak here now. Give us a few minutes to lock it down. Large leak...very dangerous. Who is this? What's your operating number? Boring conversation anyway. Luke! We're going to have company!<br><br>Aren't you a little short to be a stormtrooper? What? Oh...the uniform. I'm Luke Skywalker. I'm here to rescue you. You're who? I'm here to rescue you. I've got your R2 unit. I'm here with Ben Kenobi. Ben Kenobi is here! Where is he? Come on!<br><br>You're safe! We had feared the worst. When we heard about Alderaan, we were afraid that you were... We don't have time for our sorrows, Commander. The battle station has surely tracked us here. It's the only explanation for the ease of our escape. You must use the information in this R2 unit to plan the attack. It is our only hope. Yes. We are approaching the planet Yavin. The Rebel base is on a moon on the far side. We are preparing to orbit the planet.<br><br>All wings report in. Red Ten standing by. Red Seven standing by. Red Three standing by. Red Six standing by. Red Nine standing by. Red Two standing by. Red Eleven standing by. Red Five standing by. Lock S-foils in attack position. We're passing through their magnetic field. Hold tight! Switch your deflectors on. Double front!<br><br>Close up formation. You'd better let her loose. Almost there! I can't hold them! It's away! It's a hit! Negative. Negative! It didn't go in. It just impacted on the surface. Red Leader, we're right above you. Turn to point... oh-five, we'll cover for you. Stay there... I just lost my starboard engine. Get set to make your attack run.<br><br>Let him go! Stay on the leader! Hurry, Luke, they're coming in much faster this time. I can't hold them! Artoo, try and increase the power! Hurry up, Luke! Wait! I'm on the leader. Hang on, Artoo! Use the Force, Luke. Let go, Luke. The Force is strong with this one! Luke, trust me. His computer's off. Luke, you switched off your targeting computer. What's wrong? Nothing. I'm all right. I've lost Artoo! You may fire when ready. I have you now.</p>
+  </div>
+  <footer>
+    <button class="anchored fs-button mixed-anchored-anchor">Open Dialog</button>
+  </footer>
+
+
+</fs-anchored-dialog>
+<button class="anchored fs-button">Open Dialog</button>
 
 <h5>transition=from-right</h5>
-<fs-dialog transition="from-right">
+<fs-modal-dialog transition="from-right" dismiss-on-blur="true">
   <header>
     <h4>From-right</h4>
   </header>
-</fs-dialog>
-<button class="fs-button">Open Dialog</button>
+</fs-modal-dialog>
+<button class="modal fs-button">Open Dialog</button>
       </div>
     </div>
 
@@ -105,24 +116,20 @@
 }
 </style>
 
-<fs-dialog id="scrolling-dialog">
+<fs-modal-dialog id="scrolling-dialog">
   <header>
     <h4>Scroll</h4>
   </header>
   <div class="fs-dialog__body">
-    <p>This dialogs content will scroll.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu auctor diam. Donec condimentum eleifend purus at lacinia. Cras feugiat sodales pulvinar. Curabitur a aliquet eros. Integer vitae suscipit justo, vel sagittis dui. Maecenas nec porttitor arcu. Maecenas consequat lacinia dui quis vestibulum. Sed cursus consectetur erat quis eleifend. Sed consectetur imperdiet dui, nec iaculis ante lacinia nec. Nullam at nunc sed mauris convallis eleifend. Phasellus at malesuada nisi. Maecenas purus mi, pellentesque nec enim ut, venenatis congue leo. Integer porttitor sem eu nunc ornare, ac aliquet augue gravida. Cras sit amet dolor nisl.</p>
-
-    <p>Curabitur maximus, metus quis rutrum tristique, mi nunc condimentum nibh, sit amet luctus leo velit ultricies sem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque rutrum nec arcu et tincidunt. Maecenas varius convallis bibendum. Proin mattis arcu orci, id eleifend ex posuere et. Aenean faucibus scelerisque turpis, at bibendum urna sodales et. Mauris posuere ultricies nisl, sed tincidunt felis pretium ac. Suspendisse sollicitudin in lacus ut pharetra. Duis dapibus elementum sapien at scelerisque. Vivamus non ullamcorper velit, a eleifend metus. Proin velit lorem, feugiat ac justo et, congue eleifend risus.</p>
-
-    <p>Aenean convallis commodo metus. Donec euismod neque velit, at accumsan velit vulputate gravida. Duis ultricies pellentesque ante at dignissim. Sed non turpis magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam mollis sed eros vitae mattis. Suspendisse non blandit nisi. Etiam mattis sodales congue.</p>
+    <p>This dialog's content will scroll.</p>
+    <p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br><br>It looks like an Imperial cruiser. Our passengers must be hotter than I thought. Try and hold them off. Angle the deflector shield while I make the calculations for the jump to light speed. Stay sharp! There are two more coming in, they're going to try to cut us off. Why don't you outrun them? I thought you said this thing was fast. Watch your mouth, kid, or you're going to find yourself floating home. We'll be safe enough once we make the jump to hyperspace. Besides, I know a few maneuvers. We'll lose them! Here's where the fun begins!<br><br>I'm not going anywhere. They're going to execute her. Look, a few minutes ago you said you didn't want to just wait here to be captured. Now all you want to do is stay. Marching into the detention area is not what I had in mind. But they're going to kill her! Better her than me... She's rich. Rich? Yes. Rich, powerful! Listen, if you were to rescue her, the reward would be... What? Well more wealth that you can imagine. I don't know, I can imagine quite a bit! You'll get it! I better! You will...<br><br>I can't see a thing in this helmet. This is not going to work. Why didn't you say so before? I did say so before! Where are you taking this...thing? Prisoner transfer from Block one-one-three-eight. I wasn't notified. I'll have to clear it. Look out! We've got to find out which cell this princess of yours is in. Here it is...cell twenty-one-eight-seven. You go get her. I'll hold them here. Everything is under control. Situation normal. What happened? Uh...had a slight weapons malfunction. But, uh, everything's perfectly all right now. We're fine. We're all fine here, now, thank you. How are you? We're sending a squad up. Uh, uh, negative. We had a reactor leak here now. Give us a few minutes to lock it down. Large leak...very dangerous. Who is this? What's your operating number? Boring conversation anyway. Luke! We're going to have company!<br><br>Aren't you a little short to be a stormtrooper? What? Oh...the uniform. I'm Luke Skywalker. I'm here to rescue you. You're who? I'm here to rescue you. I've got your R2 unit. I'm here with Ben Kenobi. Ben Kenobi is here! Where is he? Come on!<br><br>You're safe! We had feared the worst. When we heard about Alderaan, we were afraid that you were... We don't have time for our sorrows, Commander. The battle station has surely tracked us here. It's the only explanation for the ease of our escape. You must use the information in this R2 unit to plan the attack. It is our only hope. Yes. We are approaching the planet Yavin. The Rebel base is on a moon on the far side. We are preparing to orbit the planet.<br><br>All wings report in. Red Ten standing by. Red Seven standing by. Red Three standing by. Red Six standing by. Red Nine standing by. Red Two standing by. Red Eleven standing by. Red Five standing by. Lock S-foils in attack position. We're passing through their magnetic field. Hold tight! Switch your deflectors on. Double front!<br><br>Close up formation. You'd better let her loose. Almost there! I can't hold them! It's away! It's a hit! Negative. Negative! It didn't go in. It just impacted on the surface. Red Leader, we're right above you. Turn to point... oh-five, we'll cover for you. Stay there... I just lost my starboard engine. Get set to make your attack run.<br><br>Let him go! Stay on the leader! Hurry, Luke, they're coming in much faster this time. I can't hold them! Artoo, try and increase the power! Hurry up, Luke! Wait! I'm on the leader. Hang on, Artoo! Use the Force, Luke. Let go, Luke. The Force is strong with this one! Luke, trust me. His computer's off. Luke, you switched off your targeting computer. What's wrong? Nothing. I'm all right. I've lost Artoo! You may fire when ready. I have you now.</p>
   </div>
   <footer>
     <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
   </footer>
-</fs-dialog>
+</fs-modal-dialog>
 
-<button class="fs-button">Open Dialog</button>
+<button class="modal fs-button">Open Dialog</button>
       </div>
     </div>
 
@@ -134,23 +141,23 @@
     <p>Dialogs will automatically stack based on order opened.
     <div class="demo-snippet fs-card">
       <div class="demo">
-<fs-dialog>
+<fs-modal-dialog dismiss-on-blur="true">
   <header>
     <h4>Bottom Dialog</h4>
   </header>
   <div class="fs-dialog__body">
     <p>Open a dialog on top of this one.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu auctor diam. Donec condimentum eleifend purus at lacinia. Cras feugiat sodales pulvinar. Curabitur a aliquet eros. Integer vitae suscipit justo, vel sagittis dui. Maecenas nec porttitor arcu. Maecenas consequat lacinia dui quis vestibulum. Sed cursus consectetur erat quis eleifend. Sed consectetur imperdiet dui, nec iaculis ante lacinia nec. Nullam at nunc sed mauris convallis eleifend. Phasellus at malesuada nisi. Maecenas purus mi, pellentesque nec enim ut, venenatis congue leo. Integer porttitor sem eu nunc ornare, ac aliquet augue gravida. Cras sit amet dolor nisl.</p>
+    <p>All wings report in. Red Ten standing by. Red Seven standing by. Red Three standing by. Red Six standing by. Red Nine standing by. Red Two standing by. Red Eleven standing by. Red Five standing by. Lock S-foils in attack position. We're passing through their magnetic field. Hold tight! Switch your deflectors on. Double front!</p>
   </div>
   <footer>
     <button class="fs-button fs-button--recommended" id="stacking-button">Open Another</button>
     <button class="fs-button fs-button--minor" data-dialog-dismiss>Close</button>
   </footer>
-</fs-dialog>
+</fs-modal-dialog>
 
-<button class="fs-button">Open Dialog</button>
+<button class="modal fs-button">Open Dialog</button>
 
-<fs-dialog id="stacking-dialog">
+<fs-modal-dialog id="stacking-dialog" dismiss-on-blur="true">
   <header>
     <h4>Top Dialog</h4>
   </header>
@@ -160,7 +167,33 @@
   <footer>
     <button class="fs-button fs-button--recommended" data-dialog-dismiss>Close</button>
   </footer>
-</fs-dialog>
+</fs-modal-dialog>
+
+
+<fs-modal-dialog id="mixed-anchored-modal">
+  <header>
+    <h4>Modal</h4>
+  </header>
+  <div class="fs-dialog__body">
+    <p>This is a modal dialog. It really stands out from the content and forces the user to perform an action before they can continue.</p>
+  </div>
+  <footer>
+    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
+  </footer>
+</fs-modal-dialog>
+
+<fs-anchored-dialog id="mixed-anchored-anchor" transition="from-bottom" dismiss-on-blur="true">
+  <header>
+    <h4>From-bottom</h4>
+  </header>
+  <div class="fs-dialog__body">
+    body text
+  </div>
+  <footer>
+    <button class="modal fs-button mixed-anchored-modal">Open Dialog</button>
+  </footer>
+</fs-anchored-dialog>
+
       </div>
     </div>
 
@@ -185,16 +218,50 @@
       });
 
       // find each button and open the previous sibling dialog
-      var dialogs = document.querySelectorAll('.demo > fs-dialog');
-      var buttons = document.querySelectorAll('.demo > button');
+      var modelessDialogs = document.querySelectorAll('.demo > fs-modeless-dialog');
+      var modelessButtons = document.querySelectorAll('.demo > button.modeless');
+      var modalDialogs = document.querySelectorAll('.demo > fs-modal-dialog');
+      var modalButtons = document.querySelectorAll('.demo > button.modal');
+      var anchoredDialogs = document.querySelectorAll('.demo > fs-anchored-dialog');
+      var anchoredButtons = document.querySelectorAll('.demo > button.anchored');
 
-      Array.from(buttons).forEach(function(button, index) {
+      Array.from(modelessButtons).forEach(function(button, index) {
         button.addEventListener('click', function() {
-          dialogs[index].open();
+          modelessDialogs[index].open();
         });
       });
+      Array.from(modalButtons).forEach(function(button, index) {
+        button.addEventListener('click', function() {
+          modalDialogs[index].open();
+        });
+      });
+      Array.from(anchoredButtons).forEach(function(button, index) {
+      // for(var i=0; i < anchoredButtons.length; i++) {
+        // var index = i;
+        // var button = anchoredButtons[i];
+        var counter = 1;
+        button.addEventListener('click', function(event) {
+          var forcedArrowDirection = ['up', 'down', 'left', 'right'][Math.round(Math.random()*3)];
+          if (counter%2 === 0) {
+            console.log('FORCED DIRECTION:', forcedArrowDirection)
+            anchoredDialogs[index].open({attachToElement: button, forcedArrowDirection: forcedArrowDirection});
+          } else {
+            console.log('AUTO CHOOSE DIRECTION')
+            anchoredDialogs[index].open({attachToElement: button});
+          }
+          counter++;
+        });
+      // }
+      });
+
 
       // stacking click
+      document.querySelector('button.mixed-anchored-anchor').addEventListener('click', function() {
+        document.getElementById('mixed-anchored-anchor').open({attachToElement: document.querySelector('button.mixed-anchored-anchor')});
+      });
+      document.querySelector('button.mixed-anchored-modal').addEventListener('click', function() {
+        document.getElementById('mixed-anchored-modal').open();
+      });
       document.getElementById('stacking-button').addEventListener('click', function() {
         document.getElementById('stacking-dialog').open();
       });
@@ -202,8 +269,10 @@
     </script>
     <script src="https://cdn.jsdelivr.net/prism/1.6.0/prism.js"></script>
 
-    <!-- by importing the element last, the code output script can run before it gets
+    <!-- by importing the elements last, the code output script can run before it gets
          populated -->
-    <link rel='import' href='../fs-dialog.html'>
+    <link rel='import' href='../fs-modeless-dialog.html'>
+    <link rel='import' href='../fs-modal-dialog.html'>
+    <link rel='import' href='../fs-anchored-dialog.html'>
   </body>
 </html>
