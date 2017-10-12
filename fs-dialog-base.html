@@ -471,8 +471,8 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
           window.addEventListener('focus', dialog._focusoutHandler);
         } else if (!dialog.contains(activeElement)) {
           // cascade down stack until we hit a dialog that has the active element or does not have click away
-          var stack = FS.dialog.service.getStack();
-          stack.some(function(dialog) {
+          var reverseStack = [].concat(FS.dialog.service.getStack().reverse());
+          reverseStack.some(function(dialog) {
             if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
               dialog.close();
               return;
