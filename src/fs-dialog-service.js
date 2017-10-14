@@ -26,11 +26,26 @@
   };
 
   FS.dialog.service.closeAllDialogs = function() {
-    var reverseStack = dialogStack.reverse();
+    var reverseStack = [].concat(dialogStack.reverse());
     reverseStack.forEach(function(dialog) {
       dialog.close();
     })
   };
+
+  FS.dialog.service.closeDialogAndAllChildren = function(dialogElement) {
+    var reverseStack = [].concat(dialogStack.reverse());
+    var index = reverseStack.indexOf(dialogElement);
+    var closeDialogs = [];
+    reverseStack.some(function(dialog, dialogIndex) {
+      console.log(reverseStack);
+      if (dialogIndex <= index) {
+        dialog.close();
+      } else {
+        return true;
+      }
+    })
+  };
+
 
   FS.dialog.service.getStack = function() {
     return dialogStack;

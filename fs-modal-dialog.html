@@ -68,6 +68,7 @@ fs-modal-dialog[opened] {
       // know exactly which one to close
       maskEl = document.createElement('div');
       maskEl.setAttribute('data-no-inert', '');
+      maskEl.setAttribute('tabindex', '-1');
       maskEl.classList.add('fs-dialog__mask');
 
       // add mask as a previous sibling to the dialog so it's below it in z-index
@@ -82,14 +83,17 @@ fs-modal-dialog[opened] {
       }
     // }
 
+    var keydownHandler = fsModalDialog.baseDialog.closeDialogOnEscKey.bind(this);
 
     function openModalFunction() {
+      maskEl.addEventListener('keydown', keydownHandler);
       maskEl.setAttribute('opened', '');
       maskEl.style.zIndex = this.style.zIndex;
     }
 
     function closeModalFunction() {
       maskEl.removeAttribute('opened');
+      maskEl.removeEventListener('keydown', keydownHandler);
     }
 
   };
