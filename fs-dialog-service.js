@@ -37,7 +37,6 @@
     var index = reverseStack.indexOf(dialogElement);
     var closeDialogs = [];
     reverseStack.some(function(dialog, dialogIndex) {
-      console.log(reverseStack);
       if (dialogIndex <= index) {
         dialog.close();
       } else {
@@ -45,7 +44,6 @@
       }
     })
   };
-
 
   FS.dialog.service.getStack = function() {
     return dialogStack;
