@@ -4,198 +4,198 @@
 
 <script src="../fs-dialog/fs-dialog-service.js"></script>
 <style data-fs-dialog>
-/*
- * 1. The display property cannot be animated so we need to use opacity and visibility
- *    to fade in
- *    @see https://stackoverflow.com/questions/3331353/transitions-on-the-display-property
- * 2. Delay the visibility property so we can see the dialog disappear
- *    @see https://codepen.io/matthewlein/pen/fvrLD
- * 3. Support a fixed modal header/footer and scrollable middle
- * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
- * 5. Safari's default active button color seems to be white (activebuttontext)
- */
-fs-modeless-dialog,
-fs-modal-dialog,
-fs-anchored-dialog {
-  background: #fff;
-  border-radius: 4px;
-  border-radius: var(--fs-border-radius, 4px);
-  -webkit-filter: drop-shadow(0 0 7px rgba(0,0,0,0.5));
-  filter: drop-shadow(0 0 7px rgba(0,0,0,0.5));
-  /*box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);*/
-  display: flex; /* [3] */
-  flex-direction: column;
-  max-height: 100vh;
-  max-width: 545px;
-  opacity: 0;
-  position: fixed;
-  transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
-  visibility: hidden;
-  width: 100%;
-}
-
-fs-modal-dialog {
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0.7);
-  transition: opacity 0.3s, visibility 0s linear 0.3s, transform 0.3s; /* [2] */
-}
-
-/* [1] */
-fs-modeless-dialog[opened],
-fs-modal-dialog[opened],
-fs-anchored-dialog[opened],
-.fs-dialog__mask[opened] {
-  opacity: 1;
-  transition: opacity 0.3s, visibility 0s linear;
-  visibility: visible;
-}
-
-fs-modal-dialog[opened] {
-  transform: translate(-50%, -50%) scale(1);
-  transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
-}
-
-.fs-dialog__mask {
-  background: rgba(51,51,49,0.8);
-  bottom: 0;
-  left: 0;
-  opacity: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
-  visibility: hidden;
-}
-
-fs-anchored-dialog header,
-fs-modeless-dialog header,
-fs-modal-dialog header {
-  /*border-bottom: 1px solid #ccc;
-  border-bottom: 1px solid var(--fs-color-grey-border, #ccc);*/
-  border-radius: 4px 4px 0 0;
-  border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
-  flex-shrink: 0;
-  padding: 15px 15px 10px;
-}
-
-/* [4] */
-fs-anchored-dialog .fs-dialog__close,
-fs-modeless-dialog .fs-dialog__close,
-fs-modal-dialog .fs-dialog__close {
-  background-image: none !important;
-  -webkit-appearance: none;
-  -webkit-touch-callout: none;
-  background-color: transparent;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: none;
-  box-shadow: 0 0 0 transparent;
-  height: 22.75px;
-  height: 1.625rem;
-  line-height: 1;
-  opacity: 0.5;
-  padding: 0;
-  position: absolute;
-  right: 10px;
-  right: 0.714rem;
-  top: 10px;
-  top: 0.714rem;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  width: 22.75px;
-  width: 1.625rem;
-  color: inherit; /* [5] */
-  top: 15px;
-  opacity: 1;
-}
-
-fs-anchored-dialog .fs-dialog__close:hover,
-fs-modeless-dialog .fs-dialog__close:hover,
-fs-modal-dialog .fs-dialog__close:hover {
-  opacity: 1;
-}
-
-fs-anchored-dialog .fs-dialog__close:active svg,
-fs-modeless-dialog .fs-dialog__close:active svg,
-fs-modal-dialog .fs-dialog__close:active svg {
-  opacity: 1;
-  width: 11px;
-  height: 11px;
-}
-
-.fs-dialog__body {
-  flex-grow: 3;
-  overflow-y: auto;
-  padding: 15px;
-  position: relative;
-  background-color: #fff;
-  z-index: 1;
-}
-
-fs-modal-dialog footer,
-fs-modeless-dialog footer,
-fs-anchored-dialog footer {
-  /*background: #f4f4f4;
-  background: var(--fs-color-grey-background-light, #f4f4f4);*/
-  border-radius: 0 0 4px 4px;
-  border-radius: 0 0 var(--fs-border-radius, 4px) var(--fs-border-radius, 4px);
-  /*border-top: 1px solid #ccc;
-  border-top: 1px solid var(--fs-color-grey-border, #ccc);*/
-  flex-shrink: 0;
-  padding: 10px 15px;
-}
-
-/** FULLSCREEN ON MOBILE **/
-/********* CAVEAT *********/
-/** This isn't going to  **/
-/** work on all dialogs  **/
-/** who have parents who **/
-/** are going to contain **/
-/** an absolute child    **/
-
-@media screen and (max-width:480px) {
-  fs-modal-dialog:not([fullscreen-on-mobile="false"]),
-  fs-anchored-dialog:not([fullscreen-on-mobile="false"]) {
-    top: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-    right: 0 !important;
-    transform: translate(0, 0) !important;
-    position: absolute;
+  /*
+   * 1. The display property cannot be animated so we need to use opacity and visibility
+   *    to fade in
+   *    @see https://stackoverflow.com/questions/3331353/transitions-on-the-display-property
+   * 2. Delay the visibility property so we can see the dialog disappear
+   *    @see https://codepen.io/matthewlein/pen/fvrLD
+   * 3. Support a fixed modal header/footer and scrollable middle
+   * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
+   * 5. Safari's default active button color seems to be white (activebuttontext)
+   */
+  fs-modeless-dialog,
+  fs-modal-dialog,
+  fs-anchored-dialog {
+    background: #fff;
+    border-radius: 4px;
+    border-radius: var(--fs-border-radius, 4px);
+    -webkit-filter: drop-shadow(0 0 7px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 0 7px rgba(0,0,0,0.5));
+    /*box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);*/
+    display: flex; /* [3] */
+    flex-direction: column;
+    max-height: 100vh;
+    max-width: 545px;
+    opacity: 0;
+    position: fixed;
+    transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
+    visibility: hidden;
+    width: 100%;
   }
-}
-/** TODO: update from-bottom and from-right styles **/
 
-/** FROM-BOTTOM **/
-fs-dialog[transition="from-bottom"]:not([type="modeless"]) {
-  top: 100%;
-  transform: translateX(-50%);
-  transition: top 0.3s;
-}
+  fs-modal-dialog {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    transition: opacity 0.3s, visibility 0s linear 0.3s, transform 0.3s; /* [2] */
+  }
 
-fs-dialog[transition="from-bottom"][open]:not([type="modeless"]) {
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
+  /* [1] */
+  fs-modeless-dialog[opened],
+  fs-modal-dialog[opened],
+  fs-anchored-dialog[opened],
+  .fs-dialog__mask[opened] {
+    opacity: 1;
+    transition: opacity 0.3s, visibility 0s linear;
+    visibility: visible;
+  }
+
+  fs-modal-dialog[opened] {
+    transform: translate(-50%, -50%) scale(1);
+    transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
+  }
+
+  .fs-dialog__mask {
+    background: rgba(51,51,49,0.8);
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
+    visibility: hidden;
+  }
+
+  fs-anchored-dialog header,
+  fs-modeless-dialog header,
+  fs-modal-dialog header {
+    /*border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--fs-color-grey-border, #ccc);*/
+    border-radius: 4px 4px 0 0;
+    border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
+    flex-shrink: 0;
+    padding: 15px 15px 10px;
+  }
+
+  /* [4] */
+  fs-anchored-dialog .fs-dialog__close,
+  fs-modeless-dialog .fs-dialog__close,
+  fs-modal-dialog .fs-dialog__close {
+    background-image: none !important;
+    -webkit-appearance: none;
+    -webkit-touch-callout: none;
+    background-color: transparent;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    box-shadow: 0 0 0 transparent;
+    height: 22.75px;
+    height: 1.625rem;
+    line-height: 1;
+    opacity: 0.5;
+    padding: 0;
+    position: absolute;
+    right: 10px;
+    right: 0.714rem;
+    top: 10px;
+    top: 0.714rem;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: 22.75px;
+    width: 1.625rem;
+    color: inherit; /* [5] */
+    top: 15px;
+    opacity: 1;
+  }
+
+  fs-anchored-dialog .fs-dialog__close:hover,
+  fs-modeless-dialog .fs-dialog__close:hover,
+  fs-modal-dialog .fs-dialog__close:hover {
+    opacity: 1;
+  }
+
+  fs-anchored-dialog .fs-dialog__close:active svg,
+  fs-modeless-dialog .fs-dialog__close:active svg,
+  fs-modal-dialog .fs-dialog__close:active svg {
+    opacity: 1;
+    width: 11px;
+    height: 11px;
+  }
+
+  .fs-dialog__body {
+    flex-grow: 3;
+    overflow-y: auto;
+    padding: 15px;
+    position: relative;
+    background-color: #fff;
+    z-index: 1;
+  }
+
+  fs-modal-dialog footer,
+  fs-modeless-dialog footer,
+  fs-anchored-dialog footer {
+    /*background: #f4f4f4;
+    background: var(--fs-color-grey-background-light, #f4f4f4);*/
+    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 var(--fs-border-radius, 4px) var(--fs-border-radius, 4px);
+    /*border-top: 1px solid #ccc;
+    border-top: 1px solid var(--fs-color-grey-border, #ccc);*/
+    flex-shrink: 0;
+    padding: 10px 15px;
+  }
+
+  /** FULLSCREEN ON MOBILE **/
+  /********* CAVEAT *********/
+  /** This isn't going to  **/
+  /** work on all dialogs  **/
+  /** who have parents who **/
+  /** are going to contain **/
+  /** an absolute child    **/
+
+  @media screen and (max-width:480px) {
+    fs-modal-dialog:not([fullscreen-on-mobile="false"]),
+    fs-anchored-dialog:not([fullscreen-on-mobile="false"]) {
+      top: 0 !important;
+      left: 0 !important;
+      bottom: 0 !important;
+      right: 0 !important;
+      transform: translate(0, 0) !important;
+      position: absolute;
+    }
+  }
+  /** TODO: update from-bottom and from-right styles **/
+
+  /** FROM-BOTTOM **/
+  fs-dialog[transition="from-bottom"]:not([type="modeless"]) {
+    top: 100%;
+    transform: translateX(-50%);
+    transition: top 0.3s;
+  }
+
+  fs-dialog[transition="from-bottom"][open]:not([type="modeless"]) {
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 
 
 
 
 
-/** FROM-RIGHT **/
-fs-dialog[transition="from-right"]:not([type="modeless"]) {
-  left: 100%;
-  transform: translateY(-50%);
-  transition: left 0.3s;
-}
+  /** FROM-RIGHT **/
+  fs-dialog[transition="from-right"]:not([type="modeless"]) {
+    left: 100%;
+    transform: translateY(-50%);
+    transition: left 0.3s;
+  }
 
-fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+  fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 </style>
 
 <!-- 1. Since we're not using shadow DOM and can't use <slot> elements, we can only
@@ -227,8 +227,9 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
    * Initialize the dialog, add events, and accessibility features. Should only change
    * the DOM on attached callback otherwise it breaks Polymer bindings.
    */
-  fsDialog.baseDialog.attachedCallback = function (onOpenDialogFunction, onCloseDialogFunction) {
-    // var root = this.getRootNode();
+  fsDialog.baseDialog.appendStyles = function(doc, selector, thisEl) {
+    // TODO: thisEl.getRootNode doesn't work on IE 11
+    var root = thisEl.getRootNode();
 
     // // In polyfilled browsers there is no shadow DOM so global styles still style
     // // the "fake" shadow DOM. We need to test for truly native support so we know
@@ -236,10 +237,15 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     // // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
     // // returns true when it's just a document-fragment in polyfilled browsers
     // // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
-    // if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-dialog]')) {
-    //   var styles = doc.querySelector('style[data-fs-dialog]').cloneNode(true);
-    //   root.appendChild(styles);
-    // }
+    if (root.toString() === '[object ShadowRoot]' && !root.querySelector(selector)) {
+      var styles = doc.querySelector(selector).cloneNode(true);
+      root.appendChild(styles);
+    }
+
+  };
+
+  fsDialog.baseDialog.attachedCallback = function (onOpenDialogFunction, onCloseDialogFunction) {
+    fsDialog.baseDialog.appendStyles(doc, 'style[data-fs-dialog]', this);
 
     var clone = document.importNode(template.content, true);
 
@@ -248,7 +254,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     var bodyEl = this.querySelector('.fs-dialog__body');
     var headerEl = this.querySelector('header');
     var footerEl = this.querySelector('footer');
-    var maskEl;
+    var resolvePromise, rejectPromise;
 
     // set aria-label on close button for screen readers
     closeEl.setAttribute('aria-label', FS.i18n('fs.shared.fsDialog.CLOSE'));
@@ -276,57 +282,69 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
     // open the dialog
     this.open = function(optionsObj) {
-      // Do not open a dialog that is already opened
-      if (this.opened) return;
-      // optionsObj example
-      // {
-      //   focusBackElement
-      // }
+      var pendingPromise = new Promise(function(resolve, reject) {
+        resolvePromise = resolve;
+        rejectPromise = reject;
+      }.bind(this));
 
-      // add dialog to the stack unless it is a modeless dialog
-      if (!this.doNotUseInStack) {
-        FS.dialog.service.addDialogToStack(this);
+      try{
+        // Do not open a dialog that is already opened
+        if (this.opened) return;
+        // TODO: optionsObj example
+        // {
+        //   focusBackElement
+        // }
+
+        // add dialog to the stack unless it is a modeless dialog
+        if (!this.doNotUseInStack) {
+          FS.dialog.service.addDialogToStack(this);
+        }
+
+        // call base a11y open function
+        this._a11yOpenFunction();
+
+        // allow multiple dialogs to be open at a time by incrementing z-index by
+        // the order they were opened
+        zIndex += zIndexIncrement;
+        this.style.zIndex = zIndex;
+
+        // call dialog-type specific open logic
+        if(onOpenDialogFunction) onOpenDialogFunction.bind(this)(optionsObj);
+
+        // this triggers the css changes to show the dialog
+        this.setAttribute('opened', '');
+
+        // setup event listeners
+        this.addEventListener('click', dialogClickHandler);
+        this.addEventListener('keydown', closeDialogOnEscKey);
+
+        if (this.dismissOnBlur) {
+          this.addEventListener('focusout', this._focusoutHandler);
+        }
+
+        // when the body of the dialog scrolls we need to allow keyboard users to
+        // focus the scrolling content so they can use the up/down arrow keys
+        // to scroll
+        // @see https://stackoverflow.com/questions/4814398/how-can-i-check-if-a-scrollbar-is-visible
+        // @see https://github.com/angular/material/issues/2961
+        // @see https://github.com/miguelcobain/ember-paper/pull/393
+        // TODO: in cases like the temple flyout this may actually just always need to be set since
+        //       the dialog will change its size after it gets more data
+        if (bodyEl && bodyEl.scrollHeight > bodyEl.clientHeight) {
+          bodyEl.setAttribute('tabindex', 0);
+        }
+
+        // fire an event for the outside world to hear
+        this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
+      } catch (err) {
+        rejectPromise(err);
       }
 
-      // call base a11y open function
-      this._a11yOpenFunction();
-
-      // allow multiple dialogs to be open at a time by incrementing z-index by
-      // the order they were opened
-      zIndex += zIndexIncrement;
-      this.style.zIndex = zIndex;
-
-      // call dialog-type specific open logic
-      onOpenDialogFunction.bind(this)(optionsObj)
-
-      // this triggers the css changes to show the dialog
-      this.setAttribute('opened', '');
-
-      // setup event listeners
-      this.addEventListener('click', dialogClickHandler);
-      this.addEventListener('keydown', closeDialogOnEscKey);
-
-      if (this.dismissOnBlur) {
-        this.addEventListener('focusout', this._focusoutHandler);
-      }
-
-      // when the body of the dialog scrolls we need to allow keyboard users to
-      // focus the scrolling content so they can use the up/down arrow keys
-      // to scroll
-      // @see https://stackoverflow.com/questions/4814398/how-can-i-check-if-a-scrollbar-is-visible
-      // @see https://github.com/angular/material/issues/2961
-      // @see https://github.com/miguelcobain/ember-paper/pull/393
-      // TODO: in cases like the temple flyout this may actually just always need to be set since
-      //       the dialog will change its size after it gets more data
-      if (bodyEl && bodyEl.scrollHeight > bodyEl.clientHeight) {
-        bodyEl.setAttribute('tabindex', 0);
-      }
-
-      // fire an event for the outside world to hear
-      this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
+      // return a promise that will resolve when the dialog is closed.
+      return pendingPromise;
     };
 
-    // close the dialog (event fired from a11y-enhancer)
+    // close the dialog
     this.close = function(optionsObj) {
       // Do not close a dialog that is already closed
       if (!this.opened) return;
@@ -344,8 +362,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
       this.removeAttribute('opened');
 
       // call dialog-type specific close logic
-      // TODO: this needs to check if it exists before trying to run it
-      onCloseDialogFunction.bind(this)();
+      if (onCloseDialogFunction) onCloseDialogFunction.bind(this)();
 
       zIndex -= zIndexIncrement;
 
@@ -357,23 +374,14 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
       // fire an event for the outside world to hear
       this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
+
+      resolvePromise();
+      return this.pendingPromise;
     };
 
-    // Object.defineProperty(this, 'opened', {
-    //   get: function() {
-    //     return this._opened;
-    //   },
-    //   set: function(value) {
-    //     this._opened = value;
-
-    //     // if (value) {
-    //     //   this.open();
-    //     // }
-    //     // else {
-    //     //   this.close();
-    //     // }
-    //   }
-    // });
+    this.closeAndCloseChildren = function() {
+      FS.dialog.service.closeDialogAndAllChildren(this);
+    };
 
     // set the initial dismissOnBlur value
     if (this.hasAttribute('dismiss-on-blur')) {
@@ -463,6 +471,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     // console.log('focusout relatedTarget', e.relatedTarget);
     window.removeEventListener('focus', dialog._focusoutHandler);
     // use setTimout so that we get the correct document.activeElement
+    // TODO: look into using the related target instead of activeElement if possible
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
       setTimeout(function(){
         var activeElement = document.activeElement;
@@ -480,7 +489,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
               return true;
             }
           })
-          // if there is a related target, cancel the foucsback
+          // TODO: if there is a related target, cancel the foucsback
         }
       },0)
     }
