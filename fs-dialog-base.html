@@ -227,9 +227,9 @@
    * Initialize the dialog, add events, and accessibility features. Should only change
    * the DOM on attached callback otherwise it breaks Polymer bindings.
    */
-  fsDialog.baseDialog.attachedCallback = function (onOpenDialogFunction, onCloseDialogFunction) {
-    // TODO: this.getRootNode doesn't work on IE 11
-    var root = this.getRootNode();
+  fsDialog.baseDialog.appendStyles = function(doc, selector, thisEl) {
+    // TODO: thisEl.getRootNode doesn't work on IE 11
+    var root = thisEl.getRootNode();
 
     // // In polyfilled browsers there is no shadow DOM so global styles still style
     // // the "fake" shadow DOM. We need to test for truly native support so we know
@@ -237,10 +237,15 @@
     // // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
     // // returns true when it's just a document-fragment in polyfilled browsers
     // // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
-    if (root.toString() === '[object ShadowRoot]' && !root.querySelector('style[data-fs-dialog]')) {
-      var styles = doc.querySelector('style[data-fs-dialog]').cloneNode(true);
+    if (root.toString() === '[object ShadowRoot]' && !root.querySelector(selector)) {
+      var styles = doc.querySelector(selector).cloneNode(true);
       root.appendChild(styles);
     }
+
+  };
+
+  fsDialog.baseDialog.attachedCallback = function (onOpenDialogFunction, onCloseDialogFunction) {
+    fsDialog.baseDialog.appendStyles(doc, 'style[data-fs-dialog]', this);
 
     var clone = document.importNode(template.content, true);
 
