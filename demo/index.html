@@ -182,7 +182,7 @@
   </footer>
 </fs-modal-dialog>
 
-<fs-anchored-dialog id="mixed-anchored-anchor" transition="from-bottom">
+<fs-anchored-dialog id="mixed-anchored-anchor" transition="from-bottom" no-pointer>
   <header>
     <h4>From-bottom</h4>
   </header>
@@ -241,10 +241,10 @@
         // var button = anchoredButtons[i];
         var counter = 1;
         button.addEventListener('click', function(event) {
-          var forcedArrowDirection = ['up', 'down', 'left', 'right'][Math.round(Math.random()*3)];
+          var forcedPointerDirection = ['up', 'down', 'left', 'right'][Math.round(Math.random()*3)];
           if (counter%2 === 0) {
-            console.log('FORCED DIRECTION:', forcedArrowDirection)
-            anchoredDialogs[index].open({attachToElement: button, forcedArrowDirection: forcedArrowDirection});
+            console.log('FORCED DIRECTION:', forcedPointerDirection)
+            anchoredDialogs[index].open({attachToElement: button, forcedPointerDirection: forcedPointerDirection});
           } else {
             console.log('AUTO CHOOSE DIRECTION')
             anchoredDialogs[index].open({attachToElement: button});
