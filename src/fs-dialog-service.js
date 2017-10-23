@@ -36,9 +36,17 @@
     var reverseStack = [].concat(dialogStack.reverse());
     var index = reverseStack.indexOf(dialogElement);
     var closeDialogs = [];
+    var animationToUseToClose = dialogElement.getAttribute('transition');
     reverseStack.some(function(dialog, dialogIndex) {
       if (dialogIndex <= index) {
+        var animationToRestore = dialog.getAttribute('transition');
+        if (animationToUseToClose) {
+          dialog.setAttribute('transition', animationToUseToClose);
+        }
         dialog.close();
+        setTimeout(function(){
+          dialog.setAttribute('transition', animationToRestore);
+        }, 300)
       } else {
         return true;
       }

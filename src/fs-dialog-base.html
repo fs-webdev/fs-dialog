@@ -166,36 +166,72 @@
       transform: translate(0, 0) !important;
       position: absolute;
     }
-  }
-  /** TODO: update from-bottom and from-right styles **/
 
-  /** FROM-BOTTOM **/
-  fs-dialog[transition="from-bottom"]:not([type="modeless"]) {
+    /** Mobile Transitions **/
+    fs-anchored-dialog[transition] {
+      transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+    }
+    fs-anchored-dialog[transition][opened] {
+      transition: visibility 0s, opacity 0s;
+    }
+
+    fs-modal-dialog[transition="from-bottom"],
+    fs-anchored-dialog[transition="from-bottom"] {
+      top: 100% !important;
+      transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+    }
+
+    fs-modal-dialog[transition="from-bottom"][opened],
+    fs-anchored-dialog[transition="from-bottom"][opened] {
+      top: 0 !important;
+      transition: top 0.3s;
+    }
+
+    fs-modal-dialog[transition="from-right"],
+    fs-anchored-dialog[transition="from-right"] {
+      left: 100% !important;
+      transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+    }
+
+    fs-modal-dialog[transition="from-right"][opened],
+    fs-anchored-dialog[transition="from-right"][opened] {
+      left: 0 !important;
+      transition: left 0.3s;
+    }
+  }
+
+  /** Mobile Transitions **/
+  /** TODO: do we need  transitions when we are not on mobile? **/
+ /* fs-modal-dialog[transition] {
+    transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+  }
+  fs-modal-dialog[transition][opened] {
+    transition: visibility 0s, opacity 0s;
+  }
+
+  fs-modal-dialog[transition="from-bottom"] {
     top: 100%;
     transform: translateX(-50%);
+    transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+  }
+
+  fs-modal-dialog[transition="from-bottom"][opened] {
+    top: 50%;
+    transform: translate(-50%, -50%);
     transition: top 0.3s;
   }
 
-  fs-dialog[transition="from-bottom"][open]:not([type="modeless"]) {
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-
-
-
-
-  /** FROM-RIGHT **/
-  fs-dialog[transition="from-right"]:not([type="modeless"]) {
+  fs-modal-dialog[transition="from-right"] {
     left: 100%;
     transform: translateY(-50%);
-    transition: left 0.3s;
+    transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
   }
 
-  fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
+  fs-modal-dialog[transition="from-right"][opened] {
     left: 50%;
     transform: translate(-50%, -50%);
-  }
+    transition: left 0.3s;
+  }*/
 </style>
 
 <!-- 1. Since we're not using shadow DOM and can't use <slot> elements, we can only
