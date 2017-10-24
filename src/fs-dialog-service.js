@@ -44,9 +44,10 @@
           dialog.setAttribute('transition', animationToUseToClose);
         }
         dialog.close();
+        // Restsore the animation direction after the transition has finished
         setTimeout(function(){
           dialog.setAttribute('transition', animationToRestore);
-        }, 300)
+        }, 300);
       } else {
         return true;
       }
