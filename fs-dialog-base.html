@@ -34,13 +34,6 @@
     width: 100%;
   }
 
-  fs-modal-dialog {
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(0.7);
-    transition: opacity 0.3s, visibility 0s linear 0.3s, transform 0.3s; /* [2] */
-  }
-
   /* [1] */
   fs-modeless-dialog[opened],
   fs-modal-dialog[opened],
@@ -247,10 +240,17 @@
 
 </template>
 
+<template id="fs-dialog-tabindex-template">
+
+  <div id="fs-dialog-tab-loop-element" tabindex="0" style="position:absolute;left:0;top:0;"></div>
+
+</template>
+
 <script>
 (function(window, document) {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
   var template = doc.querySelector('#fs-dialog-template');
+  var tabindexTemplate = doc.querySelector('#fs-dialog-tabindex-template');
   FS._registerTranslations({"de":{"_LRM_PKTAG439":"fs-dialog_1_146 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Schließen"},"en":{"fs.shared.fsDialog.CLOSE":"Close"},"eo":{"fs.shared.fsDialog.CLOSE":"[Çļöšé--- П國カ내]"},"es":{"_LRM_PKTAG33":"fs-dialog_2_101 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Cerrar"},"fr":{"_LRM_PKTAG930":"fs-dialog_1_102 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fermer"},"it":{"_LRM_PKTAG257":"fs-dialog_1_103 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Chiudi"},"ja":{"_LRM_PKTAG68":"fs-dialog_1_104 - FULL-FILE","fs.shared.fsDialog.CLOSE":"閉じる"},"ko":{"_LRM_PKTAG569":"fs-dialog_1_105 - FULL-FILE","fs.shared.fsDialog.CLOSE":"닫기"},"pt":{"_LRM_PKTAG662":"fs-dialog_1_106 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fechar"},"ru":{"_LRM_PKTAG275":"fs-dialog_1_107 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Закрыть"},"zh":{"_LRM_PKTAG645":"fs-dialog_1_108 - FULL-FILE","fs.shared.fsDialog.CLOSE":"關閉"}});
 
   var zIndex = 990;
@@ -284,6 +284,8 @@
     fsDialog.baseDialog.appendStyles(doc, 'style[data-fs-dialog]', this);
 
     var clone = document.importNode(template.content, true);
+    var tabindexEl = document.importNode(tabindexTemplate.content, true).querySelector('#fs-dialog-tab-loop-element');
+    this._tabindexEl = tabindexEl;
 
     // selectors
     var closeEl = clone.querySelector('.fs-dialog__close');
@@ -304,14 +306,15 @@
       this.insertBefore(closeEl, this.firstChild);
     }
 
+    this.appendChild(tabindexEl);
     this.appendChild(clone);
     this.setAttribute('role', 'dialog');
     a11yEnhancer.dialog(this);
 
-    // save off the ally open and close functions that it added for us. We will call them later, but they
-    // don't provide us with hooks, so we run into timing issues if we just wait for their events.
+    // // save off the ally open and close functions that it added for us. We will call them later, but they
+    // // don't provide us with hooks, so we run into timing issues if we just wait for their events.
     this._a11yOpenFunction = this.open;
-    this._a11yCloseFunction = this.close;
+    // this._a11yCloseFunction = this.close;
 
     // this._opened = false;
     this._focusoutHandler = focusoutHandler.bind(this);
@@ -324,6 +327,7 @@
       }.bind(this));
 
       try{
+        optionsObj = optionsObj || {};
         // Do not open a dialog that is already opened
         if (this.opened) return;
         // TODO: optionsObj example
@@ -338,6 +342,14 @@
 
         // call base a11y open function
         this._a11yOpenFunction();
+        this.focusBackElement = optionsObj.focusBackElement || document.activeElement;
+
+        // TODO: uninert self
+
+        this.removeAttribute('aria-hidden');
+
+        // TODO: inert stuff
+        // TODO: make sure body overflow is set
 
         // allow multiple dialogs to be open at a time by incrementing z-index by
         // the order they were opened
@@ -350,9 +362,23 @@
         // this triggers the css changes to show the dialog
         this.setAttribute('opened', '');
 
+        // wait for the css animations to run in case a modal is hidden (display: none,
+        // visibility: hidden, inert) as the browser will not focus a hidden element
+        setTimeout(function (e) {
+          // focus the dialog if no element has autofocus attribute
+          if (!this.querySelector('[autofocus]')) {
+            this.focus();
+          } else {
+            this.querySelector('[autofocus]').focus();
+          }
+        }.bind(this), 0);
+
+
+
         // setup event listeners
         this.addEventListener('click', dialogClickHandler);
         this.addEventListener('keydown', closeDialogOnEscKey);
+        this._tabindexEl.addEventListener('focus', tabLooperFocusHandler);
 
         if (this.dismissOnBlur) {
           this.addEventListener('focusout', this._focusoutHandler);
@@ -393,6 +419,7 @@
       // do these functions need to be bound to this/be added to this?
       this.removeEventListener('click', dialogClickHandler);
       this.removeEventListener('keydown', closeDialogOnEscKey);
+      this._tabindexEl.removeEventListener('focus', tabLooperFocusHandler);
 
       // css to close the dialogs
       this.removeAttribute('opened');
@@ -403,7 +430,15 @@
       zIndex -= zIndexIncrement;
 
       // call base a11y close function
-      this._a11yCloseFunction();
+      // this._a11yCloseFunction();
+      this.setAttribute('aria-hidden', true);
+
+      // TODO: uninert things
+      // TODO: make sure body overflow is reset
+
+      if (!this.cancelFocusback) this.focusBackElement.focus();
+      this.cancelFocusback = false;
+      this.focusBackElement = null;
 
       // remove dialog from stack
       FS.dialog.service.removeDialogFromStack(this);
@@ -501,10 +536,10 @@
   }
   function focusoutHandler(e) {
     var dialog = this;
-    // console.log('focusout dialog', this);
-    // console.log('focusout event', e);
-    // console.log('focusout target', e.target);
-    // console.log('focusout relatedTarget', e.relatedTarget);
+    console.log('focusout dialog', this);
+    console.log('focusout event', e);
+    console.log('focusout target', e.target);
+    console.log('focusout relatedTarget', e.relatedTarget);
     window.removeEventListener('focus', dialog._focusoutHandler);
     // use setTimout so that we get the correct document.activeElement
     // TODO: look into using the related target instead of activeElement if possible
@@ -519,6 +554,9 @@
           var reverseStack = [].concat(FS.dialog.service.getStack().reverse());
           reverseStack.some(function(dialog) {
             if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
+              if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
+                dialog.cancelFocusback = true;
+              }
               dialog.close();
               return;
             } else {
@@ -530,6 +568,10 @@
       },0)
     }
   }
+  function tabLooperFocusHandler(e) {
+    console.log('looper function', e)
+    this.parentElement.focus();
+  }
 
   /**
    * Check for events that should close the dialog.
@@ -539,6 +581,8 @@
     // 27 is the code for the escape key
     if (e.which === 27) {
       this.close();
+    } else {
+      console.log('keyboard event', e)
     }
   }
 
