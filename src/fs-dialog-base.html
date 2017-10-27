@@ -411,10 +411,16 @@
       zIndex -= zIndexIncrement;
 
       // TODO: make sure body overflow is reset
-
-      if (!this.cancelFocusback) this.focusBackElement.focus();
-      this.cancelFocusback = false;
-      this.focusBackElement = null;
+      if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
+        setTimeout(function() {
+          this.focusBackElement.focus();
+          this.cancelFocusback = false;
+          this.focusBackElement = null;
+        }.bind(this), 100);
+      } else {
+        this.cancelFocusback = false;
+        this.focusBackElement = null;
+      }
 
       // remove dialog from stack
       FS.dialog.service.removeDialogFromStack(this);
