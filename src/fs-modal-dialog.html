@@ -71,7 +71,7 @@ fs-modal-dialog[opened] {
       bodyEl.setAttribute('role', 'main');
     }
 
-    var keydownHandler = fsModalDialog.baseDialog.closeDialogOnEscKey.bind(this);
+    var keydownHandler = fsModalDialog.baseDialog.keydownHandler.bind(this);
 
     function openModalFunction() {
       this._a11yOpen();
