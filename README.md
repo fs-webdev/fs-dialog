@@ -82,3 +82,28 @@ All events bubble and are fired on the dialog that triggered the event.
 * `autofocus` - Focus this element when the dialog is opened. By default, the dialog itself is focused when opened.
 * `data-dialog-dismiss` - Fire the `fs-dialog-dismiss` event when pressed and close the dialog. Use this attribute to automatically close the dialog. The close X has this attribute.
 * `data-dialog-confirm` - Fire the `fs-dialog-confirm` event when pressed and do not close the dialog. Use this attribute to preform asynchronous actions when the event is fired. You will have to tell the dialog when to close.
+
+
+## Submodules for Common Files
+
+The `tree-common-build-scripts` folder is a Git submodule, made to house build-related code common across multiple repositories. In order to update, run:
+
+```bash
+git pull --recurse-submodules; git submodule update --remote --recursive
+```
+
+## Running Tests
+
+This component is set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester).
+
+To run tests locally, run:
+
+```bash
+wct --skip-plugin sauce
+```
+
+If you need to debug locally, run:
+
+```bash
+polymer test --skip-plugin sauce --local chrome -p
+```
