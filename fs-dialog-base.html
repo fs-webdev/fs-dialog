@@ -418,6 +418,9 @@
           this.focusBackElement = null;
         }.bind(this), 100);
       } else {
+        if (!this.cancelFocusback) {
+          this.focusBackElement.focus();
+        }
         this.cancelFocusback = false;
         this.focusBackElement = null;
       }
