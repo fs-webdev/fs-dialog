@@ -555,7 +555,7 @@
     if (evt.which === 27) {
       // 27 is the code for the escape key
       this.close();
-    } else if (evt.which === 9) {
+    } else if (this.tagName !== 'FS-MODELESS-DIALOG' && evt.which === 9) {
       // catches tab key
 
       var focusableChildren = getFocusableChildren(this);
