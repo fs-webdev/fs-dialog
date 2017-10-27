@@ -3,11 +3,33 @@
     "local": {
       "browsers": [ "chrome" ]
     },
+    "sauce": {
+      "browsers": [
+        {
+          "browserName":  "internet explorer",
+          "platform":     "Windows 8.1",
+          "version":      "11"
+        },
+        {
+          "browserName":  "safari",
+          "platform":     "OS X 10.11",
+          "version":      "10"
+        },
+        {
+          "browserName":  "chrome",
+          "platform":     "Linux"
+        },
+        {
+          "browserName":  "firefox",
+          "platform":     "Linux"
+        }
+      ]
+    },
     "istanbul": {
-      "dir": "./coverage",
+      "dir": "./reports/coverage",
       "reporters": ["text", "text-summary", "lcov"],
       "include": [
-        "**/fs-dialog.html"
+        "**/fs-dialog/*.*"
       ],
       "exclude": [
         "**/bin/*",
@@ -16,7 +38,18 @@
         "**/locales/*",
         "**/reports/*",
         "**/test/*"
-      ]
+      ],
+      "thresholds": {
+        "global": {
+          "statements": 0,
+          "branches": 0,
+          "functions": 0
+        }
+      }
+    },
+    "size-limit": {
+      "path": "fs-dialog.html",
+      "limit": "15 KB"
     }
   }
 }
