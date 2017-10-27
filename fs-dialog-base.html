@@ -309,11 +309,11 @@
     this.appendChild(tabindexEl);
     this.appendChild(clone);
     this.setAttribute('role', 'dialog');
-    a11yEnhancer.dialog(this);
+    //a11yEnhancer.dialog(this);
 
     // // save off the ally open and close functions that it added for us. We will call them later, but they
     // // don't provide us with hooks, so we run into timing issues if we just wait for their events.
-    this._a11yOpenFunction = this.open;
+    //this._a11yOpenFunction = this.open;
     // this._a11yCloseFunction = this.close;
 
     // this._opened = false;
@@ -340,15 +340,8 @@
           FS.dialog.service.addDialogToStack(this);
         }
 
-        // call base a11y open function
-        this._a11yOpenFunction();
         this.focusBackElement = optionsObj.focusBackElement || document.activeElement;
 
-        // TODO: uninert self
-
-        this.removeAttribute('aria-hidden');
-
-        // TODO: inert stuff
         // TODO: make sure body overflow is set
 
         // allow multiple dialogs to be open at a time by incrementing z-index by
@@ -429,11 +422,6 @@
 
       zIndex -= zIndexIncrement;
 
-      // call base a11y close function
-      // this._a11yCloseFunction();
-      this.setAttribute('aria-hidden', true);
-
-      // TODO: uninert things
       // TODO: make sure body overflow is reset
 
       if (!this.cancelFocusback) this.focusBackElement.focus();

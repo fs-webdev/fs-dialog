@@ -45,47 +45,122 @@ fs-modal-dialog[opened] {
     var maskEl;
 
     // initialize
+    this._a11yOpen = a11yOpen.bind(this);
+    this._a11yClose = a11yClose.bind(this);
+    this.setAttribute('aria-hidden', true);
 
     // use the attachedCallback for the base dialog and pass in our open and close functions
     fsModalDialog.baseDialog.attachedCallback.bind(this)(openModalFunction, closeModalFunction)
 
 
-    // can only check for type after a11yEnhancer has run
-    // if (this.type === 'modal') {
+    // each modal dialog will get its own mask so when dialogs stack we can
+    // know exactly which one to close
+    maskEl = document.createElement('div');
+    maskEl.setAttribute('data-no-inert', '');
+    maskEl.setAttribute('tabindex', '-1');
+    maskEl.classList.add('fs-dialog__mask');
 
-      // each modal dialog will get its own mask so when dialogs stack we can
-      // know exactly which one to close
-      maskEl = document.createElement('div');
-      maskEl.setAttribute('data-no-inert', '');
-      maskEl.setAttribute('tabindex', '-1');
-      maskEl.classList.add('fs-dialog__mask');
+    // add mask as a previous sibling to the dialog so it's below it in z-index
+    this.parentNode.insertBefore(maskEl, this);
 
-      // add mask as a previous sibling to the dialog so it's below it in z-index
-      this.parentNode.insertBefore(maskEl, this);
-
-      // add role=main to body of a modal dialog to improve accessibility for screen
-      // readers. can't just use the <main> element since modeless dialogs don't
-      // hide any <main> elements on the page
-      // @see https://web-a11y.slack.com/archives/C042TSFGN/p1499454746902809
-      if (bodyEl) {
-        bodyEl.setAttribute('role', 'main');
-      }
-    // }
+    // add role=main to body of a modal dialog to improve accessibility for screen
+    // readers. can't just use the <main> element since modeless dialogs don't
+    // hide any <main> elements on the page
+    // @see https://web-a11y.slack.com/archives/C042TSFGN/p1499454746902809
+    if (bodyEl) {
+      bodyEl.setAttribute('role', 'main');
+    }
 
     var keydownHandler = fsModalDialog.baseDialog.closeDialogOnEscKey.bind(this);
 
     function openModalFunction() {
+      this._a11yOpen();
       maskEl.addEventListener('keydown', keydownHandler);
       maskEl.setAttribute('opened', '');
       maskEl.style.zIndex = this.style.zIndex;
     }
 
     function closeModalFunction() {
+      this._a11yClose();
       maskEl.removeAttribute('opened');
       maskEl.removeEventListener('keydown', keydownHandler);
     }
 
   };
+
+  function a11yOpen() {
+    console.log('a11yOpen this:', this);
+    console.log('a11yOpen aria-hidden: ', this.hasAttribute('aria-hidden'));
+    if (!this.hasAttribute('aria-hidden')) return;
+
+    this.inert = false;
+
+    // inert will restore the previous state of aria-hidden (true) so we must
+    // remove the aria-hidden attribute after inert has finished
+    this.removeAttribute('aria-hidden');
+
+
+    console.log("inerting...");
+
+    // we need to inert every subtree except for the one that contains this dialog
+    // walk up the DOM tree and add inert to all children except for the child
+    // that contains the dialog's tree. save each node we inerted so we don't have
+    // to walk the tree again to uninert nodes
+    this._inertedElements = [];
+    this._uninertedElements = [];
+    var el = this;
+
+    do {
+
+      // an element that is a child of a shadowroot will have a parentNode but not
+      // a parentElement. a shadowroot element has neither but instead has a host
+      var parent = el.parentNode || el.host;
+
+      // if the dialogs subtree has already been inerted, then we need to uninert it
+      if (parent.inert) {
+        parent.inert = false;
+        this._uninertedElements.push(parent);
+      }
+
+      for (var i = 0, child; child = parent.children[i]; i++) {
+
+        // by only adding inert to elements that have not been inerted, we can
+        // preserve a11y through stacking modals
+        if (!(child === el || child.hasAttribute('data-no-inert') || child.inert)) {
+          child.inert = true;
+          this._inertedElements.push(child);
+        }
+      }
+
+      el = parent;
+    } while (el !== document.body);
+  }
+
+  function a11yClose () {
+    console.log('a11yClose aria-hidden: ', this.hasAttribute('aria-hidden'));
+    if (this.hasAttribute('aria-hidden')) return;
+
+    this.setAttribute('aria-hidden', true);
+
+    console.log('allyClose _inertedElements:', this._inertedElements);
+
+    // in Safari, removing the overflow style or uninerting nodes causes a
+    // visually delay in any css animations so we have to wrap it in a set timeout
+    // to get it off the current frame (50ms doesn't seem to be enough)
+    setTimeout(function () {
+      document.body.style.overflow = null;
+
+      // uninert all nodes
+      this._inertedElements.forEach(function (node) {
+        node.inert = false;
+      });
+      this._uninertedElements.forEach(function (node) {
+        node.inert = true;
+      });
+      this._inertedElements = null;
+      this._uninertedElements = null;
+    }.bind(this), 100);
+  }
 
   fsModalDialog.attributeChangedCallback = fsModalDialog.baseDialog.attributeChangedCallback;
 
