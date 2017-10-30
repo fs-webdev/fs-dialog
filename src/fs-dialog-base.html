@@ -158,6 +158,7 @@
       bottom: 0 !important;
       right: 0 !important;
       transform: translate(0, 0) !important;
+      position: fixed;
     }
 
     /** Mobile Transitions **/
@@ -234,13 +235,13 @@
   the fs-anchor-dialog-open class will be added to the body element.
 -->
 <style id="fs-dialog-body-style">
-    .fs-modal-dialog-open {
-      overflow: hidden;
+    body.fs-modal-dialog-open {
+      overflow: hidden !important;
     }
 
     @media screen and (max-width:480px) {
-      .fs-anchor-dialog-open {
-        overflow: hidden;
+      body.fs-anchor-dialog-open {
+        overflow: hidden !important;
       }
     }
 </style>
@@ -315,7 +316,7 @@
       this.insertBefore(closeEl, this.firstChild);
     }
 
-    // Add styles to body
+    // Add style node to document
     if(!document.querySelector('#fs-dialog-body-style')) {
       document.querySelector('body').appendChild(doc.querySelector('#fs-dialog-body-style').cloneNode(true));
     }
@@ -323,11 +324,6 @@
     this.appendChild(clone);
     this.setAttribute('role', 'dialog');
     a11yEnhancer.dialog(this);
-
-    // // save off the ally open and close functions that it added for us. We will call them later, but they
-    // // don't provide us with hooks, so we run into timing issues if we just wait for their events.
-    //this._a11yOpenFunction = this.open;
-    // this._a11yCloseFunction = this.close;
 
     // this._opened = false;
     this._focusoutHandler = focusoutHandler.bind(this);
@@ -341,12 +337,13 @@
 
       try{
         optionsObj = optionsObj || {};
+        // optionsObj example:
+        // {
+        //   focusBackElement: <element>
+        // }
+
         // Do not open a dialog that is already opened
         if (this.opened) return;
-        // TODO: optionsObj example
-        // {
-        //   focusBackElement
-        // }
 
         // add dialog to the stack unless it is a modeless dialog
         if (!this.doNotUseInStack) {
@@ -354,8 +351,6 @@
         }
 
         this.focusBackElement = optionsObj.focusBackElement || document.activeElement;
-
-        // TODO: make sure body overflow is set
 
         // allow multiple dialogs to be open at a time by incrementing z-index by
         // the order they were opened
@@ -370,7 +365,8 @@
 
         // wait for the css animations to run in case a modal is hidden (display: none,
         // visibility: hidden, inert) as the browser will not focus a hidden element
-        setTimeout(function (e) {
+        setTimeout(function () {
+          if (!this.opened) return;
           // focus the dialog if no element has autofocus attribute
           if (!this.querySelector('[autofocus]')) {
             this.focus();
@@ -434,6 +430,7 @@
       zIndex -= zIndexIncrement;
 
       if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
+        // this has a settimeout because of modal dialog's uninert needing to run before we can do the focusback
         setTimeout(function() {
           this.focusBackElement.focus();
           this.cancelFocusback = false;
@@ -614,6 +611,7 @@
     function getFocusableChildren (node) {
       var focusableElementsSelector = ['a[href]:not([tabindex="-1"])', 'area[href]:not([tabindex="-1"])', 'input:not([disabled]):not([tabindex="-1"])', 'select:not([disabled]):not([tabindex="-1"])', 'textarea:not([disabled]):not([tabindex="-1"])', 'button:not([disabled]):not([tabindex="-1"])', 'iframe:not([tabindex="-1"])', 'object:not([tabindex="-1"])', 'embed:not([tabindex="-1"])', '*[tabindex]:not([tabindex="-1"])', '*[contenteditable]:not([tabindex="-1"])', '[focusable-component]'];
 
+      // filter out any elements that are not visible
       focusableElements = Array.prototype.filter.call(node.querySelectorAll(focusableElementsSelector.join(',')), function(child) {
         return !!(child.offsetWidth || child.offsetHeight || child.getClientRects().length);
       });
