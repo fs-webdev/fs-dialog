@@ -455,7 +455,7 @@
       // if there are no dialogs with the same tag name in the stack, remove the associated open class from the document body
       if(this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG') {
         var tagName = this.tagName;
-        if(FS.dialog.service.getStack().filter(function(item) { return item.tagName === tagName && item.getAttribute('fullscreen-on-mobile') === 'false'; }).length === 0) {
+        if(FS.dialog.service.getStack().filter(function(item) { return item.tagName === tagName && item.getAttribute('fullscreen-on-mobile') !== 'false'; }).length === 0) {
           document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '');
         }
       }
