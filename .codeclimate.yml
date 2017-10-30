@@ -55,6 +55,7 @@ exclude_paths:
 - bower_components/
 - build/
 - dist/
+- src/
 - node_modules/
 - "**/reports/**/*"
 - "**/test/**/*"
