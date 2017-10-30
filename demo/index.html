@@ -8,6 +8,8 @@
 
     <title>fs-dialog demo</title>
 
+    <script src="array-from-polyfill.js"></script>
+    <script src="../../es6-promise/es6-promise.auto.js"></script>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <style>
     .demo-snippet {
@@ -463,7 +465,7 @@
 
 <button class="modal fs-button">Open Dialog</button>
 
-<fs-modal-dialog id="stacking-dialog"x>
+<fs-modal-dialog id="stacking-dialog">
   <header>
     <h4>Top Dialog</h4>
   </header>

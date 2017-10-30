@@ -12,7 +12,8 @@
     "fs-styles": "fs-webdev/fs-styles#^3.x.x",
     "fs-globals": "fs-webdev/fs-globals",
     "a11y-enhancer": "straker/a11y-enhancer",
-    "inert": "https://github.com/straker/inert.git#master"
+    "inert": "https://github.com/straker/inert.git#master",
+    "es6-promise": "^4.1.1"
   },
   "devDependencies": {
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.23",

@@ -3,6 +3,7 @@
 <link rel="import" href="../inert/inert.html">
 
 <script src="../fs-dialog/fs-dialog-service.js"></script>
+<script src="../fs-dialog/get-root-node-polyfill.js"></script>
 <style data-fs-dialog>
   /*
    * 1. The display property cannot be animated so we need to use opacity and visibility
@@ -276,7 +277,6 @@
    * the DOM on attached callback otherwise it breaks Polymer bindings.
    */
   fsDialog.baseDialog.appendStyles = function(doc, selector, thisEl) {
-    // TODO: thisEl.getRootNode doesn't work on IE 11
     var root = thisEl.getRootNode();
 
     // // In polyfilled browsers there is no shadow DOM so global styles still style
