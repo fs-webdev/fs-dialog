@@ -152,12 +152,12 @@
   @media screen and (max-width:480px) {
     fs-modal-dialog:not([fullscreen-on-mobile="false"]),
     fs-anchored-dialog:not([fullscreen-on-mobile="false"]) {
+      border-radius: 0;
       top: 0 !important;
       left: 0 !important;
       bottom: 0 !important;
       right: 0 !important;
       transform: translate(0, 0) !important;
-      position: absolute;
     }
 
     /** Mobile Transitions **/
@@ -225,6 +225,24 @@
     transform: translate(-50%, -50%);
     transition: left 0.3s;
   }*/
+</style>
+
+<!--
+  This style will be appended to the body element when the first modal or anchored
+  dialog is open.  When there is at least one modal open, the fs-modal-dialog-open
+  class will be added to the body element.  When there is an anchored dialog open,
+  the fs-anchor-dialog-open class will be added to the body element.
+-->
+<style id="fs-dialog-body-style">
+    .fs-modal-dialog-open {
+      overflow: hidden;
+    }
+
+    @media screen and (max-width:480px) {
+      .fs-anchor-dialog-open {
+        overflow: hidden;
+      }
+    }
 </style>
 
 <!-- 1. Since we're not using shadow DOM and can't use <slot> elements, we can only
@@ -297,6 +315,11 @@
       this.insertBefore(closeEl, this.firstChild);
     }
 
+    // Add styles to body
+    if(!document.querySelector('#fs-dialog-body-style')) {
+      document.querySelector('body').appendChild(doc.querySelector('#fs-dialog-body-style').cloneNode(true));
+    }
+
     this.appendChild(clone);
     this.setAttribute('role', 'dialog');
     a11yEnhancer.dialog(this);
@@ -356,7 +379,7 @@
           }
         }.bind(this), 0);
 
-
+        document.body.classList.add(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHOR-DIALOG' ? 'fs-anchor-dialog-open' : '');
 
         // setup event listeners
         this.addEventListener('click', dialogClickHandler);
@@ -410,7 +433,6 @@
 
       zIndex -= zIndexIncrement;
 
-      // TODO: make sure body overflow is reset
       if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
         setTimeout(function() {
           this.focusBackElement.focus();
@@ -427,6 +449,14 @@
 
       // remove dialog from stack
       FS.dialog.service.removeDialogFromStack(this);
+
+      // if there are no dialogs with the same tag name in the stack, remove the associated open class from the document body
+      if(this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHOR_DIALOG') {
+        var tagName = this.tagName;
+        if(FS.dialog.service.getStack().filter(function(item) { return item.tagName === tagName; }).length === 0) {
+          document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHOR-DIALOG' ? 'fs-anchor-dialog-open' : '');
+        }
+      }
 
       // fire an event for the outside world to hear
       this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
