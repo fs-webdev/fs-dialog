@@ -110,6 +110,20 @@
 
     function openAnchoredFunction(positionObj) {
       positionObj = positionObj || {};
+
+      if (positionObj.attachToCoordinates && positionObj.attachToCoordinates.x && positionObj.attachToCoordinates.y) {
+        var coordinateElement = document.querySelector('#coordinate-positioning-element');
+        if (!coordinateElement) {
+          coordinateElement = document.createElement('div');
+          coordinateElement.id = 'coordinate-positioning-element';
+          coordinateElement.style.position = 'absolute';
+          document.body.appendChild(coordinateElement);
+        }
+        coordinateElement.style.left = positionObj.attachToCoordinates.x + 'px';
+        coordinateElement.style.top = positionObj.attachToCoordinates.y + 'px';
+        positionObj.attachToElement = coordinateElement;
+      }
+
       positionObj.attachToElement = positionObj.attachToElement || document.activeElement;
       /* positionObj: {
         preferredPointerDirection: [LEFT, RIGHT, UP, DOWN],
@@ -119,7 +133,7 @@
         attachToElement: document.querySelector('button'), // REQUIRED
         noPointer: false, // only attr
         alignment: LEFT | RIGHT | CENTER | TOP | BOTTOM, // attr (alignment) or passed through
-        TODO: attachToCoordinates: {left: 0, top: 0},
+        attachToCoordinates: {x: 0, y: 0}, // global coordinates of where you want the dialog to attach to. This will behave as if there is an invisible element at this point, so the rest of the positioning/pointer direction logic remains the same
         TODO: closeOnScroll: false,
       } */
       // we get the last one in the array because that should be the one that belongs to this dialog in case there are nested popovers
