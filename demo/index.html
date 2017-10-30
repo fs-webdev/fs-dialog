@@ -36,7 +36,7 @@
   </head>
   <body>
 
-    <h3>Default Use</h3>
+    <h3>Modal Dialog Default Use</h3>
     <div class="demo-snippet fs-card">
       <div class="demo">
 <fs-modal-dialog>
@@ -55,14 +55,63 @@
       </div>
     </div>
 
-
-
-
-
-    <h3>Attributes</h3>
+    <h3>Modal Dialog Attributes</h3>
     <div class="demo-snippet fs-card">
-      <div class="demo" >
-<h5>type=modeless</h5>
+      <div class="demo">
+<h5>dismiss-on-blur</h5>
+<fs-modal-dialog dismiss-on-blur>
+  <header>
+    <h4>Modal</h4>
+  </header>
+  <div class="fs-dialog__body">
+    <p>This is a modal dialog. When you click on the greyed out background, the dialog will close</p>
+  </div>
+  <footer>
+    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
+  </footer>
+</fs-modal-dialog>
+
+<button class="fs-button modal">Open Dialog</button>
+
+<h5>transition="from-bottom"</h5>
+<fs-modal-dialog transition="from-bottom">
+  <header>
+    <h4>Modal</h4>
+  </header>
+  <div class="fs-dialog__body">
+    <p>This is a modal dialog. When you are at a screen size of less than 480px, this dialog transitions in from the bottom and transitions out to the bottom</p>
+  </div>
+  <footer>
+    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
+  </footer>
+</fs-modal-dialog>
+
+<button class="fs-button modal">Open Dialog</button>
+
+
+<h5>transition="from-right"</h5>
+<fs-modal-dialog transition="from-right">
+  <header>
+    <h4>Modal</h4>
+  </header>
+  <div class="fs-dialog__body">
+    <p>This is a modal dialog. When you are at a screen size of less than 480px, this dialog transitions in from the right and transitions out to the right</p>
+  </div>
+  <footer>
+    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
+  </footer>
+</fs-modal-dialog>
+
+<button class="fs-button modal">Open Dialog</button>
+
+      </div>
+    </div>
+
+
+
+    <h3>Modeless Dialog Default Use</h3>
+    <div class="demo-snippet fs-card">
+      <div class="demo">
 <fs-modeless-dialog>
   <header>
     <h4>Modeless Dialog</h4>
@@ -70,13 +119,23 @@
   <div class="fs-dialog__body">
     <p>Can be moved and doesn't prevent user interaction of the page.</p>
   </div>
+  <footer>
+    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
+  </footer>
 </fs-modeless-dialog>
 
 <button class="fs-button modeless">Open Dialog</button>
 
-<h5>transition=from-bottom</h5>
+      </div>
+    </div>
 
-<fs-anchored-dialog transition="from-bottom">
+
+
+    <h3>Anchored Dialog Default Use</h3>
+    <div class="demo-snippet fs-card">
+      <div class="demo" >
+<h5>auto-position to fit on screen</h5>
+<fs-anchored-dialog class="auto-position">
 
   <header>
     <h4>From-bottom</h4>
@@ -88,18 +147,265 @@
   <footer>
     <button class="anchored fs-button mixed-anchored-anchor">Open Dialog</button>
   </footer>
-
-
 </fs-anchored-dialog>
 <button class="anchored fs-button">Open Dialog</button>
 
-<h5>transition=from-right</h5>
-<fs-modal-dialog transition="from-bottom" dismiss-on-blur="true">
+<h5>force the direction of the dialog</h5>
+<fs-anchored-dialog id="direction-up">
   <header>
-    <h4>From-right</h4>
+    <h4>direction up</h4>
   </header>
-</fs-modal-dialog>
-<button class="modal fs-button">Open Dialog</button>
+  <div class="fs-dialog__body">
+    body text
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button id="direction-up-button" class="fs-button">Open Dialog Up</button>
+<fs-anchored-dialog id="direction-down">
+  <header>
+    <h4>direction down</h4>
+  </header>
+  <div class="fs-dialog__body">
+    body text
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button id="direction-down-button" class="fs-button">Open Dialog Down</button>
+<fs-anchored-dialog id="direction-left">
+  <header>
+    <h4>direction left</h4>
+  </header>
+  <div class="fs-dialog__body">
+    body text
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button id="direction-left-button" class="fs-button">Open Dialog Left</button>
+<fs-anchored-dialog id="direction-right">
+  <header>
+    <h4>direction right</h4>
+  </header>
+  <div class="fs-dialog__body">
+    body text
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button id="direction-right-button" class="fs-button">Open Dialog Right</button>
+<script>
+  document.querySelector('#direction-up-button').addEventListener('click', function(event) {
+    document.querySelector('#direction-up').open({forcedPointerDirection: 'up'});
+  });
+  document.querySelector('#direction-down-button').addEventListener('click', function(event) {
+    document.querySelector('#direction-down').open({forcedPointerDirection: 'down'});
+  });
+  document.querySelector('#direction-left-button').addEventListener('click', function(event) {
+    document.querySelector('#direction-left').open({forcedPointerDirection: 'left'});
+  });
+  document.querySelector('#direction-right-button').addEventListener('click', function(event) {
+    document.querySelector('#direction-right').open({forcedPointerDirection: 'right'});
+  });
+</script>
+
+<h5>specify preferred pointer positioning order</h5>
+<fs-anchored-dialog id="preferred-positioning">
+  <header>
+    <h4>preferredPointerDirection = ['right', 'down', 'up', 'left'] </h4>
+  </header>
+  <div class="fs-dialog__body">
+    body text
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button id="preferred-positioning-button" class="fs-button">Open Dialog Preferred</button>
+<script>
+  document.querySelector('#preferred-positioning-button').addEventListener('click', function(event) {
+    document.querySelector('#preferred-positioning').open({preferredPointerDirection: ['right', 'down', 'up', 'left']});
+  });
+</script>
+
+      </div>
+    </div>
+
+    <h3>Anchored Dialog Pointerless</h3>
+    <div class="demo-snippet fs-card">
+      <div class="demo">
+
+<h5>auto-position to fit on screen</h5>
+<fs-anchored-dialog no-pointer class="auto-position">
+  <header>
+    <h4>auto position</h4>
+  </header>
+  <div class="fs-dialog__body">
+    body text
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="anchored fs-button">Open Dialog</button>
+
+<h5>force the direction of the dialog</h5>
+<fs-anchored-dialog no-pointer alignment="left" attach-direction="bottom" class="pointerless">
+  <header>
+    <h4>aligned left, attached bottom</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: left and attachDirection: bottom can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned left, attached bottom</button>
+<fs-anchored-dialog no-pointer alignment="center" attach-direction="bottom" class="pointerless">
+  <header>
+    <h4>aligned center, attached bottom</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: center and attachDirection: bottom can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned center, attached bottom</button>
+<fs-anchored-dialog no-pointer alignment="right" attach-direction="bottom" class="pointerless">
+  <header>
+    <h4>aligned right, attached bottom</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: right and attachDirection: bottom can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned right, attached bottom</button>
+
+
+<fs-anchored-dialog no-pointer alignment="left" attach-direction="top" class="pointerless">
+  <header>
+    <h4>aligned left, attached top</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: left and attachDirection: top can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned left, attached top</button>
+<fs-anchored-dialog no-pointer alignment="center" attach-direction="top" class="pointerless">
+  <header>
+    <h4>aligned center, attached top</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: center and attachDirection: top can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned center, attached top</button>
+<fs-anchored-dialog no-pointer alignment="right" attach-direction="top" class="pointerless">
+  <header>
+    <h4>aligned right, attached top</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: right and attachDirection: top can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned right, attached top</button>
+
+
+<fs-anchored-dialog no-pointer alignment="top" attach-direction="left" class="pointerless">
+  <header>
+    <h4>aligned top, attached left</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: top and attachDirection: left can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned top, attached left</button>
+<fs-anchored-dialog no-pointer alignment="center" attach-direction="left" class="pointerless">
+  <header>
+    <h4>aligned center, attached left</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: center and attachDirection: left can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned center, attached left</button>
+<fs-anchored-dialog no-pointer alignment="bottom" attach-direction="left" class="pointerless">
+  <header>
+    <h4>aligned bottom, attached left</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: bottom and attachDirection: left can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned bottom, attached left</button>
+
+
+<fs-anchored-dialog no-pointer alignment="top" attach-direction="right" class="pointerless">
+  <header>
+    <h4>aligned top, attached right</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: top and attachDirection: right can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned top, attached right</button>
+<fs-anchored-dialog no-pointer alignment="center" attach-direction="right" class="pointerless">
+  <header>
+    <h4>aligned center, attached right</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: center and attachDirection: right can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned center, attached right</button>
+<fs-anchored-dialog no-pointer alignment="bottom" attach-direction="right" class="pointerless">
+  <header>
+    <h4>aligned bottom, attached right</h4>
+  </header>
+  <div class="fs-dialog__body">
+    note: alignment: bottom and attachDirection: right can be passed into the open function or can be attributes on the dialog
+  </div>
+  <footer>
+    <button class="fs-button" data-dialog-dismiss>Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="fs-button pointerless-button">Open Dialog aligned bottom, attached right</button>
+
       </div>
     </div>
 
@@ -168,6 +474,28 @@
     <button class="fs-button fs-button--recommended" data-dialog-dismiss>Close</button>
   </footer>
 </fs-modal-dialog>
+      </div>
+    </div>
+
+
+
+
+
+    <h3>Other Functions and Attributes</h3>
+    <div class="demo-snippet fs-card">
+      <div class="demo do-not-codify">
+<h5>autofocus</h5>
+  <p>Set the attribute `autofocus` on the element in the dialog that you want to be focused on first open. If autofocus is not set, the dialog itself gets focus</p>
+<h5>closeAndCloseChildren</h5>
+  <p>To close a dialog and all the dialogs above it in the stack, you can call `&lt;dialog-element&gt;.closeAndCloseChildren()`. This will automatically use the same direction of transition for all dialogs (whatever the dialog element that you use to call the function has).</p>
+<h5>focusable-component</h5>
+  <p>In order to loop users through the modal and anchored dialogs when they press the tab key, we do a query selector to get all focusable elements. If you put a component in the dialog that needs to be able to get focus, please add the attribute `focusable-component` to it so that we don't break tab looping.</p>
+<h5>closeAllDialogs</h5>
+  <p>To close all modal and anchored dialogs on the page you can call `FS.dialog.service.closeAllDialogs()`. This does not close modeless dialogs.</p>
+      </div>
+    </div>
+
+
 
 
 <fs-modal-dialog id="mixed-anchored-modal">
@@ -194,14 +522,12 @@
   </footer>
 </fs-anchored-dialog>
 
-      </div>
-    </div>
 
     <script>
     (function() {
 
       // add automatic code output
-      Array.from(document.querySelectorAll('.demo')).forEach(function(demo) {
+      Array.from(document.querySelectorAll('.demo:not(.do-not-codify)')).forEach(function(demo) {
         var code = demo.innerHTML
           .trim()
           .replace(/<\/?demo-/g, '&lt;')
@@ -222,8 +548,10 @@
       var modelessButtons = document.querySelectorAll('.demo > button.modeless');
       var modalDialogs = document.querySelectorAll('.demo > fs-modal-dialog');
       var modalButtons = document.querySelectorAll('.demo > button.modal');
-      var anchoredDialogs = document.querySelectorAll('.demo > fs-anchored-dialog');
+      var anchoredDialogs = document.querySelectorAll('.demo > fs-anchored-dialog.auto-position');
       var anchoredButtons = document.querySelectorAll('.demo > button.anchored');
+      var pointerlessDialogs = document.querySelectorAll('.demo > fs-anchored-dialog.pointerless');
+      var pointerlessButtons = document.querySelectorAll('.demo > button.pointerless-button');
 
       Array.from(modelessButtons).forEach(function(button, index) {
         button.addEventListener('click', function() {
@@ -235,27 +563,23 @@
           modalDialogs[index].open();
         });
       });
-      Array.from(anchoredButtons).forEach(function(button, index) {
-      // for(var i=0; i < anchoredButtons.length; i++) {
-        // var index = i;
-        // var button = anchoredButtons[i];
-        var counter = 1;
-        button.addEventListener('click', function(event) {
-          var forcedPointerDirection = ['up', 'down', 'left', 'right'][Math.round(Math.random()*3)];
-          if (counter%2 === 0) {
-            console.log('FORCED DIRECTION:', forcedPointerDirection)
-            anchoredDialogs[index].open({attachToElement: button, forcedPointerDirection: forcedPointerDirection});
-          } else {
-            console.log('AUTO CHOOSE DIRECTION')
-            anchoredDialogs[index].open({attachToElement: button});
-          }
-          counter++;
+      Array.from(pointerlessButtons).forEach(function(button, index) {
+        button.addEventListener('click', function() {
+          pointerlessDialogs[index].open();
         });
-      // }
+      });
+      Array.from(anchoredButtons).forEach(function(button, index) {
+        /*
+          TODO: demos:
+          pointer with coordinates (1)
+          pointerless with coordinates (1)
+         */
+        button.addEventListener('click', function(event) {
+          anchoredDialogs[index].open({attachToElement: button});
+        });
       });
 
-
-      // stacking click
+      // stacking clicks
       document.querySelector('button.mixed-anchored-anchor').addEventListener('click', function() {
         document.getElementById('mixed-anchored-anchor').open({attachToElement: document.querySelector('button.mixed-anchored-anchor')});
       });

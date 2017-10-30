@@ -232,7 +232,7 @@
   This style will be appended to the body element when the first modal or anchored
   dialog is open.  When there is at least one modal open, the fs-modal-dialog-open
   class will be added to the body element.  When there is an anchored dialog open,
-  the fs-anchor-dialog-open class will be added to the body element.
+  the fs-anchored-dialog-open class will be added to the body element.
 -->
 <style id="fs-dialog-body-style">
     body.fs-modal-dialog-open {
@@ -240,7 +240,7 @@
     }
 
     @media screen and (max-width:480px) {
-      body.fs-anchor-dialog-open {
+      body.fs-anchored-dialog-open {
         overflow: hidden !important;
       }
     }
@@ -375,7 +375,8 @@
           }
         }.bind(this), 0);
 
-        document.body.classList.add(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHOR-DIALOG' ? 'fs-anchor-dialog-open' : '');
+        var className = this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '';
+        if (className) document.body.classList.add(className);
 
         // setup event listeners
         this.addEventListener('click', dialogClickHandler);
@@ -448,10 +449,10 @@
       FS.dialog.service.removeDialogFromStack(this);
 
       // if there are no dialogs with the same tag name in the stack, remove the associated open class from the document body
-      if(this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHOR_DIALOG') {
+      if(this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG') {
         var tagName = this.tagName;
         if(FS.dialog.service.getStack().filter(function(item) { return item.tagName === tagName; }).length === 0) {
-          document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHOR-DIALOG' ? 'fs-anchor-dialog-open' : '');
+          document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '');
         }
       }
 

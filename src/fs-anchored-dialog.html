@@ -109,15 +109,17 @@
     fsAnchoredDialog.baseDialog.attachedCallback.bind(this)(openAnchoredFunction, closeAnchoredFunction)
 
     function openAnchoredFunction(positionObj) {
+      positionObj = positionObj || {};
+      positionObj.attachToElement = positionObj.attachToElement || document.activeElement;
       /* positionObj: {
         preferredPointerDirection: [LEFT, RIGHT, UP, DOWN],
-        forcedPointerDirection: LEFT,
-        preferredAttachDirection: []
-        forcedAttachDirection: BELOW,
-        attachToElement: document.querySelector('button'),
-        TODO: noPointer: false,
-        TODO: forceAlignWithElementDirection: LEFT | RIGHT | CENTER | TOP | BOTTOM, //Only use with noPointer === true
-        TODO: attachToCoordinates,
+        forcedPointerDirection: LEFT, // only passed through in object
+        preferredAttachDirection: [],
+        attachDirection: BELOW, // attr (attach-direction) or passed through
+        attachToElement: document.querySelector('button'), // REQUIRED
+        noPointer: false, // only attr
+        alignment: LEFT | RIGHT | CENTER | TOP | BOTTOM, // attr (alignment) or passed through
+        TODO: attachToCoordinates: {left: 0, top: 0},
         TODO: closeOnScroll: false,
       } */
       // we get the last one in the array because that should be the one that belongs to this dialog in case there are nested popovers
@@ -132,6 +134,7 @@
 
       // these will always be drop down type menus as far as the use cases we have currently go
       if (noPointer !== undefined && noPointer !== null) {
+        // if (attachToCoordinates && attachToCoordinates.left && attachToCoordinates.top) positionDialogWithinDom(this, pointerElement, {left: attachToCoordinates.left, top: attachToCoordinates.top}, {left:0, top:0}, 0, '')]
         var attachToElementDirection = positionObj.attachDirection || this.getAttribute('attach-direction') || '';
         var alignmentDirection = positionObj.alignment || this.getAttribute('alignment') || '';
         // get the global coordinates of the src rect
@@ -199,8 +202,7 @@
         positionDialogWithinDom(this, pointerElement, newRects.dialogRect, newRects.pointerRect, positionObj.forcedPointerDirection)
       } else {
         //auto-position
-        var prefOrder = [LEFT, RIGHT, UP, DOWN]
-        // TODO: take a user passed preferred order
+        var prefOrder = positionObj.preferredPointerDirection || [LEFT, RIGHT, UP, DOWN];
         var best = 0;
         var pos = prefOrder[0];
         var containingRect = positioningObj.fsGetWindowRect();
