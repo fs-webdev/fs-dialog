@@ -332,7 +332,6 @@
 
     // open the dialog
     this.open = function(optionsObj) {
-      console.log('open', this)
       var pendingPromise = new Promise(function(resolve, reject) {
         resolvePromise = resolve;
         rejectPromise = reject;
@@ -413,8 +412,6 @@
 
     // close the dialog
     this.close = function(optionsObj) {
-      console.log('close', this)
-      if (this.id === 'direction-up') debugger;
       // Do not close a dialog that is already closed
       if (!this.opened) return;
 
@@ -553,7 +550,6 @@
     FS.dialog.service.windowHasFocus = false;
   }
   function focusoutHandler(e) {
-    console.log('focusout', e)
     var dialog = this;
     window.removeEventListener('focus', dialog._focusoutHandler);
     // use setTimout so that we get the correct document.activeElement
