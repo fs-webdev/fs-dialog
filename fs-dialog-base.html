@@ -553,6 +553,7 @@
   }
   function focusoutHandler(e) {
     var dialog = this;
+    var reverseStack;
     window.removeEventListener('focus', dialog._focusoutHandler);
     // use setTimout so that we get the correct document.activeElement
     // TODO: look into using the related target instead of activeElement if possible
@@ -563,7 +564,7 @@
           window.addEventListener('focus', dialog._focusoutHandler);
         } else if (!dialog.contains(e.relatedTarget)) {
           // cascade down stack until we hit a dialog that has the active element or does not have click away
-          var reverseStack = [].concat(FS.dialog.service.getStack().reverse());
+          reverseStack = [].concat(FS.dialog.service.getStack().reverse());
           reverseStack.some(function(dialog) {
             if (dialog.dismissOnBlur && !dialog.contains(e.relatedTarget)) {
               dialog.cancelFocusback = true;
@@ -582,12 +583,9 @@
             window.addEventListener('focus', dialog._focusoutHandler);
           } else if (!dialog.contains(activeElement)) {
             // cascade down stack until we hit a dialog that has the active element or does not have click away
-            var reverseStack = [].concat(FS.dialog.service.getStack().reverse());
+            reverseStack = [].concat(FS.dialog.service.getStack().reverse());
             reverseStack.some(function(dialog) {
               if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
-                // if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
-                //   dialog.cancelFocusback = true;
-                // }
                 dialog.close();
                 return;
               } else {
