@@ -158,6 +158,8 @@
       bottom: 0 !important;
       right: 0 !important;
       transform: translate(0, 0) !important;
+      max-height: 100% !important;
+      height: 100% !important;
       position: fixed;
     }
 
@@ -330,6 +332,7 @@
 
     // open the dialog
     this.open = function(optionsObj) {
+      console.log('open', this)
       var pendingPromise = new Promise(function(resolve, reject) {
         resolvePromise = resolve;
         rejectPromise = reject;
@@ -410,6 +413,8 @@
 
     // close the dialog
     this.close = function(optionsObj) {
+      console.log('close', this)
+      if (this.id === 'direction-up') debugger;
       // Do not close a dialog that is already closed
       if (!this.opened) return;
 
@@ -548,33 +553,52 @@
     FS.dialog.service.windowHasFocus = false;
   }
   function focusoutHandler(e) {
+    console.log('focusout', e)
     var dialog = this;
     window.removeEventListener('focus', dialog._focusoutHandler);
     // use setTimout so that we get the correct document.activeElement
     // TODO: look into using the related target instead of activeElement if possible
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
-      setTimeout(function(){
-        var activeElement = document.activeElement;
+      if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
         if (!FS.dialog.service.windowHasFocus) {
           // listen for when the window does get focus and run this function again
           window.addEventListener('focus', dialog._focusoutHandler);
-        } else if (!dialog.contains(activeElement)) {
+        } else if (!dialog.contains(e.relatedTarget)) {
           // cascade down stack until we hit a dialog that has the active element or does not have click away
           var reverseStack = [].concat(FS.dialog.service.getStack().reverse());
           reverseStack.some(function(dialog) {
-            if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
-              if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
-                dialog.cancelFocusback = true;
-              }
+            if (dialog.dismissOnBlur && !dialog.contains(e.relatedTarget)) {
+              dialog.cancelFocusback = true;
               dialog.close();
               return;
             } else {
               return true;
             }
           })
-          // TODO: if there is a related target, cancel the foucsback
         }
-      },0)
+      } else {
+        setTimeout(function(){
+          var activeElement = document.activeElement;
+          if (!FS.dialog.service.windowHasFocus) {
+            // listen for when the window does get focus and run this function again
+            window.addEventListener('focus', dialog._focusoutHandler);
+          } else if (!dialog.contains(activeElement)) {
+            // cascade down stack until we hit a dialog that has the active element or does not have click away
+            var reverseStack = [].concat(FS.dialog.service.getStack().reverse());
+            reverseStack.some(function(dialog) {
+              if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
+                // if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
+                //   dialog.cancelFocusback = true;
+                // }
+                dialog.close();
+                return;
+              } else {
+                return true;
+              }
+            })
+          }
+        },0)
+      }
     }
   }
 

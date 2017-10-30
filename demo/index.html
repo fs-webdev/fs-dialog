@@ -32,6 +32,13 @@
       margin-bottom: 10px;
       border-bottom: 1px solid #ccc;
     }
+    fs-modeless-dialog,
+    fs-modal-dialog,
+    fs-anchored-dialog {
+      visibility: hidden;
+      opacity: 0;
+      display: none;
+    }
     </style>
   </head>
   <body>
@@ -484,14 +491,25 @@
     <h3>Other Functions and Attributes</h3>
     <div class="demo-snippet fs-card">
       <div class="demo do-not-codify">
-<h5>autofocus</h5>
-  <p>Set the attribute `autofocus` on the element in the dialog that you want to be focused on first open. If autofocus is not set, the dialog itself gets focus</p>
-<h5>closeAndCloseChildren</h5>
-  <p>To close a dialog and all the dialogs above it in the stack, you can call `&lt;dialog-element&gt;.closeAndCloseChildren()`. This will automatically use the same direction of transition for all dialogs (whatever the dialog element that you use to call the function has).</p>
-<h5>focusable-component</h5>
-  <p>In order to loop users through the modal and anchored dialogs when they press the tab key, we do a query selector to get all focusable elements. If you put a component in the dialog that needs to be able to get focus, please add the attribute `focusable-component` to it so that we don't break tab looping.</p>
-<h5>closeAllDialogs</h5>
-  <p>To close all modal and anchored dialogs on the page you can call `FS.dialog.service.closeAllDialogs()`. This does not close modeless dialogs.</p>
+      <h5>autofocus</h5>
+      <p>Set the attribute `autofocus` on the element in the dialog that you want to be focused on first open. If autofocus is not set, the dialog itself gets focus</p>
+      <h5>closeAndCloseChildren</h5>
+      <p>To close a dialog and all the dialogs above it in the stack, you can call `&lt;dialog-element&gt;.closeAndCloseChildren()`. This will automatically use the same direction of transition for all dialogs (whatever the dialog element that you use to call the function has).</p>
+      <h5>focusable-component</h5>
+      <p>In order to loop users through the modal and anchored dialogs when they press the tab key, we do a query selector to get all focusable elements. If you put a component in the dialog that needs to be able to get focus, please add the attribute `focusable-component` to it so that we don't break tab looping.</p>
+      <h5>closeAllDialogs</h5>
+      <p>To close all modal and anchored dialogs on the page you can call `FS.dialog.service.closeAllDialogs()`. This does not close modeless dialogs.</p>
+      <h5>Auto-hiding dialogs from initial load</h5>
+      <p>While the component is loading, you may get flashes of dialogs being visible/unstyled. To avoid this, add these styles to the css early in your page.</p>
+      <pre>
+        fs-modeless-dialog,
+        fs-modal-dialog,
+        fs-anchored-dialog {
+          visibility: hidden;
+          opacity: 0;
+          display: none;
+        }
+      </pre>
       </div>
     </div>
 

@@ -137,11 +137,12 @@
         // if (attachToCoordinates && attachToCoordinates.left && attachToCoordinates.top) positionDialogWithinDom(this, pointerElement, {left: attachToCoordinates.left, top: attachToCoordinates.top}, {left:0, top:0}, 0, '')]
         var attachToElementDirection = positionObj.attachDirection || this.getAttribute('attach-direction') || '';
         var alignmentDirection = positionObj.alignment || this.getAttribute('alignment') || '';
+        var dialogElementOffsetParent = this.offsetParent || document.body;
         // get the global coordinates of the src rect
         var srcRect = positioningObj.fsLocalToGlobal(positionObj.attachToElement);
         var dialogWidth = this.offsetWidth;
         var dialogHeight = this.offsetHeight;
-        var topOffset = getTopOffset(this.offsetParent);
+        var topOffset = getTopOffset(dialogElementOffsetParent);
         var dialogTop, dialogLeft, dialogRect;
 
         switch(attachToElementDirection) {
@@ -181,10 +182,10 @@
         switch(attachToElementDirection) {
           case BOTTOM:
           default:
-            dialogTop = srcRect.bottom + getTopOffset(this.offsetParent);
+            dialogTop = srcRect.bottom + getTopOffset(dialogElementOffsetParent);
             break;
           case TOP:
-            dialogTop = srcRect.top + getTopOffset(this.offsetParent) - dialogHeight;
+            dialogTop = srcRect.top + getTopOffset(dialogElementOffsetParent) - dialogHeight;
             break;
           case LEFT:
             dialogLeft = srcRect.left - dialogWidth;
@@ -195,7 +196,7 @@
         }
 
         dialogRect = new positioningObj.fsRect(dialogLeft, dialogTop, dialogWidth, dialogHeight)
-        dialogRect = positioningObj.fsGlobalToLocal(this.offsetParent, dialogRect);
+        dialogRect = positioningObj.fsGlobalToLocal(dialogElementOffsetParent, dialogRect);
         positionDialogWithinDom(this, pointerElement, dialogRect, {left: 0, top: 0}, UP);
       } else if (positionObj.forcedPointerDirection) {
         var newRects = getRectsWithForcedDirection.bind(this)(positionObj.attachToElement, this, pointerElement, positionObj.forcedPointerDirection)
