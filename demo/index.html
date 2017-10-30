@@ -150,6 +150,23 @@
 </fs-anchored-dialog>
 <button class="anchored fs-button">Open Dialog</button>
 
+<h5>position by coordinates instead of element</h5>
+<fs-anchored-dialog class="coordinates">
+
+  <header>
+    <h4>positioned at coordinates x: 50 y: 50</h4>
+  </header>
+  <div class="fs-dialog__body">
+    <p>This dialog's content will scroll.</p>
+    <p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br></p>
+  </div>
+  <footer>
+    <button data-dialog-dismiss class="fs-button">Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="coordinates-button fs-button">Open Dialog</button>
+
+
 <h5>force the direction of the dialog</h5>
 <fs-anchored-dialog id="direction-up">
   <header>
@@ -253,6 +270,23 @@
   </footer>
 </fs-anchored-dialog>
 <button class="anchored fs-button">Open Dialog</button>
+
+<h5>position by coordinates instead of element</h5>
+<fs-anchored-dialog no-pointer class="coordinates">
+
+  <header>
+    <h4>positioned at coordinates x: 50 y: 50</h4>
+  </header>
+  <div class="fs-dialog__body">
+    <p>This dialog's content will scroll.</p>
+    <p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br></p>
+  </div>
+  <footer>
+    <button data-dialog-dismiss class="fs-button">Close</button>
+  </footer>
+</fs-anchored-dialog>
+<button class="coordinates-button fs-button">Open Dialog</button>
+
 
 <h5>force the direction of the dialog</h5>
 <fs-anchored-dialog no-pointer alignment="left" attach-direction="bottom" class="pointerless">
@@ -552,6 +586,8 @@
       var anchoredButtons = document.querySelectorAll('.demo > button.anchored');
       var pointerlessDialogs = document.querySelectorAll('.demo > fs-anchored-dialog.pointerless');
       var pointerlessButtons = document.querySelectorAll('.demo > button.pointerless-button');
+      var coordinateDialogs = document.querySelectorAll('.demo > fs-anchored-dialog.coordinates');
+      var coordinateButtons = document.querySelectorAll('.demo > button.coordinates-button');
 
       Array.from(modelessButtons).forEach(function(button, index) {
         button.addEventListener('click', function() {
@@ -568,12 +604,12 @@
           pointerlessDialogs[index].open();
         });
       });
+      Array.from(coordinateButtons).forEach(function(button, index) {
+        button.addEventListener('click', function() {
+          coordinateDialogs[index].open({attachToCoordinates: {x: 50, y: 50}});
+        });
+      });
       Array.from(anchoredButtons).forEach(function(button, index) {
-        /*
-          TODO: demos:
-          pointer with coordinates (1)
-          pointerless with coordinates (1)
-         */
         button.addEventListener('click', function(event) {
           anchoredDialogs[index].open({attachToElement: button});
         });
