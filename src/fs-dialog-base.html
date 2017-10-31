@@ -602,11 +602,11 @@
    * Check for events that should close the dialog.
    * @param {Event} e
    */
-  function keydownHandler(evt) {
-    if (evt.which === 27) {
+  function keydownHandler(event) {
+    if (event.which === 27) {
       // 27 is the code for the escape key
       this.close();
-    } else if (this.tagName !== 'FS-MODELESS-DIALOG' && evt.which === 9) {
+    } else if (this.tagName !== 'FS-MODELESS-DIALOG' && event.which === 9) {
       // catches tab key
 
       var focusableChildren = getFocusableChildren(this);
@@ -617,7 +617,7 @@
 
       // This line is required due to how the Shadow DOM polyfill wraps elements
       // (See: https://github.com/webcomponents/webcomponentsjs#element-wrapping--unwrapping-limitations-)
-      var focusedItemIndex = focusableChildren.indexOf(evt.target) ? focusableChildren.indexOf(evt.target) : focusableChildren.indexOf(window.ShadowDOMPolyfill && window.ShadowDOMPolyfill.wrap ? window.ShadowDOMPolyfill.wrap(document.activeElement) : document.activeElement);
+      var focusedItemIndex = focusableChildren.indexOf(event.target) ? focusableChildren.indexOf(event.target) : focusableChildren.indexOf(window.ShadowDOMPolyfill && window.ShadowDOMPolyfill.wrap ? window.ShadowDOMPolyfill.wrap(document.activeElement) : document.activeElement);
 
       if (event.shiftKey && focusedItemIndex === 0) {
         focusableChildren[focusableChildren.length - 1].focus();
