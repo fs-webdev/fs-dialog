@@ -227,16 +227,16 @@
 <button id="direction-right-button" class="fs-button">Open Dialog Right</button>
 <script>
   document.querySelector('#direction-up-button').addEventListener('click', function(event) {
-    document.querySelector('#direction-up').open({attachToElement: this, forcedPointerDirection: 'up'});
+    document.querySelector('#direction-up').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'up'});
   });
   document.querySelector('#direction-down-button').addEventListener('click', function(event) {
-    document.querySelector('#direction-down').open({attachToElement: this, forcedPointerDirection: 'down'});
+    document.querySelector('#direction-down').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'down'});
   });
   document.querySelector('#direction-left-button').addEventListener('click', function(event) {
-    document.querySelector('#direction-left').open({attachToElement: this, forcedPointerDirection: 'left'});
+    document.querySelector('#direction-left').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'left'});
   });
   document.querySelector('#direction-right-button').addEventListener('click', function(event) {
-    document.querySelector('#direction-right').open({attachToElement: this, forcedPointerDirection: 'right'});
+    document.querySelector('#direction-right').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'right'});
   });
 </script>
 
@@ -255,7 +255,7 @@
 <button id="preferred-positioning-button" class="fs-button">Open Dialog Preferred</button>
 <script>
   document.querySelector('#preferred-positioning-button').addEventListener('click', function(event) {
-    document.querySelector('#preferred-positioning').open({attachToElement: this, preferredPointerDirection: ['right', 'down', 'up', 'left']});
+    document.querySelector('#preferred-positioning').open({focusBackElement: this, attachToElement: this, preferredPointerDirection: ['right', 'down', 'up', 'left']});
   });
 </script>
 
@@ -527,6 +527,8 @@
     <h3>Other Functions and Attributes</h3>
     <div class="demo-snippet fs-card">
       <div class="demo do-not-codify">
+        <h5>Open Function Options</h5>
+        <p>There are some required parameters to the open function. The function takes one argument which is an options object. The options object always needs a focusBackElement property is required if you want to have the correct element focus when the dialog closes. For anchored dialogs, attachToElement is required.</p>
         <h5>Opt-out of fullscreen on mobile</h5>
         <p>To opt out of making an anchored or modal dialog go fullscreen on mobile devices, add the attribute <code>fullscreen-on-mobile="false"</code></p>
         <h5>autofocus</h5>
@@ -613,39 +615,39 @@
 
       Array.from(modelessButtons).forEach(function(button, index) {
         button.addEventListener('click', function() {
-          modelessDialogs[index].open({attachToElement: this});
+          modelessDialogs[index].open({focusBackElement: this});
         });
       });
       Array.from(modalButtons).forEach(function(button, index) {
         button.addEventListener('click', function() {
-          modalDialogs[index].open({attachToElement: this});
+          modalDialogs[index].open({focusBackElement: this});
         });
       });
       Array.from(pointerlessButtons).forEach(function(button, index) {
         button.addEventListener('click', function() {
-          pointerlessDialogs[index].open({attachToElement: this});
+          pointerlessDialogs[index].open({focusBackElement: this, attachToElement: this});
         });
       });
       Array.from(coordinateButtons).forEach(function(button, index) {
         button.addEventListener('click', function() {
-          coordinateDialogs[index].open({attachToCoordinates: {x: 50, y: 50}});
+          coordinateDialogs[index].open({focusBackElement: this, attachToCoordinates: {x: 50, y: 50}});
         });
       });
       Array.from(anchoredButtons).forEach(function(button, index) {
         button.addEventListener('click', function(event) {
-          anchoredDialogs[index].open({attachToElement: button});
+          anchoredDialogs[index].open({focusBackElement: this, attachToElement: button});
         });
       });
 
       // stacking clicks
       document.querySelector('button.mixed-anchored-anchor').addEventListener('click', function() {
-        document.getElementById('mixed-anchored-anchor').open({attachToElement: this});
+        document.getElementById('mixed-anchored-anchor').open({focusBackElement: this, attachToElement: this});
       });
       document.querySelector('button.mixed-anchored-modal').addEventListener('click', function() {
-        document.getElementById('mixed-anchored-modal').open({attachToElement: this});
+        document.getElementById('mixed-anchored-modal').open({focusBackElement: this});
       });
       document.getElementById('stacking-button').addEventListener('click', function() {
-        document.getElementById('stacking-dialog').open({attachToElement: this});
+        document.getElementById('stacking-dialog').open({focusBackElement: this});
       });
     })();
     </script>
