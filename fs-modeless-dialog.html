@@ -50,25 +50,47 @@
     fsModelessDialog.baseDialog.appendStyles(doc, 'style[data-fs-modeless-dialog]', this);
 
     // use the attachedCallback for the base dialog and pass in our open and close functions
-    fsModelessDialog.baseDialog.attachedCallback.bind(this)(openModelessFunction, closeModelessFunction)
+    fsModelessDialog.baseDialog.attachedCallback.bind(this)(openModelessFunction, closeModelessFunction);
 
     // bind the functions that will be used in event listeners to avoid losing reference
     this._startDragHandler = startDragHandler.bind(this);
     this._dragHandler = dragHandler.bind(this);
     this._endDragHandler = endDragHandler.bind(this);
+    this._resizeHandler = resizeHandler.bind(this);
+    this._centerDialog = centerDialog.bind(this);
+    this._resizeThrottler = resizeThrottler.bind(this);
 
     // selector for open and close functions
     var headerEl = this.querySelector('header');
 
+    // On resize of window, if dialog is not open, clear this.style.transform.
+    // If dialog is open, re-center it
+
+    window.addEventListener('resize', this._resizeThrottler, false);
+
+    var resizeTimeout;
+    function resizeThrottler() {
+      // ignore resize events as long as an resizeHandler execution is in the queue
+      if ( !resizeTimeout ) {
+        resizeTimeout = setTimeout(function() {
+          resizeTimeout = null;
+          this._resizeHandler();
+          // The resizeHandler will execute at a rate of 15fps
+        }.bind(this), 66);
+      }
+    }
+
+    function resizeHandler() {
+      this.style.transform = '';
+      if(this.opened) {
+        this._centerDialog();
+      }
+    }
+
     // modeless specific logic to do on open
     function openModelessFunction() {
 
-      // calc center of screen for initial modeless dialog transform property
-      if (!this.style.transform) {
-        var x = (window.innerWidth / 2) - (this.offsetWidth / 2);
-        var y = (window.innerHeight / 2) - (this.offsetHeight / 2);
-        this.style.transform = 'translateX(' + x + 'px) translateY(' + y + 'px)';
-      }
+      this._centerDialog();
 
       // add events to modeless dialog for dragging
       // TODO: add an opt out for dragging (?)
@@ -90,6 +112,23 @@
     }
 
   };
+
+  /**
+   * Remove listeners that were added during attachedCallback;
+   */
+
+  fsModelessDialog.detachedCallback = function () {
+    window.removeEventListener('resize', this._resizeThrottler);
+  };
+
+  function centerDialog() {
+    // calc center of screen for initial modeless dialog transform property
+    if (!this.style.transform) {
+      var x = (window.innerWidth / 2) - (this.offsetWidth / 2);
+      var y = (window.innerHeight / 2) - (this.offsetHeight / 2);
+      this.style.transform = 'translateX(' + x + 'px) translateY(' + y + 'px)';
+    }
+  }
 
   fsModelessDialog.attributeChangedCallback = fsModelessDialog.baseDialog.attributeChangedCallback;
 
