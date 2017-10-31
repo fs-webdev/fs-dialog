@@ -116,8 +116,11 @@
     /**
      * Remove listeners that were added during attachedCallback;
      */
-
+    disconnectedCallback(){
+      this.detachedCallback();
+    }
     detachedCallback() {
+      debugger;
       window.removeEventListener('resize', this._resizeThrottler);
     }
   }
