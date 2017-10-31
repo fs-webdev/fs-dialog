@@ -66,7 +66,7 @@
     // On resize of window, if dialog is not open, clear this.style.transform.
     // If dialog is open, re-center it
 
-    window.addEventListener("resize", this._resizeThrottler, false);
+    window.addEventListener('resize', this._resizeThrottler, false);
 
     var resizeTimeout;
     function resizeThrottler() {
@@ -111,6 +111,14 @@
       window.removeEventListener('touchend', this._endDragHandler);
     }
 
+  };
+
+  /**
+   * Remove listeners that were added during attachedCallback;
+   */
+
+  fsModelessDialog.detachedCallback = function () {
+    window.removeEventListener('resize', this._resizeThrottler);
   };
 
   function centerDialog() {
