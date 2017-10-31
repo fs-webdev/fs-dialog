@@ -31,62 +31,63 @@ fs-modal-dialog[opened] {
 (function() {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
 
-  var fsModalDialog = Object.create(FS.dialog.baseDialogComponent);
+  class FSModalDialog extends FS.dialog.baseDialogComponent {
 
-  /**
-   * Initialize the dialog, add events, and accessibility features. Should only change
-   * the DOM on attached callback otherwise it breaks Polymer bindings.
-   */
-  fsModalDialog.attachedCallback = function () {
-    fsModalDialog.baseDialog.appendStyles(doc, 'style[data-fs-modal-dialog]', this);
+    /**
+     * Initialize the dialog, add events, and accessibility features. Should only change
+     * the DOM on attached callback otherwise it breaks Polymer bindings.
+     */
+    attachedCallback() {
+      this.appendStyles(doc, 'style[data-fs-modal-dialog]', this);
 
-    // selectors
-    var bodyEl = this.querySelector('.fs-dialog__body');
-    var maskEl;
+      // selectors
+      var bodyEl = this.querySelector('.fs-dialog__body');
+      var maskEl;
 
-    // initialize
-    this._a11yOpen = a11yOpen.bind(this);
-    this._a11yClose = a11yClose.bind(this);
-    this.setAttribute('aria-hidden', true);
+      // initialize
+      this._a11yOpen = a11yOpen.bind(this);
+      this._a11yClose = a11yClose.bind(this);
+      this.setAttribute('aria-hidden', true);
 
-    // use the attachedCallback for the base dialog and pass in our open and close functions
-    fsModalDialog.baseDialog.attachedCallback.bind(this)(openModalFunction, closeModalFunction)
+      // use the attachedCallback for the base dialog and pass in our open and close functions
+      super.attachedCallback(openModalFunction, closeModalFunction)
 
 
-    // each modal dialog will get its own mask so when dialogs stack we can
-    // know exactly which one to close
-    maskEl = document.createElement('div');
-    maskEl.setAttribute('data-no-inert', '');
-    maskEl.setAttribute('tabindex', '-1');
-    maskEl.classList.add('fs-dialog__mask');
+      // each modal dialog will get its own mask so when dialogs stack we can
+      // know exactly which one to close
+      maskEl = document.createElement('div');
+      maskEl.setAttribute('data-no-inert', '');
+      maskEl.setAttribute('tabindex', '-1');
+      maskEl.classList.add('fs-dialog__mask');
 
-    // add mask as a previous sibling to the dialog so it's below it in z-index
-    this.parentNode.insertBefore(maskEl, this);
+      // add mask as a previous sibling to the dialog so it's below it in z-index
+      this.parentNode.insertBefore(maskEl, this);
 
-    // add role=main to body of a modal dialog to improve accessibility for screen
-    // readers. can't just use the <main> element since modeless dialogs don't
-    // hide any <main> elements on the page
-    // @see https://web-a11y.slack.com/archives/C042TSFGN/p1499454746902809
-    if (bodyEl) {
-      bodyEl.setAttribute('role', 'main');
+      // add role=main to body of a modal dialog to improve accessibility for screen
+      // readers. can't just use the <main> element since modeless dialogs don't
+      // hide any <main> elements on the page
+      // @see https://web-a11y.slack.com/archives/C042TSFGN/p1499454746902809
+      if (bodyEl) {
+        bodyEl.setAttribute('role', 'main');
+      }
+
+      var keydownHandler = this.keydownHandler.bind(this);
+
+      function openModalFunction() {
+        this._a11yOpen();
+        maskEl.addEventListener('keydown', keydownHandler);
+        maskEl.setAttribute('opened', '');
+        maskEl.style.zIndex = this.style.zIndex;
+      }
+
+      function closeModalFunction() {
+        this._a11yClose();
+        maskEl.removeAttribute('opened');
+        maskEl.removeEventListener('keydown', keydownHandler);
+      }
+
     }
-
-    var keydownHandler = fsModalDialog.baseDialog.keydownHandler.bind(this);
-
-    function openModalFunction() {
-      this._a11yOpen();
-      maskEl.addEventListener('keydown', keydownHandler);
-      maskEl.setAttribute('opened', '');
-      maskEl.style.zIndex = this.style.zIndex;
-    }
-
-    function closeModalFunction() {
-      this._a11yClose();
-      maskEl.removeAttribute('opened');
-      maskEl.removeEventListener('keydown', keydownHandler);
-    }
-
-  };
+  }
 
   function a11yOpen() {
     if (!this.hasAttribute('aria-hidden')) return;
@@ -154,8 +155,10 @@ fs-modal-dialog[opened] {
     }.bind(this), 100);
   }
 
-  fsModalDialog.attributeChangedCallback = fsModalDialog.baseDialog.attributeChangedCallback;
-
-  document.registerElement('fs-modal-dialog', {prototype: fsModalDialog});
+  if('customElements' in window){
+    customElements.define('fs-modal-dialog', FSModalDialog);
+  } else {
+    document.registerElement('fs-modal-dialog', {prototype: Object.create(FSModalDialog.prototype)});
+  }
 })();
 </script>
