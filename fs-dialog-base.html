@@ -271,246 +271,259 @@
   var zIndex = 990;
   var zIndexIncrement = 10;
 
-  var fsDialog = Object.create(HTMLElement.prototype);
+  class FSDialogBase extends HTMLElement {
 
-  fsDialog.baseDialog = {};
-  /**
-   * Initialize the dialog, add events, and accessibility features. Should only change
-   * the DOM on attached callback otherwise it breaks Polymer bindings.
-   */
-  fsDialog.baseDialog.appendStyles = function(doc, selector, thisEl) {
-    var root = thisEl.getRootNode();
+    static get observedAttributes() {
+      return ['opened', 'closed'];
+    }
+    constructor() {
+      super();
 
-    // // In polyfilled browsers there is no shadow DOM so global styles still style
-    // // the "fake" shadow DOM. We need to test for truly native support so we know
-    // // when to inject styles into the shadow DOM. The best way I've found to do that
-    // // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
-    // // returns true when it's just a document-fragment in polyfilled browsers
-    // // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
-    if (root.toString() === '[object ShadowRoot]' && !root.querySelector(selector)) {
-      var styles = doc.querySelector(selector).cloneNode(true);
-      root.appendChild(styles);
+      this.keydownHandler = keydownHandler;
+    }
+    createdCallback() {
+      this.keydownHandler = keydownHandler;
+    }
+    connectedCallback() {
+      this.attachedCallback();
+    }
+    /**
+     * Initialize the dialog, add events, and accessibility features. Should only change
+     * the DOM on attached callback otherwise it breaks Polymer bindings.
+     */
+    appendStyles(doc, selector, thisEl) {
+      var root = thisEl.getRootNode();
+
+      // // In polyfilled browsers there is no shadow DOM so global styles still style
+      // // the "fake" shadow DOM. We need to test for truly native support so we know
+      // // when to inject styles into the shadow DOM. The best way I've found to do that
+      // // is to test the toString output of a shadowroot since `instanceof ShadowRoot`
+      // // returns true when it's just a document-fragment in polyfilled browsers
+      // // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
+      if (root.toString() === '[object ShadowRoot]' && !root.querySelector(selector)) {
+        var styles = doc.querySelector(selector).cloneNode(true);
+        root.appendChild(styles);
+      }
+
     }
 
-  };
+    attachedCallback(onOpenDialogFunction, onCloseDialogFunction) {
+      this.appendStyles(doc, 'style[data-fs-dialog]', this);
 
-  fsDialog.baseDialog.attachedCallback = function (onOpenDialogFunction, onCloseDialogFunction) {
-    fsDialog.baseDialog.appendStyles(doc, 'style[data-fs-dialog]', this);
+      var clone = document.importNode(template.content, true);
 
-    var clone = document.importNode(template.content, true);
+      // selectors
+      var closeEl = clone.querySelector('.fs-dialog__close');
+      var bodyEl = this.querySelector('.fs-dialog__body');
+      var headerEl = this.querySelector('header');
+      var footerEl = this.querySelector('footer');
+      var resolvePromise, rejectPromise;
 
-    // selectors
-    var closeEl = clone.querySelector('.fs-dialog__close');
-    var bodyEl = this.querySelector('.fs-dialog__body');
-    var headerEl = this.querySelector('header');
-    var footerEl = this.querySelector('footer');
-    var resolvePromise, rejectPromise;
+      // set aria-label on close button for screen readers
+      closeEl.setAttribute('aria-label', FS.i18n('fs.shared.fsDialog.CLOSE'));
 
-    // set aria-label on close button for screen readers
-    closeEl.setAttribute('aria-label', FS.i18n('fs.shared.fsDialog.CLOSE'));
+      // move the close button into the header or as the first child of the dialog
+      // (so it's first in the tab order)
+      if (headerEl) {
+        headerEl.appendChild(closeEl);
+      }
+      else {
+        this.insertBefore(closeEl, this.firstChild);
+      }
 
-    // move the close button into the header or as the first child of the dialog
-    // (so it's first in the tab order)
-    if (headerEl) {
-      headerEl.appendChild(closeEl);
-    }
-    else {
-      this.insertBefore(closeEl, this.firstChild);
-    }
+      // Add style node to document
+      if(!document.querySelector('#fs-dialog-body-style')) {
+        document.querySelector('body').appendChild(doc.querySelector('#fs-dialog-body-style').cloneNode(true));
+      }
 
-    // Add style node to document
-    if(!document.querySelector('#fs-dialog-body-style')) {
-      document.querySelector('body').appendChild(doc.querySelector('#fs-dialog-body-style').cloneNode(true));
-    }
+      this.appendChild(clone);
+      this.setAttribute('role', 'dialog');
+      a11yEnhancer.dialog(this);
 
-    this.appendChild(clone);
-    this.setAttribute('role', 'dialog');
-    a11yEnhancer.dialog(this);
+      // this._opened = false;
+      this._focusoutHandler = focusoutHandler.bind(this);
 
-    // this._opened = false;
-    this._focusoutHandler = focusoutHandler.bind(this);
+      // open the dialog
+      this.open = function(optionsObj) {
+        var pendingPromise = new Promise(function(resolve, reject) {
+          resolvePromise = resolve;
+          rejectPromise = reject;
+        }.bind(this));
 
-    // open the dialog
-    this.open = function(optionsObj) {
-      var pendingPromise = new Promise(function(resolve, reject) {
-        resolvePromise = resolve;
-        rejectPromise = reject;
-      }.bind(this));
+        try{
+          optionsObj = optionsObj || {};
+          // optionsObj example:
+          // {
+          //   focusBackElement: <element>
+          // }
 
-      try{
-        optionsObj = optionsObj || {};
-        // optionsObj example:
-        // {
-        //   focusBackElement: <element>
-        // }
+          // Do not open a dialog that is already opened
+          if (this.opened) return;
 
-        // Do not open a dialog that is already opened
-        if (this.opened) return;
-
-        // add dialog to the stack unless it is a modeless dialog
-        if (!this.doNotUseInStack) {
-          FS.dialog.service.addDialogToStack(this);
-        }
-
-        this.focusBackElement = optionsObj.focusBackElement || document.activeElement;
-
-        // allow multiple dialogs to be open at a time by incrementing z-index by
-        // the order they were opened
-        zIndex += zIndexIncrement;
-        this.style.zIndex = zIndex;
-
-        // call dialog-type specific open logic
-        if(onOpenDialogFunction) onOpenDialogFunction.bind(this)(optionsObj);
-
-        // this triggers the css changes to show the dialog
-        this.setAttribute('opened', '');
-
-        // wait for the css animations to run in case a modal is hidden (display: none,
-        // visibility: hidden, inert) as the browser will not focus a hidden element
-        setTimeout(function () {
-          if (!this.opened) return;
-          // focus the dialog if no element has autofocus attribute
-          if (!this.querySelector('[autofocus]')) {
-            this.focus();
-          } else {
-            this.querySelector('[autofocus]').focus();
+          // add dialog to the stack unless it is a modeless dialog
+          if (!this.doNotUseInStack) {
+            FS.dialog.service.addDialogToStack(this);
           }
-        }.bind(this), 0);
 
-        var className = this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '';
-        // don't add the class for modals that have opted out
-        if (className && this.getAttribute('fullscreen-on-mobile') === 'false') className = '';
-        if (className) document.body.classList.add(className);
+          this.focusBackElement = optionsObj.focusBackElement || document.activeElement;
 
-        // setup event listeners
-        this.addEventListener('click', dialogClickHandler);
-        this.addEventListener('keydown', keydownHandler);
+          // allow multiple dialogs to be open at a time by incrementing z-index by
+          // the order they were opened
+          zIndex += zIndexIncrement;
+          this.style.zIndex = zIndex;
 
-        if (this.dismissOnBlur) {
-          this.addEventListener('focusout', this._focusoutHandler);
+          // call dialog-type specific open logic
+          if(onOpenDialogFunction) onOpenDialogFunction.bind(this)(optionsObj);
+
+          // this triggers the css changes to show the dialog
+          this.setAttribute('opened', '');
+
+          // wait for the css animations to run in case a modal is hidden (display: none,
+          // visibility: hidden, inert) as the browser will not focus a hidden element
+          setTimeout(function () {
+            if (!this.opened) return;
+            // focus the dialog if no element has autofocus attribute
+            if (!this.querySelector('[autofocus]')) {
+              this.focus();
+            } else {
+              this.querySelector('[autofocus]').focus();
+            }
+          }.bind(this), 0);
+
+          var className = this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '';
+          // don't add the class for modals that have opted out
+          if (className && this.getAttribute('fullscreen-on-mobile') === 'false') className = '';
+          if (className) document.body.classList.add(className);
+
+          // setup event listeners
+          this.addEventListener('click', dialogClickHandler);
+          this.addEventListener('keydown', keydownHandler);
+
+          if (this.dismissOnBlur) {
+            this.addEventListener('focusout', this._focusoutHandler);
+          }
+
+          // when the body of the dialog scrolls we need to allow keyboard users to
+          // focus the scrolling content so they can use the up/down arrow keys
+          // to scroll
+          // @see https://stackoverflow.com/questions/4814398/how-can-i-check-if-a-scrollbar-is-visible
+          // @see https://github.com/angular/material/issues/2961
+          // @see https://github.com/miguelcobain/ember-paper/pull/393
+          // TODO: in cases like the temple flyout this may actually just always need to be set since
+          //       the dialog will change its size after it gets more data
+          if (bodyEl && bodyEl.scrollHeight > bodyEl.clientHeight) {
+            bodyEl.setAttribute('tabindex', 0);
+          }
+
+          // fire an event for the outside world to hear
+          this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
+        } catch (err) {
+          rejectPromise(err);
         }
 
-        // when the body of the dialog scrolls we need to allow keyboard users to
-        // focus the scrolling content so they can use the up/down arrow keys
-        // to scroll
-        // @see https://stackoverflow.com/questions/4814398/how-can-i-check-if-a-scrollbar-is-visible
-        // @see https://github.com/angular/material/issues/2961
-        // @see https://github.com/miguelcobain/ember-paper/pull/393
-        // TODO: in cases like the temple flyout this may actually just always need to be set since
-        //       the dialog will change its size after it gets more data
-        if (bodyEl && bodyEl.scrollHeight > bodyEl.clientHeight) {
-          bodyEl.setAttribute('tabindex', 0);
+        // return a promise that will resolve when the dialog is closed.
+        return pendingPromise;
+      };
+
+      // close the dialog
+      this.close = function(optionsObj) {
+        // Do not close a dialog that is already closed
+        if (!this.opened) return;
+
+        // remove event listeners
+        // consider reducing event listeners by putting them in the service
+        if (this.dismissOnBlur) {
+          this.removeEventListener('focusout', this._focusoutHandler);
+        }
+        // do these functions need to be bound to this/be added to this?
+        this.removeEventListener('click', dialogClickHandler);
+        this.removeEventListener('keydown', keydownHandler);
+
+        // css to close the dialogs
+        this.removeAttribute('opened');
+
+        // call dialog-type specific close logic
+        if (onCloseDialogFunction) onCloseDialogFunction.bind(this)();
+
+        zIndex -= zIndexIncrement;
+
+        if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
+          // this has a settimeout because of modal dialog's uninert needing to run before we can do the focusback
+          setTimeout(function() {
+            this.focusBackElement.focus();
+            this.cancelFocusback = false;
+            this.focusBackElement = null;
+          }.bind(this), 100);
+        } else {
+          if (!this.cancelFocusback) {
+            this.focusBackElement.focus();
+          }
+          this.cancelFocusback = false;
+          this.focusBackElement = null;
+        }
+
+        // remove dialog from stack
+        FS.dialog.service.removeDialogFromStack(this);
+
+        // if there are no dialogs with the same tag name in the stack, remove the associated open class from the document body
+        if(this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG') {
+          var tagName = this.tagName;
+          if(FS.dialog.service.getStack().filter(function(item) { return item.tagName === tagName && item.getAttribute('fullscreen-on-mobile') !== 'false'; }).length === 0) {
+            document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '');
+          }
         }
 
         // fire an event for the outside world to hear
-        this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
-      } catch (err) {
-        rejectPromise(err);
-      }
+        this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
 
-      // return a promise that will resolve when the dialog is closed.
-      return pendingPromise;
-    };
+        resolvePromise();
+        return this.pendingPromise;
+      };
 
-    // close the dialog
-    this.close = function(optionsObj) {
-      // Do not close a dialog that is already closed
-      if (!this.opened) return;
+      this.closeAndCloseChildren = function() {
+        FS.dialog.service.closeDialogAndAllChildren(this);
+      };
 
-      // remove event listeners
-      // consider reducing event listeners by putting them in the service
-      if (this.dismissOnBlur) {
-        this.removeEventListener('focusout', this._focusoutHandler);
-      }
-      // do these functions need to be bound to this/be added to this?
-      this.removeEventListener('click', dialogClickHandler);
-      this.removeEventListener('keydown', keydownHandler);
-
-      // css to close the dialogs
-      this.removeAttribute('opened');
-
-      // call dialog-type specific close logic
-      if (onCloseDialogFunction) onCloseDialogFunction.bind(this)();
-
-      zIndex -= zIndexIncrement;
-
-      if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
-        // this has a settimeout because of modal dialog's uninert needing to run before we can do the focusback
-        setTimeout(function() {
-          this.focusBackElement.focus();
-          this.cancelFocusback = false;
-          this.focusBackElement = null;
-        }.bind(this), 100);
-      } else {
-        if (!this.cancelFocusback) {
-          this.focusBackElement.focus();
-        }
-        this.cancelFocusback = false;
-        this.focusBackElement = null;
-      }
-
-      // remove dialog from stack
-      FS.dialog.service.removeDialogFromStack(this);
-
-      // if there are no dialogs with the same tag name in the stack, remove the associated open class from the document body
-      if(this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG') {
-        var tagName = this.tagName;
-        if(FS.dialog.service.getStack().filter(function(item) { return item.tagName === tagName && item.getAttribute('fullscreen-on-mobile') !== 'false'; }).length === 0) {
-          document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '');
-        }
-      }
-
-      // fire an event for the outside world to hear
-      this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
-
-      resolvePromise();
-      return this.pendingPromise;
-    };
-
-    this.closeAndCloseChildren = function() {
-      FS.dialog.service.closeDialogAndAllChildren(this);
-    };
-
-    // set the initial dismissOnBlur value
-    if (this.hasAttribute('dismiss-on-blur')) {
-      this.dismissOnBlur = true;
-    }
-    // start opened (needs to be done after adding the event listeners to open
-    // otherwise it wont run any of that code)
-    if (this.hasAttribute('opened')) {
-      this.open();
-    }
-
-
-  };
-
-  /**
-   * Listen to the open attribute.
-   */
-  fsDialog.baseDialog.attributeChangedCallback = function(attr, oldValue, newValue) {
-
-    // open and close the modal with the `opened` attribute
-    if (attr === 'opened') {
-
-      if (newValue !== undefined && newValue !== null) {
-        this.opened = true;
-      }
-      else {
-        this.opened = false;
-      }
-    }
-
-    // dismiss when the dialog loses focus
-    if (attr === 'dismissOnBlur') {
-
-      if (newValue !== undefined && newValue !== null) {
+      // set the initial dismissOnBlur value
+      if (this.hasAttribute('dismiss-on-blur')) {
         this.dismissOnBlur = true;
       }
-      else {
-        this.dismissOnBlur = false;
+      // start opened (needs to be done after adding the event listeners to open
+      // otherwise it wont run any of that code)
+      if (this.hasAttribute('opened')) {
+        this.open();
+      }
+
+
+    }
+
+    /**
+     * Listen to the open attribute.
+     */
+    attributeChangedCallback(attr, oldValue, newValue) {
+
+      // open and close the modal with the `opened` attribute
+      if (attr === 'opened') {
+        if (newValue !== undefined && newValue !== null) {
+          this.opened = true;
+        }
+        else {
+          this.opened = false;
+        }
+      }
+
+      // dismiss when the dialog loses focus
+      if (attr === 'dismissOnBlur') {
+
+        if (newValue !== undefined && newValue !== null) {
+          this.dismissOnBlur = true;
+        }
+        else {
+          this.dismissOnBlur = false;
+        }
       }
     }
-  };
+  }
 
 
   /**
@@ -641,12 +654,10 @@
 
   }
 
-  fsDialog.baseDialog.keydownHandler = keydownHandler;
-
   // keep track of if the window has focus or not
   window.addEventListener('focus', windowFocusListener);
   window.addEventListener('blur', windowBlurListener);
 
-  FS.dialog.baseDialogComponent = fsDialog;
+  FS.dialog.baseDialogComponent = FSDialogBase;
 })(window, document);
 </script>
