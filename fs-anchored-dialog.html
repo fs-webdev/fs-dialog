@@ -131,7 +131,6 @@
         var pointerDirection = this.getAttribute(POINTER_DIRECTION);
         var noPointer = this.getAttribute('no-pointer');
 
-        // these will always be drop down type menus as far as the use cases we have currently go
         // we put this in a setTimout so that the dom can update before we do our calculations
         setTimeout(function(){
           if (noPointer !== undefined && noPointer !== null) {
@@ -141,9 +140,6 @@
             positionDialogWithinDom(dialogElement, pointerElement, newRects.dialogRect, newRects.pointerRect, pointerDirection);
           }
         }.bind(this), 0)
-        // calculate the global position that the pointer should be pointing to
-        // calculate the global position that the pointer is actually pointing to
-        // adjust the dialog by the x and y offset amount that the pointer is off
       };
 
       function openAnchoredFunction(positionObj) {
@@ -325,7 +321,6 @@
           // dialog's offset parent. So, we have to subtract ou the dialog's top and left to get the top
           // and left of the pointer relative to the dialog.
           pointerElement.style.top = (newPointerRect.top - newDialogRect.top) + 'px';
-          console.log('pointerElementTop', newPointerRect.top - newDialogRect.top)
         } else {
           pointerElement.style.left = (newPointerRect.left - newDialogRect.left) + 'px';
         }
