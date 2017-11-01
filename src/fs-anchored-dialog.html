@@ -101,19 +101,57 @@
       this.appendChild(clone);
 
       var doNotDismissOnBlur = this.getAttribute('persistent')
-      // set the type="modeless" for the a11y enhancer
-      this.setAttribute('type', 'modeless');
       if (doNotDismissOnBlur) {
         this.removeAttribute('dismiss-on-blur');
       } else {
         this.setAttribute('dismiss-on-blur', '');
       }
+
+      this._resizeHandler = resizeHandler.bind(this);
+      this._resizeThrottler = resizeThrottler.bind(this);
+
       super.attachedCallback(openAnchoredFunction, closeAnchoredFunction);
 
+      var resizeTimeout;
+      function resizeThrottler() {
+        // ignore resize events as long as an resizeHandler execution is in the queue
+        if ( !resizeTimeout ) {
+          resizeTimeout = setTimeout(function() {
+            resizeTimeout = null;
+            this._resizeHandler();
+            // The resizeHandler will execute at a rate of 15fps
+          }.bind(this), 66);
+        }
+      }
+
+      function resizeHandler(event) {
+        var pointerElement = this.querySelector('.fs-dialog-pointer');
+        var dialogElement = this;
+        var sourceElement = this.attachToElement;
+        var pointerDirection = this.getAttribute(POINTER_DIRECTION);
+        var noPointer = this.getAttribute('no-pointer');
+
+        // these will always be drop down type menus as far as the use cases we have currently go
+        // we put this in a setTimout so that the dom can update before we do our calculations
+        setTimeout(function(){
+          if (noPointer !== undefined && noPointer !== null) {
+            positionDialogWithinDom(this, pointerElement, getPointerlessDialogRect.bind(this)({attachToElement: sourceElement}), {left: 0, top: 0}, '');
+          } else {
+            var newRects = getRectsWithForcedDirection.bind(this)(sourceElement, dialogElement, pointerElement, pointerDirection, true);
+            positionDialogWithinDom(dialogElement, pointerElement, newRects.dialogRect, newRects.pointerRect, pointerDirection);
+          }
+        }.bind(this), 0)
+        // calculate the global position that the pointer should be pointing to
+        // calculate the global position that the pointer is actually pointing to
+        // adjust the dialog by the x and y offset amount that the pointer is off
+      };
+
       function openAnchoredFunction(positionObj) {
+        window.addEventListener('resize', this._resizeThrottler);
         positionObj = positionObj || {};
 
         if (positionObj.attachToCoordinates && positionObj.attachToCoordinates.x && positionObj.attachToCoordinates.y) {
+          // TODO: we need a unique node for each instance if more than one popover will be open at a time and positioned with coordinates
           var coordinateElement = document.querySelector('#coordinate-positioning-element');
           if (!coordinateElement) {
             coordinateElement = document.createElement('div');
@@ -127,6 +165,7 @@
         }
 
         positionObj.attachToElement = positionObj.attachToElement || document.activeElement;
+        this.attachToElement = positionObj.attachToElement;
         /* positionObj: {
           preferredPointerDirection: [LEFT, RIGHT, UP, DOWN],
           forcedPointerDirection: LEFT, // only passed through in object
@@ -150,70 +189,7 @@
 
         // these will always be drop down type menus as far as the use cases we have currently go
         if (noPointer !== undefined && noPointer !== null) {
-          // if (attachToCoordinates && attachToCoordinates.left && attachToCoordinates.top) positionDialogWithinDom(this, pointerElement, {left: attachToCoordinates.left, top: attachToCoordinates.top}, {left:0, top:0}, 0, '')]
-          var attachToElementDirection = positionObj.attachDirection || this.getAttribute('attach-direction') || '';
-          var alignmentDirection = positionObj.alignment || this.getAttribute('alignment') || '';
-          var dialogElementOffsetParent = this.offsetParent || document.body;
-          // get the global coordinates of the src rect
-          var srcRect = positioningObj.fsLocalToGlobal(positionObj.attachToElement);
-          var dialogWidth = this.offsetWidth;
-          var dialogHeight = this.offsetHeight;
-          var topOffset = getTopOffset(dialogElementOffsetParent);
-          var dialogTop, dialogLeft, dialogRect;
-
-          switch(attachToElementDirection) {
-            case BOTTOM:
-            case TOP:
-            default:
-              switch (alignmentDirection) {
-                case CENTER:
-                  dialogLeft = srcRect.left - dialogWidth/2 + srcRect.width/2;
-                  break;
-                case RIGHT:
-                  dialogLeft = srcRect.left + srcRect.width - dialogWidth;
-                  break;
-                case LEFT:
-                default:
-                  dialogLeft = srcRect.left
-                  break;
-              }
-              break;
-            case LEFT:
-            case RIGHT:
-              switch (alignmentDirection) {
-                case CENTER:
-                  dialogTop = srcRect.top - dialogHeight/2 + srcRect.height/2 + topOffset;
-                  break;
-                case TOP:
-                default:
-                  dialogTop = srcRect.top + topOffset;
-                  break;
-                case BOTTOM:
-                  dialogTop = srcRect.bottom + topOffset - dialogHeight;
-                  break;
-              }
-              break;
-          }
-
-          switch(attachToElementDirection) {
-            case BOTTOM:
-            default:
-              dialogTop = srcRect.bottom + getTopOffset(dialogElementOffsetParent);
-              break;
-            case TOP:
-              dialogTop = srcRect.top + getTopOffset(dialogElementOffsetParent) - dialogHeight;
-              break;
-            case LEFT:
-              dialogLeft = srcRect.left - dialogWidth;
-              break;
-            case RIGHT:
-              dialogLeft = srcRect.right;
-              break;
-          }
-
-          dialogRect = new positioningObj.fsRect(dialogLeft, dialogTop, dialogWidth, dialogHeight)
-          dialogRect = positioningObj.fsGlobalToLocal(dialogElementOffsetParent, dialogRect);
-          positionDialogWithinDom(this, pointerElement, dialogRect, {left: 0, top: 0}, UP);
+          positionDialogWithinDom(this, pointerElement, getPointerlessDialogRect.bind(this)(positionObj), {left: 0, top: 0}, '');
         } else if (positionObj.forcedPointerDirection) {
           var newRects = getRectsWithForcedDirection.bind(this)(positionObj.attachToElement, this, pointerElement, positionObj.forcedPointerDirection)
           positionDialogWithinDom(this, pointerElement, newRects.dialogRect, newRects.pointerRect, positionObj.forcedPointerDirection)
@@ -262,7 +238,79 @@
       }
 
       function closeAnchoredFunction() {
+        window.removeEventListener('resize', this._resizeThrottler);
+        this.attachToElement = null;
         return;
+      }
+
+      function getPointerlessDialogRect(positionObj) {
+        var attachToElementDirection = positionObj.attachDirection || this.getAttribute('attach-direction') || BOTTOM;
+        var alignmentDirection = positionObj.alignment || this.getAttribute('alignment') || LEFT;
+        var dialogElementOffsetParent = this.offsetParent || document.body;
+        var srcRect = positioningObj.fsLocalToGlobal(positionObj.attachToElement);
+        var dialogWidth = this.offsetWidth;
+        var dialogHeight = this.offsetHeight;
+        var topOffset = getTopOffset(dialogElementOffsetParent);
+        var dialogTop, dialogLeft, dialogRect;
+
+        // set the attrs on the element to match our alignment and attachDirections so we can access them on windowResize
+        this.setAttribute('attach-direction', attachToElementDirection);
+        this.setAttribute('alignment', alignmentDirection);
+
+
+        switch(attachToElementDirection) {
+          case BOTTOM:
+          case TOP:
+          default:
+            switch (alignmentDirection) {
+              case CENTER:
+                dialogLeft = srcRect.left - dialogWidth/2 + srcRect.width/2;
+                break;
+              case RIGHT:
+                dialogLeft = srcRect.left + srcRect.width - dialogWidth;
+                break;
+              case LEFT:
+              default:
+                dialogLeft = srcRect.left
+                break;
+            }
+            break;
+          case LEFT:
+          case RIGHT:
+            switch (alignmentDirection) {
+              case CENTER:
+                dialogTop = srcRect.top - dialogHeight/2 + srcRect.height/2 + topOffset;
+                break;
+              case TOP:
+              default:
+                dialogTop = srcRect.top + topOffset;
+                break;
+              case BOTTOM:
+                dialogTop = srcRect.bottom + topOffset - dialogHeight;
+                break;
+            }
+            break;
+        }
+
+        switch(attachToElementDirection) {
+          case BOTTOM:
+          default:
+            dialogTop = srcRect.bottom + getTopOffset(dialogElementOffsetParent);
+            break;
+          case TOP:
+            dialogTop = srcRect.top + getTopOffset(dialogElementOffsetParent) - dialogHeight;
+            break;
+          case LEFT:
+            dialogLeft = srcRect.left - dialogWidth;
+            break;
+          case RIGHT:
+            dialogLeft = srcRect.right;
+            break;
+        }
+
+        dialogRect = new positioningObj.fsRect(dialogLeft, dialogTop, dialogWidth, dialogHeight)
+        dialogRect = positioningObj.fsGlobalToLocal(dialogElementOffsetParent, dialogRect);
+        return dialogRect;
       }
 
       function positionDialogWithinDom(dialogElement, pointerElement, newDialogRect, newPointerRect, direction) {
@@ -277,21 +325,13 @@
           // dialog's offset parent. So, we have to subtract ou the dialog's top and left to get the top
           // and left of the pointer relative to the dialog.
           pointerElement.style.top = (newPointerRect.top - newDialogRect.top) + 'px';
+          console.log('pointerElementTop', newPointerRect.top - newDialogRect.top)
         } else {
           pointerElement.style.left = (newPointerRect.left - newDialogRect.left) + 'px';
         }
       }
 
-      function getTopOffset(dialogElementOffsetParent) {
-        var topOffset = 0;
-        if (dialogElementOffsetParent === document.body && window.getComputedStyle(document.body).position) {
-          var bodyRect = document.body.getBoundingClientRect();
-          topOffset = bodyRect.top + window.pageYOffset;
-        }
-        return topOffset;
-      }
-
-      function getRectsWithForcedDirection (sourceElement, dialogElement, pointerElement, direction) {
+      function getRectsWithForcedDirection (sourceElement, dialogElement, pointerElement, direction, doNotAdjustForWindow) {
 
         var windowRect = positioningObj.fsGetWindowRect();
         var globalSrcRect = positioningObj.fsLocalToGlobal(sourceElement);
@@ -339,15 +379,19 @@
         var globalDialogBottom = globalSrcVerticalCenter+(dialogHeight/2);
         var globalDialogRight = globalSrcHorizontalCenter+(dialogWidth/2);
         var globalDialogLeft = globalSrcHorizontalCenter-(dialogWidth/2);
-        var xOffset = calculateXOffset.bind(this)();
-        var yOffset = calculateYOffset.bind(this)();
-        return positionDialog(xOffset, yOffset);
+        var xOffset = this.xOffset = calculateXOffset.bind(this)(doNotAdjustForWindow);
+        var yOffset = this.yOffset = calculateYOffset.bind(this)(doNotAdjustForWindow);
+        return positionDialog(xOffset, yOffset, pointerRect, srcRect, direction);
 
-        function calculateXOffset() {
+        function calculateXOffset(doNotAdjustForWindow) {
           var xOffset = 0;
           switch(direction){
             case UP:
             case DOWN:
+              if (doNotAdjustForWindow) {
+                return (dialogRect.width - POINTER_BASE)/2 - parseFloat(pointerElement.style.left.split('px')[0]);
+                break;
+              }
               if (globalDialogRight > windowRect.right) {
                 xOffset = -(globalDialogRight - windowRect.right);
               } else if (globalDialogLeft < windowRect.left) {
@@ -366,7 +410,7 @@
           return xOffset;
         }
 
-        function calculateYOffset() {
+        function calculateYOffset(doNotAdjustForWindow) {
           var yOffset = 0;
           switch(direction) {
             case UP:
@@ -379,10 +423,15 @@
               break;
             case LEFT:
             case RIGHT:
+              if (doNotAdjustForWindow) {
+                return (dialogRect.height - POINTER_BASE)/2 - parseFloat(pointerElement.style.top.split('px')[0]);
+                break;
+              }
               if (globalDialogBottom > windowRect.bottom) {
                 yOffset = -(globalDialogBottom - windowRect.bottom);
               } else if (globalDialogTop < windowRect.top) {
                 yOffset = windowRect.top - globalDialogTop;
+
               }
               break;
           }
@@ -390,7 +439,7 @@
         }
 
         // TODO: rename
-        function positionDialog(xOffset, yOffset) {
+        function positionDialog(xOffset, yOffset, pointerRect, srcRect, direction) {
           var newDialogRectTop;
           var newDialogRectLeft;
           var newDialogRect;
@@ -423,32 +472,41 @@
             dialogRect: newDialogRect,
             pointerRect: newPointerRect
           }
-
-          function getNewPointerRect(pointerRect, srcRect, direction) {
-            var newPointerRectTop = pointerRect.top;
-            var newPointerRectLeft = pointerRect.left;
-            var newPointerRect;
-            var pointerWidth;
-            var pointerHeight;
-
-            switch(direction) {
-              case UP:
-              case DOWN:
-                newPointerRectLeft = srcRect.left + ((srcRect.width - POINTER_BASE)/2);
-                pointerHeight = POINTER_ALTITUDE;
-                pointerWidth = POINTER_BASE;
-                break;
-              case LEFT:
-              case RIGHT:
-                newPointerRectTop = srcRect.top+((srcRect.height - POINTER_BASE)/2) - topOffset;
-                pointerHeight = POINTER_BASE;
-                pointerWidth = POINTER_ALTITUDE;
-                break;
-            }
-            return newPointerRect = new positioningObj.fsRect(newPointerRectLeft, newPointerRectTop, pointerWidth, pointerHeight);
-          }
         }
       };
+
+      function getNewPointerRect(pointerRect, srcRect, direction) {
+        var newPointerRectTop = pointerRect.top;
+        var newPointerRectLeft = pointerRect.left;
+        var newPointerRect;
+        var pointerWidth;
+        var pointerHeight;
+
+        switch(direction) {
+          case UP:
+          case DOWN:
+            newPointerRectLeft = srcRect.left + ((srcRect.width - POINTER_BASE)/2);
+            pointerHeight = POINTER_ALTITUDE;
+            pointerWidth = POINTER_BASE;
+            break;
+          case LEFT:
+          case RIGHT:
+            newPointerRectTop = srcRect.top+((srcRect.height - POINTER_BASE)/2) - getTopOffset();
+            pointerHeight = POINTER_BASE;
+            pointerWidth = POINTER_ALTITUDE;
+            break;
+        }
+        return newPointerRect = new positioningObj.fsRect(newPointerRectLeft, newPointerRectTop, pointerWidth, pointerHeight);
+      }
+
+      function getTopOffset(dialogElementOffsetParent) {
+        var topOffset = 0;
+        if (dialogElementOffsetParent === document.body && window.getComputedStyle(document.body).position) {
+          var bodyRect = document.body.getBoundingClientRect();
+          topOffset = bodyRect.top + window.pageYOffset;
+        }
+        return topOffset;
+      }
 
     }
   }
