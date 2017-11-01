@@ -147,8 +147,7 @@
         positionObj = positionObj || {};
 
         if (positionObj.attachToCoordinates && positionObj.attachToCoordinates.x && positionObj.attachToCoordinates.y) {
-          // TODO: we need a unique node for each instance if more than one popover will be open at a time and positioned with coordinates
-          var coordinateElement = document.querySelector('#coordinate-positioning-element');
+          var coordinateElement = this.coordinateElement;
           if (!coordinateElement) {
             coordinateElement = document.createElement('div');
             coordinateElement.id = 'coordinate-positioning-element';
@@ -503,6 +502,16 @@
         return topOffset;
       }
 
+    }
+
+    disconnectedCallback(){
+      this.detachedCallback();
+    }
+    detachedCallback() {
+      if (this.coordinateElement) {
+        document.body.removeChild(this.coordinateElement);
+        this.coordinateElement = null;
+      }
     }
   }
   if('customElements' in window){
