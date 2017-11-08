@@ -14,12 +14,33 @@
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <style>
       .demo-snippet {
-        margin-bottom: 60px;
+        margin-bottom: 40px;
+      }
+
+      .fs-card {
+        padding: 5px;
+      }
+
+      [dynamic] label {
+        display: inline-block;
+      }
+      [dynamic] select {
+        width: inherit;
+      }
+
+      details:not([open]) summary {
+        cursor: help;
+      }
+
+      summary {
+        cursor: pointer;
+        margin: 5px auto;
+        padding: 10px;
+        user-select: none;
       }
 
       .demo {
-        border-bottom: 1px solid #ccc;
-        padding: 20px;
+        display: hidden;
       }
 
       pre[class*="language-"] {
@@ -27,14 +48,6 @@
         padding: 20px;
       }
 
-      .demo > h5:not(:first-child) {
-        margin-top: 40px;
-      }
-
-      .demo > h5 {
-        margin-bottom: 10px;
-        border-bottom: 1px solid #ccc;
-      }
       fs-modeless-dialog,
       fs-modal-dialog,
       fs-anchored-dialog {
@@ -48,6 +61,7 @@
 
     <h3>Modal Dialog Default Use</h3>
     <div class="demo-snippet fs-card">
+      <button class="modal fs-button">Open Dialog</button>
       <div class="demo">
 <fs-modal-dialog>
   <header>
@@ -61,14 +75,18 @@
   </footer>
 </fs-modal-dialog>
 
-<button class="modal fs-button">Open Dialog</button>
       </div>
     </div>
 
     <h3>Modal Dialog Attributes</h3>
     <div class="demo-snippet fs-card">
+      <h5>dismiss-on-blur</h5>
+      <button class="fs-button modal">Open Dialog</button>
+      <h5>transition="from-bottom"</h5>
+      <button class="fs-button modal">Open Dialog</button>
+      <h5>transition="from-right"</h5>
+      <button class="fs-button modal">Open Dialog</button>
       <div class="demo">
-<h5>dismiss-on-blur</h5>
 <fs-modal-dialog dismiss-on-blur>
   <header>
     <h4>Modal</h4>
@@ -81,9 +99,6 @@
   </footer>
 </fs-modal-dialog>
 
-<button class="fs-button modal">Open Dialog</button>
-
-<h5>transition="from-bottom"</h5>
 <fs-modal-dialog transition="from-bottom">
   <header>
     <h4>Modal</h4>
@@ -96,10 +111,6 @@
   </footer>
 </fs-modal-dialog>
 
-<button class="fs-button modal">Open Dialog</button>
-
-
-<h5>transition="from-right"</h5>
 <fs-modal-dialog transition="from-right">
   <header>
     <h4>Modal</h4>
@@ -112,15 +123,12 @@
   </footer>
 </fs-modal-dialog>
 
-<button class="fs-button modal">Open Dialog</button>
-
       </div>
     </div>
 
-
-
     <h3>Modeless Dialog Default Use</h3>
     <div class="demo-snippet fs-card">
+      <button class="fs-button modeless">Open Dialog</button>
       <div class="demo">
 <fs-modeless-dialog>
   <header>
@@ -134,8 +142,6 @@
   </footer>
 </fs-modeless-dialog>
 
-<button class="fs-button modeless">Open Dialog</button>
-
       </div>
     </div>
 
@@ -143,10 +149,40 @@
 
     <h3>Anchored Dialog Default Use</h3>
     <div class="demo-snippet fs-card">
-      <div class="demo" >
-<h5>auto-position to fit on screen</h5>
-<fs-anchored-dialog class="auto-position">
+      <h5>auto-position to fit on screen</h5>
+      <button class="anchored fs-button">Open Dialog</button>
+      <h5>position by coordinates instead of element</h5>
+      <button class="coordinates-button fs-button">Open Dialog</button>
+      <h5>force the direction of the dialog</h5>
+      <button id="direction-up-button" class="fs-button">Open Dialog Up</button>
+      <button id="direction-down-button" class="fs-button">Open Dialog Down</button>
+      <button id="direction-left-button" class="fs-button">Open Dialog Left</button>
+      <button id="direction-right-button" class="fs-button">Open Dialog Right</button>
+      <script>
+        document.querySelector('#direction-up-button').addEventListener('click', function(event) {
+          document.querySelector('#direction-up').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'up'});
+        });
+        document.querySelector('#direction-down-button').addEventListener('click', function(event) {
+          document.querySelector('#direction-down').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'down'});
+        });
+        document.querySelector('#direction-left-button').addEventListener('click', function(event) {
+          document.querySelector('#direction-left').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'left'});
+        });
+        document.querySelector('#direction-right-button').addEventListener('click', function(event) {
+          document.querySelector('#direction-right').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'right'});
+        });
+      </script>
+      <h5>specify preferred pointer positioning order</h5>
+      <button id="preferred-positioning-button" class="fs-button">Open Dialog Preferred</button>
+      <script>
+        document.querySelector('#preferred-positioning-button').addEventListener('click', function(event) {
+          document.querySelector('#preferred-positioning').open({focusBackElement: this, attachToElement: this, preferredPointerDirection: ['right', 'down', 'up', 'left']});
+        });
+      </script>
 
+
+      <div class="demo" >
+<fs-anchored-dialog class="auto-position">
   <header>
     <h4>From-bottom</h4>
   </header>
@@ -158,9 +194,7 @@
     <button class="anchored fs-button mixed-anchored-anchor">Open Dialog</button>
   </footer>
 </fs-anchored-dialog>
-<button class="anchored fs-button">Open Dialog</button>
 
-<h5>position by coordinates instead of element</h5>
 <fs-anchored-dialog class="coordinates">
 
   <header>
@@ -174,10 +208,7 @@
     <button data-dialog-dismiss class="fs-button">Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="coordinates-button fs-button">Open Dialog</button>
 
-
-<h5>force the direction of the dialog</h5>
 <fs-anchored-dialog id="direction-up">
   <header>
     <h4>direction up</h4>
@@ -189,7 +220,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button id="direction-up-button" class="fs-button">Open Dialog Up</button>
 <fs-anchored-dialog id="direction-down">
   <header>
     <h4>direction down</h4>
@@ -201,7 +231,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button id="direction-down-button" class="fs-button">Open Dialog Down</button>
 <fs-anchored-dialog id="direction-left">
   <header>
     <h4>direction left</h4>
@@ -213,7 +242,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button id="direction-left-button" class="fs-button">Open Dialog Left</button>
 <fs-anchored-dialog id="direction-right">
   <header>
     <h4>direction right</h4>
@@ -225,23 +253,7 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button id="direction-right-button" class="fs-button">Open Dialog Right</button>
-<script>
-  document.querySelector('#direction-up-button').addEventListener('click', function(event) {
-    document.querySelector('#direction-up').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'up'});
-  });
-  document.querySelector('#direction-down-button').addEventListener('click', function(event) {
-    document.querySelector('#direction-down').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'down'});
-  });
-  document.querySelector('#direction-left-button').addEventListener('click', function(event) {
-    document.querySelector('#direction-left').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'left'});
-  });
-  document.querySelector('#direction-right-button').addEventListener('click', function(event) {
-    document.querySelector('#direction-right').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'right'});
-  });
-</script>
 
-<h5>specify preferred pointer positioning order</h5>
 <fs-anchored-dialog id="preferred-positioning">
   <header>
     <h4>preferredPointerDirection = ['right', 'down', 'up', 'left'] </h4>
@@ -253,21 +265,31 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button id="preferred-positioning-button" class="fs-button">Open Dialog Preferred</button>
-<script>
-  document.querySelector('#preferred-positioning-button').addEventListener('click', function(event) {
-    document.querySelector('#preferred-positioning').open({focusBackElement: this, attachToElement: this, preferredPointerDirection: ['right', 'down', 'up', 'left']});
-  });
-</script>
 
       </div>
     </div>
 
     <h3>Anchored Dialog Pointerless</h3>
     <div class="demo-snippet fs-card">
+      <h5>auto-position to fit on screen</h5>
+      <button class="anchored fs-button">Open Dialog</button>
+      <h5>position by coordinates instead of element</h5>
+      <button class="coordinates-button fs-button">Open Dialog</button>
+      <h5>force the direction of the dialog</h5>
+      <button class="fs-button pointerless-button">Open Dialog aligned left, attached bottom</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned center, attached bottom</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned right, attached bottom</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned left, attached top</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned center, attached top</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned right, attached top</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned top, attached left</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned center, attached left</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned bottom, attached left</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned top, attached right</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned center, attached right</button>
+      <button class="fs-button pointerless-button">Open Dialog aligned bottom, attached right</button>
       <div class="demo">
 
-<h5>auto-position to fit on screen</h5>
 <fs-anchored-dialog no-pointer class="auto-position">
   <header>
     <h4>auto position</h4>
@@ -279,9 +301,7 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="anchored fs-button">Open Dialog</button>
 
-<h5>position by coordinates instead of element</h5>
 <fs-anchored-dialog no-pointer class="coordinates">
 
   <header>
@@ -295,10 +315,8 @@
     <button data-dialog-dismiss class="fs-button">Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="coordinates-button fs-button">Open Dialog</button>
 
 
-<h5>force the direction of the dialog</h5>
 <fs-anchored-dialog no-pointer alignment="left" attach-direction="bottom" class="pointerless">
   <header>
     <h4>aligned left, attached bottom</h4>
@@ -310,7 +328,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned left, attached bottom</button>
 <fs-anchored-dialog no-pointer alignment="center" attach-direction="bottom" class="pointerless">
   <header>
     <h4>aligned center, attached bottom</h4>
@@ -322,7 +339,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned center, attached bottom</button>
 <fs-anchored-dialog no-pointer alignment="right" attach-direction="bottom" class="pointerless">
   <header>
     <h4>aligned right, attached bottom</h4>
@@ -334,9 +350,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned right, attached bottom</button>
-
-
 <fs-anchored-dialog no-pointer alignment="left" attach-direction="top" class="pointerless">
   <header>
     <h4>aligned left, attached top</h4>
@@ -348,7 +361,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned left, attached top</button>
 <fs-anchored-dialog no-pointer alignment="center" attach-direction="top" class="pointerless">
   <header>
     <h4>aligned center, attached top</h4>
@@ -360,7 +372,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned center, attached top</button>
 <fs-anchored-dialog no-pointer alignment="right" attach-direction="top" class="pointerless">
   <header>
     <h4>aligned right, attached top</h4>
@@ -372,9 +383,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned right, attached top</button>
-
-
 <fs-anchored-dialog no-pointer alignment="top" attach-direction="left" class="pointerless">
   <header>
     <h4>aligned top, attached left</h4>
@@ -386,7 +394,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned top, attached left</button>
 <fs-anchored-dialog no-pointer alignment="center" attach-direction="left" class="pointerless">
   <header>
     <h4>aligned center, attached left</h4>
@@ -398,7 +405,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned center, attached left</button>
 <fs-anchored-dialog no-pointer alignment="bottom" attach-direction="left" class="pointerless">
   <header>
     <h4>aligned bottom, attached left</h4>
@@ -410,9 +416,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned bottom, attached left</button>
-
-
 <fs-anchored-dialog no-pointer alignment="top" attach-direction="right" class="pointerless">
   <header>
     <h4>aligned top, attached right</h4>
@@ -424,7 +427,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned top, attached right</button>
 <fs-anchored-dialog no-pointer alignment="center" attach-direction="right" class="pointerless">
   <header>
     <h4>aligned center, attached right</h4>
@@ -436,7 +438,6 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned center, attached right</button>
 <fs-anchored-dialog no-pointer alignment="bottom" attach-direction="right" class="pointerless">
   <header>
     <h4>aligned bottom, attached right</h4>
@@ -448,22 +449,19 @@
     <button class="fs-button" data-dialog-dismiss>Close</button>
   </footer>
 </fs-anchored-dialog>
-<button class="fs-button pointerless-button">Open Dialog aligned bottom, attached right</button>
 
       </div>
+
     </div>
-
-
-
-
 
     <h3>Scrolling Content</h3>
     <div class="demo-snippet fs-card">
+      <button class="modal fs-button">Open Dialog</button>
       <div class="demo">
 <style>
-#scrolling-dialog {
-  height: 50vh;
-}
+  #scrolling-dialog {
+    height: 50vh;
+  }
 </style>
 
 <fs-modal-dialog id="scrolling-dialog">
@@ -478,18 +476,13 @@
     <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
   </footer>
 </fs-modal-dialog>
-
-<button class="modal fs-button">Open Dialog</button>
       </div>
     </div>
-
-
-
-
 
     <h3>Stacking</h3>
     <p>Dialogs will automatically stack based on order opened.
     <div class="demo-snippet fs-card">
+      <button class="modal fs-button">Open Dialog</button>
       <div class="demo">
 <fs-modal-dialog>
   <header>
@@ -504,9 +497,6 @@
     <button class="fs-button fs-button--minor" data-dialog-dismiss>Close</button>
   </footer>
 </fs-modal-dialog>
-
-<button class="modal fs-button">Open Dialog</button>
-
 <fs-modal-dialog id="stacking-dialog">
   <header>
     <h4>Top Dialog</h4>
@@ -520,10 +510,6 @@
 </fs-modal-dialog>
       </div>
     </div>
-
-
-
-
 
     <h3>Other Functions and Attributes</h3>
     <div class="demo-snippet fs-card">
@@ -542,15 +528,15 @@
         <p>To close all modal and anchored dialogs on the page you can call <code>FS.dialog.service.closeAllDialogs()</code> This does not close modeless dialogs.</p>
         <h5>Auto-hiding dialogs from initial load</h5>
         <p>While the component is loading, you may get flashes of dialogs being visible/unstyled. To avoid this, add these styles to the css early in your page.</p>
-        <pre>
-          fs-modeless-dialog,
-          fs-modal-dialog,
-          fs-anchored-dialog {
-            visibility: hidden;
-            opacity: 0;
-            display: none;
-          }
-        </pre>
+<pre>
+  fs-modeless-dialog,
+  fs-modal-dialog,
+  fs-anchored-dialog {
+    visibility: hidden;
+    opacity: 0;
+    display: none;
+  }
+</pre>
       </div>
     </div>
 
@@ -575,7 +561,7 @@
   </header>
   <div class="fs-dialog__body">
     body text
-  </div>
+      </div>
   <footer>
     <button class="modal fs-button mixed-anchored-modal">Open Dialog</button>
   </footer>
@@ -585,7 +571,7 @@
     <script>
     (function() {
 
-      // add automatic code output
+      // Generate details-->pre-->code example code blocks
       Array.from(document.querySelectorAll('.demo:not(.do-not-codify)')).forEach(function(demo) {
         var code = demo.innerHTML
           .trim()
@@ -593,26 +579,33 @@
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;');
 
-        var preEL = document.createElement('pre');
+        var preEl = document.createElement('pre');
         var codeEl = document.createElement('code');
         codeEl.classList.add('language-markup');
         codeEl.innerHTML = code;
 
-        preEL.appendChild(codeEl);
-        demo.parentElement.appendChild(preEL);
+        var wrapperEl = document.createElement('details');
+        var summaryEl = document.createElement('summary');
+        summaryEl.innerHTML = "Markup";
+        summaryEl.setAttribute("title", "Show/hide associated markup");
+
+        demo.parentNode.insertBefore(wrapperEl, demo);
+        preEl.appendChild(codeEl);
+        wrapperEl.appendChild(summaryEl);
+        wrapperEl.appendChild(preEl);
       });
 
       // find each button and open the previous sibling dialog
       var modelessDialogs = document.querySelectorAll('.demo > fs-modeless-dialog');
-      var modelessButtons = document.querySelectorAll('.demo > button.modeless');
+      var modelessButtons = document.querySelectorAll('.demo-snippet > button.modeless');
       var modalDialogs = document.querySelectorAll('.demo > fs-modal-dialog');
-      var modalButtons = document.querySelectorAll('.demo > button.modal');
+      var modalButtons = document.querySelectorAll('.demo-snippet > button.modal');
       var anchoredDialogs = document.querySelectorAll('.demo > fs-anchored-dialog.auto-position');
-      var anchoredButtons = document.querySelectorAll('.demo > button.anchored');
+      var anchoredButtons = document.querySelectorAll('.demo-snippet > button.anchored');
       var pointerlessDialogs = document.querySelectorAll('.demo > fs-anchored-dialog.pointerless');
-      var pointerlessButtons = document.querySelectorAll('.demo > button.pointerless-button');
+      var pointerlessButtons = document.querySelectorAll('.demo-snippet > button.pointerless-button');
       var coordinateDialogs = document.querySelectorAll('.demo > fs-anchored-dialog.coordinates');
-      var coordinateButtons = document.querySelectorAll('.demo > button.coordinates-button');
+      var coordinateButtons = document.querySelectorAll('.demo-snippet > button.coordinates-button');
 
       Array.from(modelessButtons).forEach(function(button, index) {
         button.addEventListener('click', function() {
