@@ -375,6 +375,11 @@
           // call dialog-type specific open logic
           if(onOpenDialogFunction) onOpenDialogFunction.bind(this)(optionsObj);
 
+          // This must happen after the onOpenDialogFunction because with modal dialogs
+          // inert will restore the previous state of aria-hidden (true) so we must
+          // remove the aria-hidden attribute after inert has finished
+          this.removeAttribute('aria-hidden');
+
           // this triggers the css changes to show the dialog
           this.setAttribute('opened', '');
 
@@ -441,6 +446,8 @@
 
         // css to close the dialogs
         this.removeAttribute('opened');
+
+        this.setAttribute('aria-hidden', true);
 
         // call dialog-type specific close logic
         if (onCloseDialogFunction) onCloseDialogFunction.bind(this)();
