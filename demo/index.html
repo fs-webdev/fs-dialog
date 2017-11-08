@@ -28,7 +28,7 @@
         width: inherit;
       }
 
-      details:not([open]) summary {
+      .demo-snippet details:not([open]) summary {
         cursor: help;
       }
 
@@ -540,7 +540,29 @@
       </div>
     </div>
 
-
+    <h3></h3>
+    <div class="demo-snippet fs-card">
+      <details open>
+        <summary><strong>Design and Business Logic Decisions:</strong></summary>
+        <ul>
+          <li></li>
+          <li>By default:<ul>
+            <li>All modal dialogs do not have dismiss on blur</li>
+            <li>All modal dialogs have close on escape functionality</li>
+            <li>All modal dialogs show the close "X"</li>
+            <li>All modal dialogs go full-screen at 480px</li>
+          </ul></li>
+        </ul>
+      </details>
+      <details>
+        <summary><strong>TODO List:</strong></summary>
+        <ul>
+          <li>Create dynamic demo/code example</li>
+          <li>Fix IE11 bugs</li>
+          <li>Get unit tests written/working</li>
+        </ul>
+      </details>
+    </div>
 
 
 <fs-modal-dialog id="mixed-anchored-modal">
