@@ -21,9 +21,15 @@
         padding: 5px;
       }
 
+      [dynamic] ul {
+        list-style: none;
+        margin: 0 0 10px 0;
+      }
+
       [dynamic] label {
         display: inline-block;
       }
+
       [dynamic] select {
         width: inherit;
       }
@@ -48,468 +54,127 @@
         padding: 20px;
       }
 
-      fs-modeless-dialog,
-      fs-modal-dialog,
-      fs-anchored-dialog {
-        visibility: hidden;
-        opacity: 0;
-        display: none;
+      /* begin fs-styles override */
+      fieldset {
+        border: 1px solid #777;
+        margin-bottom: 10px;
+        padding: 8px;
       }
+      fieldset legend {
+        font-size: 1.25rem;
+        line-height: 1.5rem;
+      }
+      /* end fs-styles override */
+
     </style>
   </head>
   <body>
 
-    <h3>Modal Dialog Default Use</h3>
     <div class="demo-snippet fs-card">
-      <button class="modal fs-button">Open Dialog</button>
-      <div class="demo">
-<fs-modal-dialog>
-  <header>
-    <h4>Modal</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>This is a modal dialog. It really stands out from the content and forces the user to perform an action before they can continue.</p>
-  </div>
-  <footer>
-    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
-  </footer>
-</fs-modal-dialog>
+      <form action="#" dynamic>
+        <h2>Dynamic configuration demo card of awesomeness:</h2>
 
+        <label>Dialog Type</label>
+        <ul>
+          <li>
+            <input name="type" type="radio" id="modal" checked="">
+            <label for="modal">Modal</label>
+          </li>
+          <li>
+            <input name="type" type="radio" id="modeless">
+            <label for="modeless">Modeless</label>
+          </li>
+          <li>
+            <input name="type" type="radio" id="anchored">
+            <label for="anchored">Anchored</label>
+          </li>
+        </ul>
+
+        <fieldset>
+          <legend>data-specific options:</legend>
+
+          <label>Content Size</label>
+          <ul>
+            <li>
+              <input name="content-size" type="radio" id="short" checked="">
+              <label for="short">Short</label>
+            </li>
+            <li>
+              <input name="content-size" type="radio" id="medium">
+              <label for="medium">Medium</label>
+            </li>
+            <li>
+              <input name="content-size" type="radio" id="long">
+              <label for="long">Long</label>
+            </li>
+          </ul>
+
+          <label for="maxHeight">max-height</label>
+          <div class="fs-field-group">
+            <input class="fs-field-group__input" id="maxHeight" type="text"  maxlength="20" placeholder="example: 400px">
+            <div class="fs-field-group__attachment">
+              <input type="checkbox" id="max-height">
+              <label for="max-height"></label>
+            </div>
+          </div>
+
+          <label>Nesting</label>
+          <ul>
+            <li>
+              <input name="nesting" type="radio" id="none" checked="">
+              <label for="none">None</label>
+            </li>
+            <li>
+              <input name="nesting" type="radio" id="one">
+              <label for="one">One</label>
+            </li>
+            <li>
+              <input name="nesting" type="radio" id="two">
+              <label for="two">Two</label>
+            </li>
+          </ul>
+        </fieldset>
+
+        <fieldset>
+          <legend>fs-anchored-dialog-specific options:</legend>
+
+          <input type="checkbox" name="no-pointer" id="noPointer"><label for="noPointer">no-pointer</label>
+
+          <label for="pointerDirection">pointer-direction</label>
+          <select name="pointer-direction" id="pointerDirection">
+            <option value=""></option>
+            <option value="down">down</option>
+          </select>
+
+          <label for="attachDirection">attach-direction</label>
+          <select name="attach-direction" id="attachDirection">
+            <option value=""></option>
+            <option value="center">center</option>
+          </select>
+
+          <label for="alignment">alignment</label>
+          <select name="alignment" id="alignment">
+            <option value=""></option>
+            <option value="left">left</option>
+          </select>
+
+        </fieldset>
+
+        <fieldset>
+          <legend>fs-modal-dialog-specific options:</legend>
+
+
+        </fieldset>
+      </form>
+
+      <button class="modal fs-button fs-button--recommended">Open Dialog</button>
+
+      <div class="dynamic demo">
+        <dynamic-demo-element></dynamic-demo-element>
       </div>
     </div>
 
-    <h3>Modal Dialog Attributes</h3>
-    <div class="demo-snippet fs-card">
-      <h5>dismiss-on-blur</h5>
-      <button class="fs-button modal">Open Dialog</button>
-      <h5>transition="from-bottom"</h5>
-      <button class="fs-button modal">Open Dialog</button>
-      <h5>transition="from-right"</h5>
-      <button class="fs-button modal">Open Dialog</button>
-      <div class="demo">
-<fs-modal-dialog dismiss-on-blur>
-  <header>
-    <h4>Modal</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>This is a modal dialog. When you click on the greyed out background, the dialog will close</p>
-  </div>
-  <footer>
-    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
-  </footer>
-</fs-modal-dialog>
-
-<fs-modal-dialog transition="from-bottom">
-  <header>
-    <h4>Modal</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>This is a modal dialog. When you are at a screen size of less than 480px, this dialog transitions in from the bottom and transitions out to the bottom</p>
-  </div>
-  <footer>
-    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
-  </footer>
-</fs-modal-dialog>
-
-<fs-modal-dialog transition="from-right">
-  <header>
-    <h4>Modal</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>This is a modal dialog. When you are at a screen size of less than 480px, this dialog transitions in from the right and transitions out to the right</p>
-  </div>
-  <footer>
-    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
-  </footer>
-</fs-modal-dialog>
-
-      </div>
-    </div>
-
-    <h3>Modeless Dialog Default Use</h3>
-    <div class="demo-snippet fs-card">
-      <button class="fs-button modeless">Open Dialog</button>
-      <div class="demo">
-<fs-modeless-dialog>
-  <header>
-    <h4>Modeless Dialog</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>Can be moved and doesn't prevent user interaction of the page.</p>
-  </div>
-  <footer>
-    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
-  </footer>
-</fs-modeless-dialog>
-
-      </div>
-    </div>
-
-
-
-    <h3>Anchored Dialog Default Use</h3>
-    <div class="demo-snippet fs-card">
-      <h5>auto-position to fit on screen</h5>
-      <button class="anchored fs-button">Open Dialog</button>
-      <h5>position by coordinates instead of element</h5>
-      <button class="coordinates-button fs-button">Open Dialog</button>
-      <h5>force the direction of the dialog</h5>
-      <button id="direction-up-button" class="fs-button">Open Dialog Up</button>
-      <button id="direction-down-button" class="fs-button">Open Dialog Down</button>
-      <button id="direction-left-button" class="fs-button">Open Dialog Left</button>
-      <button id="direction-right-button" class="fs-button">Open Dialog Right</button>
-      <script>
-        document.querySelector('#direction-up-button').addEventListener('click', function(event) {
-          document.querySelector('#direction-up').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'up'});
-        });
-        document.querySelector('#direction-down-button').addEventListener('click', function(event) {
-          document.querySelector('#direction-down').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'down'});
-        });
-        document.querySelector('#direction-left-button').addEventListener('click', function(event) {
-          document.querySelector('#direction-left').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'left'});
-        });
-        document.querySelector('#direction-right-button').addEventListener('click', function(event) {
-          document.querySelector('#direction-right').open({focusBackElement: this, attachToElement: this, forcedPointerDirection: 'right'});
-        });
-      </script>
-      <h5>specify preferred pointer positioning order</h5>
-      <button id="preferred-positioning-button" class="fs-button">Open Dialog Preferred</button>
-      <script>
-        document.querySelector('#preferred-positioning-button').addEventListener('click', function(event) {
-          document.querySelector('#preferred-positioning').open({focusBackElement: this, attachToElement: this, preferredPointerDirection: ['right', 'down', 'up', 'left']});
-        });
-      </script>
-
-
-      <div class="demo" >
-<fs-anchored-dialog class="auto-position">
-  <header>
-    <h4>From-bottom</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>This dialog's content will scroll.</p>
-    <p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br><br>It looks like an Imperial cruiser. Our passengers must be hotter than I thought. Try and hold them off. Angle the deflector shield while I make the calculations for the jump to light speed. Stay sharp! There are two more coming in, they're going to try to cut us off. Why don't you outrun them? I thought you said this thing was fast. Watch your mouth, kid, or you're going to find yourself floating home. We'll be safe enough once we make the jump to hyperspace. Besides, I know a few maneuvers. We'll lose them! Here's where the fun begins!<br><br>I'm not going anywhere. They're going to execute her. Look, a few minutes ago you said you didn't want to just wait here to be captured. Now all you want to do is stay. Marching into the detention area is not what I had in mind. But they're going to kill her! Better her than me... She's rich. Rich? Yes. Rich, powerful! Listen, if you were to rescue her, the reward would be... What? Well more wealth that you can imagine. I don't know, I can imagine quite a bit! You'll get it! I better! You will...<br><br>I can't see a thing in this helmet. This is not going to work. Why didn't you say so before? I did say so before! Where are you taking this...thing? Prisoner transfer from Block one-one-three-eight. I wasn't notified. I'll have to clear it. Look out! We've got to find out which cell this princess of yours is in. Here it is...cell twenty-one-eight-seven. You go get her. I'll hold them here. Everything is under control. Situation normal. What happened? Uh...had a slight weapons malfunction. But, uh, everything's perfectly all right now. We're fine. We're all fine here, now, thank you. How are you? We're sending a squad up. Uh, uh, negative. We had a reactor leak here now. Give us a few minutes to lock it down. Large leak...very dangerous. Who is this? What's your operating number? Boring conversation anyway. Luke! We're going to have company!<br><br>Aren't you a little short to be a stormtrooper? What? Oh...the uniform. I'm Luke Skywalker. I'm here to rescue you. You're who? I'm here to rescue you. I've got your R2 unit. I'm here with Ben Kenobi. Ben Kenobi is here! Where is he? Come on!<br><br>You're safe! We had feared the worst. When we heard about Alderaan, we were afraid that you were... We don't have time for our sorrows, Commander. The battle station has surely tracked us here. It's the only explanation for the ease of our escape. You must use the information in this R2 unit to plan the attack. It is our only hope. Yes. We are approaching the planet Yavin. The Rebel base is on a moon on the far side. We are preparing to orbit the planet.<br><br>All wings report in. Red Ten standing by. Red Seven standing by. Red Three standing by. Red Six standing by. Red Nine standing by. Red Two standing by. Red Eleven standing by. Red Five standing by. Lock S-foils in attack position. We're passing through their magnetic field. Hold tight! Switch your deflectors on. Double front!<br><br>Close up formation. You'd better let her loose. Almost there! I can't hold them! It's away! It's a hit! Negative. Negative! It didn't go in. It just impacted on the surface. Red Leader, we're right above you. Turn to point... oh-five, we'll cover for you. Stay there... I just lost my starboard engine. Get set to make your attack run.<br><br>Let him go! Stay on the leader! Hurry, Luke, they're coming in much faster this time. I can't hold them! Artoo, try and increase the power! Hurry up, Luke! Wait! I'm on the leader. Hang on, Artoo! Use the Force, Luke. Let go, Luke. The Force is strong with this one! Luke, trust me. His computer's off. Luke, you switched off your targeting computer. What's wrong? Nothing. I'm all right. I've lost Artoo! You may fire when ready. I have you now.</p>
-  </div>
-  <footer>
-    <button class="anchored fs-button mixed-anchored-anchor">Open Dialog</button>
-  </footer>
-</fs-anchored-dialog>
-
-<fs-anchored-dialog class="coordinates">
-
-  <header>
-    <h4>positioned at coordinates x: 50 y: 50</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>This dialog's content will scroll.</p>
-    <p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br></p>
-  </div>
-  <footer>
-    <button data-dialog-dismiss class="fs-button">Close</button>
-  </footer>
-</fs-anchored-dialog>
-
-<fs-anchored-dialog id="direction-up">
-  <header>
-    <h4>direction up</h4>
-  </header>
-  <div class="fs-dialog__body">
-    body text
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog id="direction-down">
-  <header>
-    <h4>direction down</h4>
-  </header>
-  <div class="fs-dialog__body">
-    body text
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog id="direction-left">
-  <header>
-    <h4>direction left</h4>
-  </header>
-  <div class="fs-dialog__body">
-    body text
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog id="direction-right">
-  <header>
-    <h4>direction right</h4>
-  </header>
-  <div class="fs-dialog__body">
-    body text
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-
-<fs-anchored-dialog id="preferred-positioning">
-  <header>
-    <h4>preferredPointerDirection = ['right', 'down', 'up', 'left'] </h4>
-  </header>
-  <div class="fs-dialog__body">
-    body text
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-
-      </div>
-    </div>
-
-    <h3>Anchored Dialog Pointerless</h3>
-    <div class="demo-snippet fs-card">
-      <h5>auto-position to fit on screen</h5>
-      <button class="anchored fs-button">Open Dialog</button>
-      <h5>position by coordinates instead of element</h5>
-      <button class="coordinates-button fs-button">Open Dialog</button>
-      <h5>force the direction of the dialog</h5>
-      <button class="fs-button pointerless-button">Open Dialog aligned left, attached bottom</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned center, attached bottom</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned right, attached bottom</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned left, attached top</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned center, attached top</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned right, attached top</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned top, attached left</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned center, attached left</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned bottom, attached left</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned top, attached right</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned center, attached right</button>
-      <button class="fs-button pointerless-button">Open Dialog aligned bottom, attached right</button>
-      <div class="demo">
-
-<fs-anchored-dialog no-pointer class="auto-position">
-  <header>
-    <h4>auto position</h4>
-  </header>
-  <div class="fs-dialog__body">
-    body text
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-
-<fs-anchored-dialog no-pointer class="coordinates">
-
-  <header>
-    <h4>positioned at coordinates x: 50 y: 50</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>This dialog's content will scroll.</p>
-    <p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br></p>
-  </div>
-  <footer>
-    <button data-dialog-dismiss class="fs-button">Close</button>
-  </footer>
-</fs-anchored-dialog>
-
-
-<fs-anchored-dialog no-pointer alignment="left" attach-direction="bottom" class="pointerless">
-  <header>
-    <h4>aligned left, attached bottom</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: left and attachDirection: bottom can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="center" attach-direction="bottom" class="pointerless">
-  <header>
-    <h4>aligned center, attached bottom</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: center and attachDirection: bottom can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="right" attach-direction="bottom" class="pointerless">
-  <header>
-    <h4>aligned right, attached bottom</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: right and attachDirection: bottom can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="left" attach-direction="top" class="pointerless">
-  <header>
-    <h4>aligned left, attached top</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: left and attachDirection: top can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="center" attach-direction="top" class="pointerless">
-  <header>
-    <h4>aligned center, attached top</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: center and attachDirection: top can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="right" attach-direction="top" class="pointerless">
-  <header>
-    <h4>aligned right, attached top</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: right and attachDirection: top can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="top" attach-direction="left" class="pointerless">
-  <header>
-    <h4>aligned top, attached left</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: top and attachDirection: left can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="center" attach-direction="left" class="pointerless">
-  <header>
-    <h4>aligned center, attached left</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: center and attachDirection: left can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="bottom" attach-direction="left" class="pointerless">
-  <header>
-    <h4>aligned bottom, attached left</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: bottom and attachDirection: left can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="top" attach-direction="right" class="pointerless">
-  <header>
-    <h4>aligned top, attached right</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: top and attachDirection: right can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="center" attach-direction="right" class="pointerless">
-  <header>
-    <h4>aligned center, attached right</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: center and attachDirection: right can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-<fs-anchored-dialog no-pointer alignment="bottom" attach-direction="right" class="pointerless">
-  <header>
-    <h4>aligned bottom, attached right</h4>
-  </header>
-  <div class="fs-dialog__body">
-    note: alignment: bottom and attachDirection: right can be passed into the open function or can be attributes on the dialog
-  </div>
-  <footer>
-    <button class="fs-button" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-anchored-dialog>
-
-      </div>
-
-    </div>
-
-    <h3>Scrolling Content</h3>
-    <div class="demo-snippet fs-card">
-      <button class="modal fs-button">Open Dialog</button>
-      <div class="demo">
-<style>
-  #scrolling-dialog {
-    height: 50vh;
-  }
-</style>
-
-<fs-modal-dialog id="scrolling-dialog">
-  <header>
-    <h4>Scroll</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>This dialog's content will scroll.</p>
-    <p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br><br>It looks like an Imperial cruiser. Our passengers must be hotter than I thought. Try and hold them off. Angle the deflector shield while I make the calculations for the jump to light speed. Stay sharp! There are two more coming in, they're going to try to cut us off. Why don't you outrun them? I thought you said this thing was fast. Watch your mouth, kid, or you're going to find yourself floating home. We'll be safe enough once we make the jump to hyperspace. Besides, I know a few maneuvers. We'll lose them! Here's where the fun begins!<br><br>I'm not going anywhere. They're going to execute her. Look, a few minutes ago you said you didn't want to just wait here to be captured. Now all you want to do is stay. Marching into the detention area is not what I had in mind. But they're going to kill her! Better her than me... She's rich. Rich? Yes. Rich, powerful! Listen, if you were to rescue her, the reward would be... What? Well more wealth that you can imagine. I don't know, I can imagine quite a bit! You'll get it! I better! You will...<br><br>I can't see a thing in this helmet. This is not going to work. Why didn't you say so before? I did say so before! Where are you taking this...thing? Prisoner transfer from Block one-one-three-eight. I wasn't notified. I'll have to clear it. Look out! We've got to find out which cell this princess of yours is in. Here it is...cell twenty-one-eight-seven. You go get her. I'll hold them here. Everything is under control. Situation normal. What happened? Uh...had a slight weapons malfunction. But, uh, everything's perfectly all right now. We're fine. We're all fine here, now, thank you. How are you? We're sending a squad up. Uh, uh, negative. We had a reactor leak here now. Give us a few minutes to lock it down. Large leak...very dangerous. Who is this? What's your operating number? Boring conversation anyway. Luke! We're going to have company!<br><br>Aren't you a little short to be a stormtrooper? What? Oh...the uniform. I'm Luke Skywalker. I'm here to rescue you. You're who? I'm here to rescue you. I've got your R2 unit. I'm here with Ben Kenobi. Ben Kenobi is here! Where is he? Come on!<br><br>You're safe! We had feared the worst. When we heard about Alderaan, we were afraid that you were... We don't have time for our sorrows, Commander. The battle station has surely tracked us here. It's the only explanation for the ease of our escape. You must use the information in this R2 unit to plan the attack. It is our only hope. Yes. We are approaching the planet Yavin. The Rebel base is on a moon on the far side. We are preparing to orbit the planet.<br><br>All wings report in. Red Ten standing by. Red Seven standing by. Red Three standing by. Red Six standing by. Red Nine standing by. Red Two standing by. Red Eleven standing by. Red Five standing by. Lock S-foils in attack position. We're passing through their magnetic field. Hold tight! Switch your deflectors on. Double front!<br><br>Close up formation. You'd better let her loose. Almost there! I can't hold them! It's away! It's a hit! Negative. Negative! It didn't go in. It just impacted on the surface. Red Leader, we're right above you. Turn to point... oh-five, we'll cover for you. Stay there... I just lost my starboard engine. Get set to make your attack run.<br><br>Let him go! Stay on the leader! Hurry, Luke, they're coming in much faster this time. I can't hold them! Artoo, try and increase the power! Hurry up, Luke! Wait! I'm on the leader. Hang on, Artoo! Use the Force, Luke. Let go, Luke. The Force is strong with this one! Luke, trust me. His computer's off. Luke, you switched off your targeting computer. What's wrong? Nothing. I'm all right. I've lost Artoo! You may fire when ready. I have you now.</p>
-  </div>
-  <footer>
-    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
-  </footer>
-</fs-modal-dialog>
-      </div>
-    </div>
-
-    <h3>Stacking</h3>
-    <p>Dialogs will automatically stack based on order opened.
-    <div class="demo-snippet fs-card">
-      <button class="modal fs-button">Open Dialog</button>
-      <div class="demo">
-<fs-modal-dialog>
-  <header>
-    <h4>Bottom Dialog</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>Open a dialog on top of this one.</p>
-    <p>All wings report in. Red Ten standing by. Red Seven standing by. Red Three standing by. Red Six standing by. Red Nine standing by. Red Two standing by. Red Eleven standing by. Red Five standing by. Lock S-foils in attack position. We're passing through their magnetic field. Hold tight! Switch your deflectors on. Double front!</p>
-  </div>
-  <footer>
-    <button class="fs-button fs-button--recommended" id="stacking-button">Open Another</button>
-    <button class="fs-button fs-button--minor" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-modal-dialog>
-<fs-modal-dialog id="stacking-dialog">
-  <header>
-    <h4>Top Dialog</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>Stacking like a pro.</p>
-  </div>
-  <footer>
-    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Close</button>
-  </footer>
-</fs-modal-dialog>
-      </div>
-    </div>
+<br><br><br><br><br><br>
 
     <h3>Other Functions and Attributes</h3>
     <div class="demo-snippet fs-card">
@@ -545,7 +210,6 @@
       <details open>
         <summary><strong>Design and Business Logic Decisions:</strong></summary>
         <ul>
-          <li></li>
           <li>By default:<ul>
             <li>All modal dialogs do not have dismiss on blur</li>
             <li>All modal dialogs have close on escape functionality</li>
@@ -564,110 +228,81 @@
       </details>
     </div>
 
-
-<fs-modal-dialog id="mixed-anchored-modal">
-  <header>
-    <h4>Modal</h4>
-  </header>
-  <div class="fs-dialog__body">
-    <p>This is a modal dialog. It really stands out from the content and forces the user to perform an action before they can continue.</p>
-  </div>
-  <footer>
-    <button class="fs-button fs-button--recommended" data-dialog-dismiss>Done</button>
-  </footer>
-</fs-modal-dialog>
-
-<fs-anchored-dialog id="mixed-anchored-anchor" transition="from-right" no-pointer>
-  <header>
-    <h4>From-bottom</h4>
-  </header>
-  <div class="fs-dialog__body">
-    body text
-      </div>
-  <footer>
-    <button class="modal fs-button mixed-anchored-modal">Open Dialog</button>
-  </footer>
-</fs-anchored-dialog>
-
-
     <script>
     (function() {
 
       // Generate details-->pre-->code example code blocks
-      Array.from(document.querySelectorAll('.demo:not(.do-not-codify)')).forEach(function(demo) {
-        var code = demo.innerHTML
-          .trim()
-          .replace(/<\/?demo-/g, '&lt;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
+      function generateCodeSnippet(generatedCode) {
+        Array.from(document.querySelectorAll('.demo:not(.do-not-codify)')).forEach(function(demo) {
+          if (demo.parentNode.querySelector('details')) {
+            // Keep details open on update if it was already
+            var open = demo.parentNode.querySelector('details').hasAttribute("open");
+            demo.parentNode.querySelector('details').remove();
+          }
 
-        var preEl = document.createElement('pre');
-        var codeEl = document.createElement('code');
-        codeEl.classList.add('language-markup');
-        codeEl.innerHTML = code;
+          var code = (generatedCode) ? generatedCode.outerHTML : demo.innerHTML
+            .trim()
+            .replace(/<\/?demo-/g, '&lt;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+          var preEl = document.createElement('pre');
+          var codeEl = document.createElement('code');
+          preEl.classList.add('language-markup');
+          codeEl.classList.add('language-markup');
+          codeEl.innerHTML = (window.Prism) ? Prism.highlight(code, Prism.languages.html) : code;
 
-        var wrapperEl = document.createElement('details');
-        var summaryEl = document.createElement('summary');
-        summaryEl.innerHTML = "Markup";
-        summaryEl.setAttribute("title", "Show/hide associated markup");
+          var wrapperEl = document.createElement('details');
+          if (open) { wrapperEl.setAttribute("open", ""); }
+          var summaryEl = document.createElement('summary');
+          summaryEl.innerHTML = 'Markup';
+          summaryEl.setAttribute('title', 'Show/hide associated markup');
 
-        demo.parentNode.insertBefore(wrapperEl, demo);
-        preEl.appendChild(codeEl);
-        wrapperEl.appendChild(summaryEl);
-        wrapperEl.appendChild(preEl);
-      });
-
-      // find each button and open the previous sibling dialog
-      var modelessDialogs = document.querySelectorAll('.demo > fs-modeless-dialog');
-      var modelessButtons = document.querySelectorAll('.demo-snippet > button.modeless');
-      var modalDialogs = document.querySelectorAll('.demo > fs-modal-dialog');
-      var modalButtons = document.querySelectorAll('.demo-snippet > button.modal');
-      var anchoredDialogs = document.querySelectorAll('.demo > fs-anchored-dialog.auto-position');
-      var anchoredButtons = document.querySelectorAll('.demo-snippet > button.anchored');
-      var pointerlessDialogs = document.querySelectorAll('.demo > fs-anchored-dialog.pointerless');
-      var pointerlessButtons = document.querySelectorAll('.demo-snippet > button.pointerless-button');
-      var coordinateDialogs = document.querySelectorAll('.demo > fs-anchored-dialog.coordinates');
-      var coordinateButtons = document.querySelectorAll('.demo-snippet > button.coordinates-button');
-
-      Array.from(modelessButtons).forEach(function(button, index) {
-        button.addEventListener('click', function() {
-          modelessDialogs[index].open({focusBackElement: this});
+          demo.parentNode.insertBefore(wrapperEl, demo);
+          preEl.appendChild(codeEl);
+          wrapperEl.appendChild(summaryEl);
+          wrapperEl.appendChild(preEl);
         });
-      });
-      Array.from(modalButtons).forEach(function(button, index) {
-        button.addEventListener('click', function() {
-          modalDialogs[index].open({focusBackElement: this});
-        });
-      });
-      Array.from(pointerlessButtons).forEach(function(button, index) {
-        button.addEventListener('click', function() {
-          pointerlessDialogs[index].open({focusBackElement: this, attachToElement: this});
-        });
-      });
-      Array.from(coordinateButtons).forEach(function(button, index) {
-        button.addEventListener('click', function() {
-          coordinateDialogs[index].open({focusBackElement: this, attachToCoordinates: {x: 50, y: 50}});
-        });
-      });
-      Array.from(anchoredButtons).forEach(function(button, index) {
-        button.addEventListener('click', function(event) {
-          anchoredDialogs[index].open({focusBackElement: this, attachToElement: button});
-        });
-      });
+      }
 
-      // stacking clicks
-      document.querySelector('button.mixed-anchored-anchor').addEventListener('click', function() {
-        document.getElementById('mixed-anchored-anchor').open({focusBackElement: this, attachToElement: this});
-      });
-      document.querySelector('button.mixed-anchored-modal').addEventListener('click', function() {
-        document.getElementById('mixed-anchored-modal').open({focusBackElement: this});
-      });
-      document.getElementById('stacking-button').addEventListener('click', function() {
-        document.getElementById('stacking-dialog').open({focusBackElement: this});
-      });
+      // Generate dynamic dialog code
+      function generateDialog() {
+        var dynamicDialogButton = document.querySelector('.demo-snippet > button');
+        dynamicDialogButton.addEventListener('click', function() {
+          var demoEl = document.querySelector('.dynamic.demo');
+          // Clear out previous dialog
+          Array.from(demoEl.children).forEach(function(child) {
+            child.remove();
+          });
+          // GET CONFIGURATION OPTIONS OUT OF DOM
+
+          // TODO: CREATE CORRECT TYPE OF DIALOG
+          dynamicDialogEl = document.createElement('fs-anchored-dialog');
+
+          // TODO: SET ATTRIBUTES
+          // TODO: SET CONTENT
+          dynamicDialogEl.innerHTML = '<div class="fs-dialog__body"></div>';
+
+          // TODO: THIS generateCodeSnippet CALL WILL NEED TO BE MOVED TO THE FORM ELEMENT ONCHANGE HANDLER
+          generateCodeSnippet(dynamicDialogEl);
+          // Append dynamic dialog to DOM and open
+          demoEl.appendChild(dynamicDialogEl);
+          dynamicDialogEl.open({focusBackElement: this});
+        });
+
+        var dynamicDemoInputs = document.querySelectorAll('input, select');
+        Array.from(dynamicDemoInputs).forEach(function(input) {
+          input.addEventListener('change', function(evt){
+            console.log(evt.target);
+          });
+        });
+      }
+
+      // Init
+      generateCodeSnippet();
+      generateDialog();
     })();
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/prism.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/prism.js'></script>
 
     <!-- by importing the elements last, the code output script can run before it gets
          populated -->
