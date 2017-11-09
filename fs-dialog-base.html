@@ -267,6 +267,27 @@
   var doc = (document._currentScript || document.currentScript).ownerDocument;
   var template = doc.querySelector('#fs-dialog-template');
   FS._registerTranslations({"de":{"_LRM_PKTAG439":"fs-dialog_1_146 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Schließen"},"en":{"fs.shared.fsDialog.CLOSE":"Close"},"eo":{"fs.shared.fsDialog.CLOSE":"[Çļöšé--- П國カ내]"},"es":{"_LRM_PKTAG33":"fs-dialog_2_101 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Cerrar"},"fr":{"_LRM_PKTAG930":"fs-dialog_1_102 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fermer"},"it":{"_LRM_PKTAG257":"fs-dialog_1_103 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Chiudi"},"ja":{"_LRM_PKTAG68":"fs-dialog_1_104 - FULL-FILE","fs.shared.fsDialog.CLOSE":"閉じる"},"ko":{"_LRM_PKTAG569":"fs-dialog_1_105 - FULL-FILE","fs.shared.fsDialog.CLOSE":"닫기"},"pt":{"_LRM_PKTAG662":"fs-dialog_1_106 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fechar"},"ru":{"_LRM_PKTAG275":"fs-dialog_1_107 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Закрыть"},"zh":{"_LRM_PKTAG645":"fs-dialog_1_108 - FULL-FILE","fs.shared.fsDialog.CLOSE":"關閉"}});
+  /* HACK for detecting IE11 */
+  var isIE11 = !window.ActiveXObject && "ActiveXObject" in window;
+  var setHeightForIE = function(el) {
+    el.style.height = '';
+    el.style.height = el.offsetHeight + 'px';
+  };
+  var setupIEMutationObserver = function(el) {
+    // create an observer instance
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        console.log(mutation.type);
+        setHeightForIE(el);
+      });
+    });
+    // configuration of the observer:
+    var config = { childList: true, characterData: true, subtree: true };
+
+    observer.observe(el, config);
+
+    return observer;
+  }
 
   var zIndex = 990;
   var zIndexIncrement = 10;
@@ -380,6 +401,12 @@
           // remove the aria-hidden attribute after inert has finished
           this.removeAttribute('aria-hidden');
 
+          // HACK for IE
+          if (isIE11) {
+            setHeightForIE(this);
+            this._mutationsObserver = setupIEMutationObserver(this);
+          };
+
           // this triggers the css changes to show the dialog
           this.setAttribute('opened', '');
 
@@ -448,6 +475,11 @@
         this.removeAttribute('opened');
 
         this.setAttribute('aria-hidden', true);
+
+        // HACK for IE
+        if (isIE11 && this._mutationsObserverDisconnectFunction) {
+          // this._mutationsObserver.disconnect();
+        };
 
         // call dialog-type specific close logic
         if (onCloseDialogFunction) onCloseDialogFunction.bind(this)();
