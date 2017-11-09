@@ -267,6 +267,27 @@
   var doc = (document._currentScript || document.currentScript).ownerDocument;
   var template = doc.querySelector('#fs-dialog-template');
   FS._registerTranslations(/* LANG CODE */);
+  /* HACK for detecting IE11 */
+  var isIE11 = !window.ActiveXObject && "ActiveXObject" in window;
+  var setHeightForIE = function(el) {
+    el.style.height = '';
+    el.style.height = el.offsetHeight + 'px';
+  };
+  var setupIEMutationObserver = function(el) {
+    // create an observer instance
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        console.log(mutation.type);
+        setHeightForIE(el);
+      });
+    });
+    // configuration of the observer:
+    var config = { childList: true, characterData: true, subtree: true };
+
+    observer.observe(el, config);
+
+    return observer;
+  }
 
   var zIndex = 990;
   var zIndexIncrement = 10;
@@ -380,6 +401,12 @@
           // remove the aria-hidden attribute after inert has finished
           this.removeAttribute('aria-hidden');
 
+          // HACK for IE
+          if (isIE11) {
+            setHeightForIE(this);
+            this._mutationsObserver = setupIEMutationObserver(this);
+          };
+
           // this triggers the css changes to show the dialog
           this.setAttribute('opened', '');
 
@@ -448,6 +475,11 @@
         this.removeAttribute('opened');
 
         this.setAttribute('aria-hidden', true);
+
+        // HACK for IE
+        if (isIE11 && this._mutationsObserverDisconnectFunction) {
+          // this._mutationsObserver.disconnect();
+        };
 
         // call dialog-type specific close logic
         if (onCloseDialogFunction) onCloseDialogFunction.bind(this)();
