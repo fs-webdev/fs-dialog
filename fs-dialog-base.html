@@ -21,9 +21,11 @@
     background: #fff;
     border-radius: 4px;
     border-radius: var(--fs-border-radius, 4px);
-    -webkit-filter: drop-shadow(0 0 7px rgba(0,0,0,0.5));
-    filter: drop-shadow(0 0 7px rgba(0,0,0,0.5));
-    /*box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);*/
+    /* TODO: after we drop IE, bring back the filters */
+    /*-webkit-filter: drop-shadow(0 0 7px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 0 7px rgba(0,0,0,0.5));*/
+    /* TODO: after we drop IE, remove the box shadow */
+    box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);
     display: flex; /* [3] */
     flex-direction: column;
     max-height: 100vh;
@@ -71,6 +73,7 @@
     border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
     flex-shrink: 0;
     padding: 15px 15px 10px;
+    background-color: #fff;
   }
 
   /* [4] */
@@ -120,7 +123,9 @@
     height: 11px;
   }
 
-  .fs-dialog__body {
+  fs-anchored-dialog .fs-dialog__body,
+  fs-modeless-dialog .fs-dialog__body,
+  fs-modal-dialog .fs-dialog__body {
     flex-grow: 3;
     overflow-y: auto;
     padding: 15px;
@@ -140,6 +145,7 @@
     border-top: 1px solid var(--fs-color-grey-border, #ccc);*/
     flex-shrink: 0;
     padding: 10px 15px;
+    background-color: #fff;
   }
 
   /** FULLSCREEN ON MOBILE **/
