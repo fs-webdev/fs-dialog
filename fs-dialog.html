@@ -390,10 +390,6 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
   /**
    * Listen to the open attribute.
-   * @param {string} attr - The name of the attribute that changed.
-   * @param {string} oldValue - The previous value of the attribute.
-   * @param {string} newValue - The current value of the attribute.
-   * @returns {undefined} Modifies scope values directly.
    */
   fsDialog.attributeChangedCallback = function(attr, oldValue, newValue) {
 
@@ -411,19 +407,17 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
   /**
    * Determine when to close the dialog.
-   * @param {Event} evt - The triggering click event.
-   * @returns {undefined} Modifies scope values directly.
    */
-  function dialogClickHandler(evt) {
+  function dialogClickHandler(e) {
 
     // handle child elements of elements with these attributes
-    var el = evt.target;
+    var el = e.target;
     while (el !== this) {
       if (el.hasAttribute('data-dialog-dismiss')) {
         this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true}));
 
         // stop the event from propagating to parent fs-dialogs
-        evt.stopPropagation();
+        e.stopPropagation();
         this.close();
       }
 
@@ -433,7 +427,7 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
         this.dispatchEvent(new Event('fs-dialog-confirm', {bubbles: true}));
 
         // stop the event from propagating to parent fs-dialogs
-        evt.stopPropagation();
+        e.stopPropagation();
       }
 
       el = el.parentElement;
@@ -442,19 +436,17 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
   /**
    * Set up dragging for the dialog.
-   * @param {Event} evt - The mousedown triggering event.
-   * @returns {undefined} Sets transform values directly.
    * @see http://jsfiddle.net/Lk2hLt
    * @see http://interactjs.io/
    */
-  function startDragHandler(evt) {
+  function startDragHandler(e) {
 
     // only activate drag with left mouse button
-    if (evt.type === 'mousedown' && evt.button !== 0) return true;
+    if (e.type === 'mousedown' && e.button !== 0) return true;
 
     // normalize mousedown and touchstart x/y position
-    var clientX = evt.type === 'mousedown' ? evt.clientX : evt.touches[0].clientX;
-    var clientY = evt.type === 'mousedown' ? evt.clientY : evt.touches[0].clientY;
+    var clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+    var clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
 
     // store the current x/y position as well as the start x/y of the event
     // (getBoundingClientRect takes into account transform x/y)
@@ -477,12 +469,10 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
   /**
    * Update the x/y position of the dialog while dragging.
-   * @param {Event} evt - The triggering event.
-   * @returns {undefined} Sets transform values directly.
    */
-  function dragHandler(evt) {
-    evt.preventDefault();
-    evt.stopPropagation();
+  function dragHandler(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
     // prevent user highlighting while dragging by disabling user-select through css
     if (!this._drag.isDragging) {
@@ -491,8 +481,8 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
     }
 
     // normalize mousedown and touchstart x and y position
-    var clientX = evt.type === 'mousemove' ? evt.clientX : evt.touches[0].clientX;
-    var clientY = evt.type === 'mousemove' ? evt.clientY : evt.touches[0].clientY;
+    var clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+    var clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
 
     var dx = clientX - this._drag.clientX;
     var dy = clientY - this._drag.clientY;
@@ -526,7 +516,6 @@ fs-dialog[transition="from-right"][open]:not([type="modeless"]) {
 
   /**
    * Clean up events and properties when drag is finished.
-   * @returns {undefined} Sets attributes directly.
    */
   function endDragHandler() {
     document.body.classList.remove('fs-dialog--dragging');
