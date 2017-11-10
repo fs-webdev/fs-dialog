@@ -1,4 +1,4 @@
-<!-- <script src="../webcomponentsjs/webcomponents-lite.js"></script> -->
+
 <link rel="import" href="../fs-globals/fs-globals.html">
 <link rel="import" href="../fs-dialog/fs-dialog-base.html">
 <script src="../fs-dialog/fs-dialog-positioning-obj.js"></script>
@@ -94,8 +94,32 @@
     preferredPointerDirection: ''
   };
 
+  /**
+   * `<awesome-sauce>` injects a healthy dose of awesome into your page.
+   *
+   * In typical use, just slap some `<awesome-sauce>` at the top of your body:
+   *
+   *     <body>
+   *       <awesome-sauce></awesome-sauce>
+   *
+   * Wham! It's all awesome now!
+   *
+   * @demo demo/index.html
+   */
   class FSAnchoredDialog extends FS.dialog.baseDialogComponent {
-
+    // only used for docs.
+    static get properties(){
+      return {
+        /**
+         * Whether the dialog is opened or not.
+         * @type {boolean}
+         */
+        opened: {
+          type: Boolean,
+          value: false
+        }
+      }
+    }
     connectedCallback() {
       this.attachedCallback();
     }
