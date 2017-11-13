@@ -34,6 +34,15 @@
         width: inherit;
       }
 
+      .flex {
+        display: flex;
+      }
+
+      .flex > * {
+        flex-grow: 1;
+        margin: 10px;
+      }
+
       .demo-snippet details:not([open]) summary {
         cursor: help;
       }
@@ -54,6 +63,10 @@
         padding: 20px;
       }
 
+      .language-markup > .token.tag {
+        display: block;
+      }
+
       .demo-button {
         margin-left: 10px;
       }
@@ -67,6 +80,10 @@
       fieldset legend {
         font-size: 1.25rem;
         line-height: 1.5rem;
+      }
+
+      p + * {
+        margin-top: 1rem;
       }
       /* end fs-styles override */
 
@@ -82,9 +99,9 @@
   </head>
   <body>
 
+    <h2>Demo: fs-dialog</h2>
     <div class="demo-snippet fs-card">
       <form action="#" dynamic>
-        <h2>Dynamic configuration demo card of awesomeness:</h2>
 
         <label>Dialog Type</label>
         <ul>
@@ -102,67 +119,80 @@
           </li>
         </ul>
 
-        <fieldset>
-          <legend>data-specific options:</legend>
+        <div class="flex">
+          <fieldset>
+            <legend>data-specific options:</legend>
 
-          <label>Content Size</label>
-          <ul>
-            <li>
-              <input name="content-size" type="radio" id="short" value="short" checked="">
-              <label for="short">Short</label>
-            </li>
-            <li>
-              <input name="content-size" type="radio" id="medium" value="medium">
-              <label for="medium">Medium</label>
-            </li>
-            <li>
-              <input name="content-size" type="radio" id="long" value="long">
-              <label for="long">Long</label>
-            </li>
-          </ul>
+            <p>
+              <input type="checkbox" name="showHeader" id="showHeader" checked="checked"><label for="showHeader">Include Header</label>
+            </p>
 
-          <label for="maxHeight">max-height</label>
-          <div class="fs-field-group">
-            <input class="fs-field-group__input" name="maxheight" id="maxHeight" type="text"  maxlength="20" placeholder="example: 400px">
-            <div class="fs-field-group__attachment">
-              <input type="checkbox" id="max-height" name="usemaxheight">
-              <label for="max-height"></label>
+            <label>Content Size</label>
+            <ul>
+              <li>
+                <input name="content-size" type="radio" id="short" value="short" checked="">
+                <label for="short">Short</label>
+              </li>
+              <li>
+                <input name="content-size" type="radio" id="medium" value="medium">
+                <label for="medium">Medium</label>
+              </li>
+              <li>
+                <input name="content-size" type="radio" id="long" value="long">
+                <label for="long">Long</label>
+              </li>
+              <li>
+                <input name="content-size" type="radio" id="custom" value="custom">
+                <label for="custom">Custom</label>
+              </li>
+            </ul>
+
+            <p>
+              <input type="checkbox" name="showFooter" id="showFooter" checked="checked"><label for="showFooter">Include Footer</label>
+            </p>
+
+            <label for="maxHeight">max-height</label>
+            <div class="fs-field-group">
+              <input class="fs-field-group__input" name="maxheight" id="maxHeight" type="text"  maxlength="20" placeholder="example: 400px">
+              <div class="fs-field-group__attachment">
+                <input type="checkbox" id="max-height" name="usemaxheight">
+                <label for="max-height"></label>
+              </div>
             </div>
-          </div>
 
-          <label>Nesting</label>
-          <ul>
-            <li>
-              <input name="nesting" type="radio" id="none" value="" checked="">
-              <label for="none">None</label>
-            </li>
-            <li>
-              <input name="nesting" type="radio" id="one" value="one">
-              <label for="one">One</label>
-            </li>
-            <li>
-              <input name="nesting" type="radio" id="two" value="two">
-              <label for="two">Two</label>
-            </li>
-          </ul>
-        </fieldset>
+            <label>Nesting</label>
+            <ul>
+              <li>
+                <input name="nesting" type="radio" id="none" value="" checked="">
+                <label for="none">None</label>
+              </li>
+              <li>
+                <input name="nesting" type="radio" id="one" value="one">
+                <label for="one">One</label>
+              </li>
+              <li>
+                <input name="nesting" type="radio" id="two" value="two">
+                <label for="two">Two</label>
+              </li>
+            </ul>
+          </fieldset>
 
-        <fieldset>
-          <legend>Shared options:</legend>
+          <fieldset>
+            <legend>Shared options:</legend>
 
-          <p>
-            <label for="transition">Mobile Transition</label>
-            <select name="transition" id="transition">
-              <option value=""></option>
-              <option value="from-bottom">from-bottom</option>
-              <option value="from-left">from-left</option>
-            </select>
-          </p>
-          <p>
-            <input type="checkbox" name="fullscreenonmobile" id="fullscreenonmobile" value="false"><label for="fullscreenonmobile">fullscreen-on-mobile="false"</label>
-          </p>
-
-        </fieldset>
+            <p>
+              <label for="transition">Mobile Transition</label>
+              <select name="transition" id="transition">
+                <option value=""></option>
+                <option value="from-bottom">from-bottom</option>
+                <option value="from-left">from-left</option>
+              </select>
+            </p>
+            <p>
+              <input type="checkbox" name="fullscreenonmobile" id="fullscreenonmobile" value="false"><label for="fullscreenonmobile">fullscreen-on-mobile="false"</label>
+            </p>
+          </fieldset>
+        </div>
 
         <fieldset>
           <legend>fs-anchored-dialog-specific options:</legend>
@@ -210,14 +240,15 @@
         </fieldset>
       </form>
 
-      <button class="modal fs-button fs-button--recommended">Open Dialog</button>
+      <button type="submit" class="modal fs-button fs-button--recommended">Open Dialog</button>
+      <input type="reset" class="fs-button fs-button--minor">
 
       <div class="dynamic demo">
         <dynamic-demo-element></dynamic-demo-element>
       </div>
     </div>
 
-<br><br><br><br><br><br>
+<br><br><br>
 
     <h3>Other Functions and Attributes</h3>
     <div class="demo-snippet fs-card">
@@ -267,6 +298,7 @@
           <li>Create dynamic demo/code example</li>
           <li>Document "Gotcha's"</li>
           <li>Get unit tests written/working</li>
+          <li>Add additional configuration options: no-close-button (ignored on mobile), no-transition, inert, no-close-on-esc, modal-transition</li>
         </ul>
       </details>
     </div>
@@ -350,7 +382,15 @@
         dynamicDialogEl = document.createElement('fs-' + config.type + '-dialog');
 
         // SET CONTENT
-        dynamicDialogEl.innerHTML = '<header><h4>Header Text</h4></header><div class="fs-dialog__body">' + bodycontent[config['content-size']] + '</div><footer><button class="fs-button" data-dialog-dismiss>Done</button></footer>';
+        var dialogContentString = "";
+        if (config.showHeader) {
+          dialogContentString = '<header><h4>Header Text</h4></header>';
+        }
+        dialogContentString += '<div class="fs-dialog__body">' + bodycontent[config['content-size']] + '</div>';
+        if (config.showFooter) {
+          dialogContentString += '<footer><button class="fs-button" data-dialog-dismiss>Done</button></footer>';
+        }
+        dynamicDialogEl.innerHTML = dialogContentString;
 
         // SET max-height
         if (config.usemaxheight && config.maxheight) {
@@ -383,7 +423,7 @@
           if (config.xCoordinate && config.yCoordinate) {
             openOptions.attachToCoordinates = {x: config.xCoordinate, y: config.yCoordinate};
           } else {
-            openOptions.attachtoElement = document.querySelector('.demo-snippet > button');
+            openOptions.attachToElement = document.querySelector('.demo-snippet > button');
           }
           if (config.preferredPointerDirection) openOptions.preferredPointerDirection = config.preferredPointerDirection;
           if (config.forcedPointerDirection) openOptions.forcedPointerDirection = config.forcedPointerDirection;
@@ -410,7 +450,6 @@
       function setUpListeners() {
         var dynamicDialogButton = document.querySelector('.demo-snippet > button');
         dynamicDialogButton.addEventListener('click', function() {
-          console.log('doing click')
           dynamicDialogEl.open(openOptions);
         });
 
@@ -427,9 +466,15 @@
         twoNestedButton.addEventListener('click', function() {
           document.querySelector('#secondNestedDialog').open({focusBackElement: this, attachToElement: this});
         })
+
         document.querySelector('form').addEventListener('submit', function(evt) {
           evt.preventDefault();
         })
+        document.querySelector('form[dynamic]').addEventListener('keypress', function(evt){
+          if (evt.code === 'Enter' || evt.keyCode === 13) {
+            dynamicDialogEl.open(openOptions);
+          }
+        });
       }
 
       // Init
