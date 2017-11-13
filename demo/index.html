@@ -39,6 +39,7 @@
       }
 
       .flex > * {
+        flex-basis: 50%;
         flex-grow: 1;
         margin: 10px;
       }
@@ -103,21 +104,72 @@
     <div class="demo-snippet fs-card">
       <form action="#" dynamic>
 
-        <label>Dialog Type</label>
-        <ul>
-          <li>
-            <input name="type" type="radio" id="modal" value="modal" checked="">
-            <label for="modal">Modal</label>
-          </li>
-          <li>
-            <input name="type" type="radio" id="modeless" value="modeless">
-            <label for="modeless">Modeless</label>
-          </li>
-          <li>
-            <input name="type" type="radio" id="anchored" value="anchored">
-            <label for="anchored">Anchored</label>
-          </li>
-        </ul>
+        <div class="flex">
+          <fieldset class="dialog-type">
+            <legend>Dialog Type</legend>
+            <ul>
+              <li>
+                <input name="type" type="radio" id="modal" value="modal" checked="">
+                <label for="modal">Modal</label>
+              </li>
+              <li>
+                <input name="type" type="radio" id="modeless" value="modeless">
+                <label for="modeless">Modeless</label>
+              </li>
+              <li>
+                <input name="type" type="radio" id="anchored" value="anchored">
+                <label for="anchored">Anchored</label>
+              </li>
+            </ul>
+          </fieldset>
+
+          <fieldset class="anchored-options">
+            <legend>fs-anchored-dialog-specific options:</legend>
+
+            <p>
+              <input type="checkbox" name="noPointer" id="noPointer"><label for="noPointer">no-pointer</label>
+            </p>
+
+  <!--           <label for="pointerDirection">pointer-direction</label>
+            <select name="pointer-direction" id="pointerDirection">
+              <option value=""></option>
+              <option value="down">down</option>
+            </select> -->
+
+            <p>
+              <label for="attachDirection">attach-direction</label>
+              <select name="attachDirection" id="attachDirection">
+                <option value=""></option>
+                <option value="left">left</option>
+                <option value="right">right</option>
+                <option value="top">top</option>
+                <option value="bottom">bottom</option>
+              </select>
+            </p>
+
+            <p>
+              <label for="alignment">alignment</label>
+              <select name="alignment" id="alignment">
+                <option value=""></option>
+                <option value="left">left</option>
+                <option value="right">right</option>
+                <option value="top">top</option>
+                <option value="bottom">bottom</option>
+                <option value="center">center</option>
+              </select>
+            </p>
+
+          </fieldset>
+
+          <fieldset class="modal-options">
+            <legend>fs-modal-dialog-specific options:</legend>
+
+            <input type="checkbox" name="dismissonblur" id="dismissonblur"><label for="dismissonblur">dismiss-on-blur (AKA click-away)</label>
+
+          </fieldset>
+
+        </div>
+
 
         <div class="flex">
           <fieldset>
@@ -194,50 +246,6 @@
           </fieldset>
         </div>
 
-        <fieldset>
-          <legend>fs-anchored-dialog-specific options:</legend>
-
-          <p>
-            <input type="checkbox" name="noPointer" id="noPointer"><label for="noPointer">no-pointer</label>
-          </p>
-
-<!--           <label for="pointerDirection">pointer-direction</label>
-          <select name="pointer-direction" id="pointerDirection">
-            <option value=""></option>
-            <option value="down">down</option>
-          </select> -->
-
-          <p>
-            <label for="attachDirection">attach-direction</label>
-            <select name="attachDirection" id="attachDirection">
-              <option value=""></option>
-              <option value="left">left</option>
-              <option value="right">right</option>
-              <option value="top">top</option>
-              <option value="bottom">bottom</option>
-            </select>
-          </p>
-
-          <p>
-            <label for="alignment">alignment</label>
-            <select name="alignment" id="alignment">
-              <option value=""></option>
-              <option value="left">left</option>
-              <option value="right">right</option>
-              <option value="top">top</option>
-              <option value="bottom">bottom</option>
-              <option value="center">center</option>
-            </select>
-          </p>
-
-        </fieldset>
-
-        <fieldset>
-          <legend>fs-modal-dialog-specific options:</legend>
-
-          <input type="checkbox" name="dismissonblur" id="dismissonblur"><label for="dismissonblur">dismiss-on-blur (AKA click-away)</label>
-
-        </fieldset>
       </form>
 
       <button type="submit" class="modal fs-button fs-button--recommended">Open Dialog</button>
@@ -397,8 +405,17 @@
           dynamicDialogEl.style.maxHeight = config.maxheight;
         }
 
+        // HIDE IRRELEVANT FORM SECTIONS
+        var specificOptionSections = document.querySelectorAll('[class$=-options]');
+        Array.from(specificOptionSections).forEach(function(section) {
+          section.setAttribute('style', 'display: none;');
+        });
+
         // SET SHARED ATTRIBUTES
         if (config.type !== 'modeless') {
+          // SHOW RELEVANT FORM SECTION
+          document.querySelector('.' + config.type + '-options').removeAttribute('style');
+
           if (config.transition) dynamicDialogEl.setAttribute('transition', config.transition);
           if (config.fullscreenonmobile) dynamicDialogEl.setAttribute('fullscreenonmobile', config.fullscreenonmobile);
         }
