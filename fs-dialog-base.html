@@ -30,9 +30,13 @@
     max-width: 545px;
     opacity: 0;
     position: fixed;
-    transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
     visibility: hidden;
     width: 100%;
+  }
+
+  fs-modeless-dialog:not([no-transition]),
+  fs-anchored-dialog:not([no-transition]) {
+    transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
   }
 
   /* [1] */
@@ -41,12 +45,20 @@
   fs-anchored-dialog[opened],
   .fs-dialog__mask[opened] {
     opacity: 1;
-    transition: opacity 0.3s, visibility 0s linear;
     visibility: visible;
+  }
+
+  fs-modeless-dialog[opened]:not([no-transition]),
+  fs-anchored-dialog[opened]:not([no-transition]),
+  .fs-dialog__mask[opened]:not([no-transition]) {
+    transition: opacity 0.3s, visibility 0s linear;
   }
 
   fs-modal-dialog[opened] {
     transform: translate(-50%, -50%) scale(1);
+  }
+
+  fs-modal-dialog[opened]:not([no-transition]) {
     transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
   }
 
@@ -58,8 +70,11 @@
     position: fixed;
     right: 0;
     top: 0;
-    transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
     visibility: hidden;
+  }
+
+  .fs-dialog__mask:not([no-transition]) {
+    transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
   }
 
   fs-anchored-dialog header,
@@ -274,7 +289,7 @@
   class FSDialogBase extends HTMLElement {
 
     static get observedAttributes() {
-      return ['opened', 'closed'];
+      return ['opened', 'dismiss-on-blur'];
     }
     constructor() {
       super();
@@ -520,7 +535,7 @@
       }
 
       // dismiss when the dialog loses focus
-      if (attr === 'dismissOnBlur') {
+      if (attr === 'dismiss-on-blur') {
 
         if (newValue !== undefined && newValue !== null) {
           this.dismissOnBlur = true;

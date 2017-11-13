@@ -13,6 +13,10 @@
     <script src="../../es6-promise/es6-promise.auto.js"></script>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <style>
+      .buttons-centered {
+        text-align: center;
+      }
+
       .demo-snippet {
         margin-bottom: 40px;
       }
@@ -123,44 +127,76 @@
             </ul>
           </fieldset>
 
-          <fieldset class="anchored-options">
-            <legend>fs-anchored-dialog-specific attributes:</legend>
+          <fieldset>
 
-            <p>
-              <input type="checkbox" name="persistent" id="persistent"><label for="persistent">persistent (don't click away)</label>
-            </p>
+            <legend class="modal-options">fs-modal-dialog attributes:</legend>
+            <legend class="anchored-options">fs-anchored-dialog attributes:</legend>
+            <legend class="modeless-options">fs-modeless-dialog attributes:</legend>
 
-            <p>
-              <input type="checkbox" name="noPointer" id="noPointer"><label for="noPointer">no-pointer</label>
-            </p>
+            <section>
+              <p>
+                <input type="checkbox" name="notransition" id="notransition" value="false"><label for="notransition">no-transition</label>
+              </p>
+            </section>
 
-            <p>
-              <label for="attachDirection">attach-direction</label>
-              <select name="attachDirection" id="attachDirection">
-                <option value=""></option>
-                <option value="left">left</option>
-                <option value="right">right</option>
-                <option value="top">top</option>
-                <option value="bottom">bottom</option>
-              </select>
-            </p>
+            <section class="modal-options anchored-options">
+              <p>
+                <label for="transition">Mobile Transition</label>
+                <select name="transition" id="transition">
+                  <option value=""></option>
+                  <option value="from-bottom">from-bottom</option>
+                  <option value="from-left">from-left</option>
+                </select>
+              </p>
+              <p>
+                <input type="checkbox" name="fullscreenOnMobile" id="fullscreenOnMobile" value="false"><label for="fullscreenOnMobile">fullscreen-on-mobile="false"</label>
+              </p>
+            </section>
 
-            <p>
-              <label for="alignment">alignment</label>
-              <select name="alignment" id="alignment">
-                <option value=""></option>
-                <option value="left">left</option>
-                <option value="right">right</option>
-                <option value="top">top</option>
-                <option value="bottom">bottom</option>
-                <option value="center">center</option>
-              </select>
-            </p>
+            <section class="modal-options">
+
+              <input type="checkbox" name="dismissonblur" id="dismissonblur"><label for="dismissonblur">dismiss-on-blur (AKA click-away)</label>
+            </section>
+
+
+            <section class="anchored-options">
+              <p>
+                <input type="checkbox" name="persistent" id="persistent"><label for="persistent">persistent (don't click away)</label>
+              </p>
+
+              <p>
+                <input type="checkbox" name="noPointer" id="noPointer"><label for="noPointer">no-pointer</label>
+              </p>
+
+              <p>
+                <label for="attachDirection">attach-direction</label>
+                <select name="attachDirection" id="attachDirection">
+                  <option value=""></option>
+                  <option value="left">left</option>
+                  <option value="right">right</option>
+                  <option value="top">top</option>
+                  <option value="bottom">bottom</option>
+                </select>
+              </p>
+
+              <p>
+                <label for="alignment">alignment</label>
+                <select name="alignment" id="alignment">
+                  <option value=""></option>
+                  <option value="left">left</option>
+                  <option value="right">right</option>
+                  <option value="top">top</option>
+                  <option value="bottom">bottom</option>
+                  <option value="center">center</option>
+                </select>
+              </p>
+            </section>
+
 
           </fieldset>
 
           <fieldset class="anchored-options">
-            <legend>fs-anchored-dialog-specific open function options:</legend>
+            <legend>fs-anchored-dialog open function options:</legend>
 
             <p>
               <label for="xCoordinate">attachToCoordinates x coordinate</label>
@@ -220,12 +256,6 @@
 
           </fieldset>
 
-          <fieldset class="modal-options">
-            <legend>fs-modal-dialog-specific attributes:</legend>
-
-            <input type="checkbox" name="dismissonblur" id="dismissonblur"><label for="dismissonblur">dismiss-on-blur (AKA click-away)</label>
-
-          </fieldset>
 
         </div>
 
@@ -234,81 +264,74 @@
           <fieldset>
             <legend>data-specific options:</legend>
 
-            <p>
-              <input type="checkbox" name="showHeader" id="showHeader" checked="checked"><label for="showHeader">Include Header</label>
-            </p>
+            <div class="flex">
+              <section>
+                <p>
+                  <input type="checkbox" name="showHeader" id="showHeader" checked="checked"><label for="showHeader">Include Header</label>
+                </p>
 
-            <label>Content Size</label>
-            <ul>
-              <li>
-                <input name="content-size" type="radio" id="short" value="short" checked="">
-                <label for="short">Short</label>
-              </li>
-              <li>
-                <input name="content-size" type="radio" id="medium" value="medium">
-                <label for="medium">Medium</label>
-              </li>
-              <li>
-                <input name="content-size" type="radio" id="long" value="long">
-                <label for="long">Long</label>
-              </li>
-              <li>
-                <input name="content-size" type="radio" id="custom" value="custom">
-                <label for="custom">Custom</label>
-              </li>
-            </ul>
+                <label>Content Size</label>
+                <ul>
+                  <li>
+                    <input name="content-size" type="radio" id="short" value="short" checked="">
+                    <label for="short">Short</label>
+                  </li>
+                  <li>
+                    <input name="content-size" type="radio" id="medium" value="medium">
+                    <label for="medium">Medium</label>
+                  </li>
+                  <li>
+                    <input name="content-size" type="radio" id="long" value="long">
+                    <label for="long">Long</label>
+                  </li><!--
+                  <li>
+                    <input name="content-size" type="radio" id="custom" value="custom">
+                    <label for="custom">Custom</label>
+                  </li> -->
+                </ul>
 
-            <p>
-              <input type="checkbox" name="showFooter" id="showFooter" checked="checked"><label for="showFooter">Include Footer</label>
-            </p>
+                <p>
+                  <input type="checkbox" name="showFooter" id="showFooter" checked="checked"><label for="showFooter">Include Footer</label>
+                </p>
+              </section>
 
-            <label for="maxHeight">max-height</label>
-            <div class="fs-field-group">
-              <input class="fs-field-group__input" name="maxheight" id="maxHeight" type="text"  maxlength="20" placeholder="example: 400px">
-              <div class="fs-field-group__attachment">
-                <input type="checkbox" id="max-height" name="usemaxheight">
-                <label for="max-height"></label>
-              </div>
+              <section>
+                <label for="maxHeight">max-height</label>
+                <div class="fs-field-group">
+                  <input class="fs-field-group__input" name="maxheight" id="maxHeight" type="text"  maxlength="20" placeholder="example: 400px">
+                  <div class="fs-field-group__attachment">
+                    <input type="checkbox" id="max-height" name="usemaxheight">
+                    <label for="max-height"></label>
+                  </div>
+                </div>
+
+                <label>Nesting</label>
+                <ul>
+                  <li>
+                    <input name="nesting" type="radio" id="none" value="" checked="">
+                    <label for="none">None</label>
+                  </li>
+                  <li>
+                    <input name="nesting" type="radio" id="one" value="one">
+                    <label for="one">One</label>
+                  </li>
+                  <li>
+                    <input name="nesting" type="radio" id="two" value="two">
+                    <label for="two">Two</label>
+                  </li>
+                </ul>
+              <section>
             </div>
-
-            <label>Nesting</label>
-            <ul>
-              <li>
-                <input name="nesting" type="radio" id="none" value="" checked="">
-                <label for="none">None</label>
-              </li>
-              <li>
-                <input name="nesting" type="radio" id="one" value="one">
-                <label for="one">One</label>
-              </li>
-              <li>
-                <input name="nesting" type="radio" id="two" value="two">
-                <label for="two">Two</label>
-              </li>
-            </ul>
           </fieldset>
 
-          <fieldset>
-            <legend>Shared attributes:</legend>
-
-            <p>
-              <label for="transition">Mobile Transition</label>
-              <select name="transition" id="transition">
-                <option value=""></option>
-                <option value="from-bottom">from-bottom</option>
-                <option value="from-left">from-left</option>
-              </select>
-            </p>
-            <p>
-              <input type="checkbox" name="fullscreenOnMobile" id="fullscreenOnMobile" value="false"><label for="fullscreenOnMobile">fullscreen-on-mobile="false"</label>
-            </p>
-          </fieldset>
         </div>
 
       </form>
 
-      <button type="submit" class="modal fs-button fs-button--recommended">Open Dialog</button>
-      <input type="reset" class="fs-button fs-button--minor">
+      <section class="buttons-centered">
+        <button type="submit" class="modal fs-button fs-button--recommended">Open Dialog</button>
+        <input type="reset" class="fs-button fs-button--minor">
+      </section>
 
       <div class="dynamic demo">
         <dynamic-demo-element></dynamic-demo-element>
@@ -334,15 +357,15 @@
         <p>To close all modal and anchored dialogs on the page you can call <code>FS.dialog.service.closeAllDialogs()</code> This does not close modeless dialogs.</p>
         <h5>Auto-hiding dialogs from initial load</h5>
         <p>While the component is loading, you may get flashes of dialogs being visible/unstyled. To avoid this, add these styles to the css early in your page.</p>
-<pre>
-  fs-modeless-dialog,
-  fs-modal-dialog,
-  fs-anchored-dialog {
-    visibility: hidden;
-    opacity: 0;
-    display: none;
-  }
-</pre>
+        <pre>
+          fs-modeless-dialog,
+          fs-modal-dialog,
+          fs-anchored-dialog {
+            visibility: hidden;
+            opacity: 0;
+            display: none;
+          }
+        </pre>
       </div>
     </div>
 
@@ -362,10 +385,9 @@
       <details>
         <summary><strong>TODO List:</strong></summary>
         <ul>
-          <li>Create dynamic demo/code example</li>
           <li>Document "Gotcha's"</li>
           <li>Get unit tests written/working</li>
-          <li>Add additional configuration options: no-close-button (ignored on mobile), no-transition, inert, no-close-on-esc, modal-transition</li>
+          <li>Add additional configuration options: no-close-button (ignored on mobile), no-transition, inert, no-close-on-esc, modal-transition (non-mobile)</li>
         </ul>
       </details>
     </div>
@@ -470,11 +492,15 @@
           section.setAttribute('style', 'display: none;');
         });
 
-        // SET SHARED ATTRIBUTES
-        if (config.type !== 'modeless') {
-          // SHOW RELEVANT FORM SECTION
-          document.querySelector('.' + config.type + '-options').removeAttribute('style');
+        // SHOW RELEVANT FORM SECTION
+        Array.from(document.querySelectorAll('.' + config.type + '-options')).forEach(function(section) {
+          section.removeAttribute('style');
+        });
 
+        // SET SHARED ATTRIBUTES
+        if (config.notransition) dynamicDialogEl.setAttribute('no-transition', '');
+
+        if (config.type !== 'modeless') {
           if (config.transition) dynamicDialogEl.setAttribute('transition', config.transition);
           if (config.fullscreenOnMobile) dynamicDialogEl.setAttribute('fullscreen-on-mobile', config.fullscreenOnMobile);
         }
@@ -494,12 +520,12 @@
 
         // SET OPEN FUNCTION OPTIONS
         openOptions = {};
-        openOptions.foucsBackElement = document.querySelector('.demo-snippet > button');
+        openOptions.foucsBackElement = document.querySelector('.demo-snippet button');
         if (config.type === 'anchored') {
           if (config.xCoordinate && config.yCoordinate) {
             openOptions.attachToCoordinates = {x: config.xCoordinate, y: config.yCoordinate};
           } else {
-            openOptions.attachToElement = document.querySelector('.demo-snippet > button');
+            openOptions.attachToElement = document.querySelector('.demo-snippet button');
           }
           if (config.preferredPointerDirection) openOptions.preferredPointerDirection = config.preferredPointerDirection.split(' ');
           if (config.forcedPointerDirection) openOptions.forcedPointerDirection = config.forcedPointerDirection;
@@ -524,7 +550,7 @@
       }
 
       function setUpListeners() {
-        var dynamicDialogButton = document.querySelector('.demo-snippet > button');
+        var dynamicDialogButton = document.querySelector('.demo-snippet button');
         dynamicDialogButton.addEventListener('click', function() {
           dynamicDialogEl.open(openOptions);
         });

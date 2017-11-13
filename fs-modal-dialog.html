@@ -17,12 +17,10 @@ fs-modal-dialog {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%) scale(0.7);
-  transition: opacity 0.3s, visibility 0s linear 0.3s, transform 0.3s; /* [2] */
 }
 
-fs-modal-dialog[opened] {
-  transform: translate(-50%, -50%) scale(1);
-  transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
+fs-modal-dialog:not([no-transition]) {
+  transition: opacity 0.3s, visibility 0s linear 0.3s, transform 0.3s; /* [2] */
 }
 
 </style>
@@ -75,6 +73,11 @@ fs-modal-dialog[opened] {
       function openModalFunction() {
         this._a11yOpen();
         maskEl.addEventListener('keydown', keydownHandler);
+        if (this.getAttribute('no-transition') !== undefined && this.getAttribute('no-transition') !== null) {
+          maskEl.setAttribute('no-transition', '');
+        } else {
+          maskEl.removeAttribute('no-transition')
+        }
         maskEl.setAttribute('opened', '');
         maskEl.style.zIndex = this.style.zIndex;
       }

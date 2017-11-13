@@ -146,7 +146,7 @@
         window.addEventListener('resize', this._resizeThrottler);
         positionObj = positionObj || {};
 
-        if (this.getAttribute('persistent')) {
+        if (this.getAttribute('persistent') !== undefined && this.getAttribute('persistent') !== null) {
           this.removeAttribute('dismiss-on-blur');
         } else {
           this.setAttribute('dismiss-on-blur', '');
