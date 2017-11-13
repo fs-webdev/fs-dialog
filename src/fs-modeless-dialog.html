@@ -36,7 +36,79 @@
 (function() {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
 
+   /**
+    * `<fs-modeless-dialog>` is a modeless dialog centered on the screen and displayed above other content. It can be dragged around the screen by dragging the header of the dialog. The user can click on content below the
+    *
+    *     <body>
+    *       <fs-modeless-dialog></fs-modeless-dialog>
+    *
+    * @demo demo/index.html
+    */
   class FSModelessDialog extends FS.dialog.baseDialogComponent {
+
+    // only used for docs.
+    static get properties(){
+      return {
+        /**
+         * Whether or not the dialog is opened.
+         * @type {boolean} [opened=false]
+         */
+        'opened': {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * The open modal transition animation.
+         * Default: 'center'. Valid values: 'from-right' (only on mobile), 'from-bottom' (only on mobile), 'center'.
+         * @type {string} [transition=center]
+         */
+        'transition':  {
+          type: string,
+          value: 'center'
+        },
+        /**
+         * Whether or not to disable transition animation.
+         * Default: false.
+         * @type {boolean} [no-transition=false]
+         */
+        'no-transition':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-dismiss' event and close the dialog on click.
+         * @type {boolean} [data-dialog-dismiss=false]
+         */
+        'data-dialog-dismiss':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-confirm' event on click.
+         * @type {boolean} [data-dialog-confirm=false]
+         */
+        'data-dialog-confirm':  {
+          type: Boolean,
+          value: false
+        }
+      }
+    }
+
+    /**
+     * Open the dialog.
+     * @param {Object} config - Object containing the following optional properties:
+     *                          focusBackElement - The element to return focus back after the dialog closes. Default: document.activeElement (at the time of opening the dialog).
+     */
+    open(config) {
+      super.open(config);
+    }
+
+    /**
+     * Close the dialog.  If focusBackElement exists, focus is returned to that element.
+     */
+    close() {
+      super.close();
+    }
 
     /**
      * Initialize the dialog, add events, and accessibility features. Should only change
@@ -114,11 +186,16 @@
     }
 
     /**
-     * Remove listeners that were added during attachedCallback;
+     * Calls detachedCallback
      */
     disconnectedCallback(){
       this.detachedCallback();
     }
+
+
+    /**
+     * Remove listeners that were added during attachedCallback.
+     */
     detachedCallback() {
       window.removeEventListener('resize', this._resizeThrottler);
     }

@@ -95,14 +95,10 @@
   };
 
   /**
-   * `<awesome-sauce>` injects a healthy dose of awesome into your page.
-   *
-   * In typical use, just slap some `<awesome-sauce>` at the top of your body:
+   * `<fs-anchored-dialog>` is a dialog that is anchored to an element on the page.
    *
    *     <body>
-   *       <awesome-sauce></awesome-sauce>
-   *
-   * Wham! It's all awesome now!
+   *       <fs-anchored-dialog ></fs-anchored-dialog>
    *
    * @demo demo/index.html
    */
@@ -111,20 +107,120 @@
     static get properties(){
       return {
         /**
-         * Whether the dialog is opened or not.
-         * @type {boolean}
+         * Whether or not the dialog is opened. Do not set or unset this yourself.  Instead, use the open and close functions.
+         * @type {boolean} [opened=false]
          */
-        opened: {
+        'opened': {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * Only to be used with the 'no-pointer' attribute, it specifies the alignment to the anchor element.
+         * Default: 'left'. Valid values: 'top', 'right', 'bottom', 'left', 'center'.
+         * @type {string} [alignment=left]
+         */
+        'alignment':  {
+          type: string,
+          value: LEFT
+        },
+        /**
+         * Whether or not the pointer should be hidden.
+         * @type {boolean} [no-pointer=false]
+         */
+        'no-pointer':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * Only to be used with the 'no-pointer' attribute, the side of the element to which the dialog will be attached.
+         * Default: 'bottom'. Valid values: 'top', 'right', 'bottom', 'left'.
+         * @type {string} [attach-direction=bottom]
+         */
+        'attach-direction':  {
+          type: string,
+          value: LEFT
+        },
+        /**
+         * Whether or not to close the dialog on loss of focus (click away).
+         * @type {boolean} [persisent=false]
+         */
+        'persistent':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-dismiss' event and close the dialog on click.
+         * @type {boolean} [data-dialog-dismiss=false]
+         */
+        'data-dialog-dismiss':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-confirm' event on click.
+         * @type {boolean} [data-dialog-confirm=false]
+         */
+        'data-dialog-confirm':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * The open modal transition animation.
+         * Default: 'center'. Valid values: 'from-right' (only on mobile), 'from-bottom' (only on mobile), 'center'.
+         * @type {string} [transition=center]
+         */
+        'transition':  {
+          type: string,
+          value: 'center'
+        },
+        /**
+         * Whether or not the modal should take up the entire screen.
+         * Default: true.
+         * @type {boolean} [fullscreen-on-mobile=true]
+         */
+        'fullscreen-on-mobile':  {
+          type: boolean,
+          value: false
+        },
+        /**
+         * Whether or not to disable transition animation.
+         * Default: false.
+         * @type {boolean} [no-transition=false]
+         */
+        'no-transition':  {
           type: Boolean,
           value: false
         }
       }
     }
+
+    /**
+     * Open the dialog.
+     * @param {Object} config - Object containing the following optional properties:
+     *                          focusBackElement - The element to return focus back after the dialog closes. Default: document.activeElement (at the time of opening the dialog).
+     *                          attachToElement - The element to which the dialog will be attached.
+     *                          attachToCoordinates - Object containing 'x' and 'y' properties representing the coordinates to attach the dialog to the element.
+     */
+    open(config) {
+      super.open(config);
+    }
+
+    /**
+     * Close the dialog.  If focusBackElement exists, focus is returned to that element.
+     */
+    close() {
+      super.close();
+    }
+
+    /**
+     * Calls attachedCallback
+     */
     connectedCallback() {
       this.attachedCallback();
     }
+
     /**
-     * Initialize the popover, add events, and accessibility features. Should only change
+     * Initialize the dialog, add events, and accessibility features. Should only change
      * the DOM on attached callback otherwise it breaks Polymer bindings.
      */
     attachedCallback() {
@@ -543,9 +639,16 @@
 
     }
 
+    /**
+     * Calls detachedCallback.
+     */
     disconnectedCallback(){
       this.detachedCallback();
     }
+
+    /**
+     * If dummy element was created to position the dialog at attachToCoordinates, remove the element.
+     */
     detachedCallback() {
       if (this.coordinateElement) {
         document.body.removeChild(this.coordinateElement);
