@@ -29,7 +29,102 @@ fs-modal-dialog:not([no-transition]) {
 (function() {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
 
-  class FSModalDialog extends FS.dialog.baseDialogComponent {
+    /**
+     * The config object argument to pass to the public .open() function.
+     * @typedef {Object} ConfigObject
+     * @property {element} focusBackElement - The element to return focus back to after the dialog closes. Default: document.activeElement (at the time of opening the dialog).
+     */
+
+     /**
+      * `<fs-modal-dialog>` is a modal dialog centered on the screen that is displayed above other content, masks the content underneath it, and prevents the user from interacting with the content underneath.
+      *
+      *     <body>
+      *       <fs-modal-dialog></fs-modal-dialog>
+      *
+      * @demo demo/index.html
+      */
+    class FSModalDialog extends FS.dialog.baseDialogComponent {
+
+    // only used for docs.
+    static get properties(){
+      return {
+        /**
+         * Whether or not the dialog is opened.
+         * @type {boolean} [opened=false]
+         */
+        'opened': {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * The open modal transition animation.
+         * Default: 'center'. Valid values: 'from-right' (only on mobile), 'from-bottom' (only on mobile), 'center'.
+         * @type {string} [transition=center]
+         */
+        'transition':  {
+          type: string,
+          value: 'center'
+        },
+        /**
+         * Whether or not the modal should take up the entire screen.
+         * Default: true.
+         * @type {boolean} [fullscreen-on-mobile=true]
+         */
+        'fullscreen-on-mobile':  {
+          type: boolean,
+          value: false
+        },
+        /**
+         * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-dismiss' event and close the dialog on click.
+         * @type {boolean} [data-dialog-dismiss=false]
+         */
+        'data-dialog-dismiss':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-confirm' event on click.
+         * @type {boolean} [data-dialog-confirm=false]
+         */
+        'data-dialog-confirm':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * Whether or not to emit a 'fs-dialog-confirm' event instead of closing dialog.
+         * @type {boolean} [data-dialog-confirm=false]
+         */
+        'data-dialog-confirm':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * Whether or not to disable transition animation.
+         * Default: false.
+         * @type {boolean} [no-transition=false]
+         */
+        'no-transition':  {
+          type: Boolean,
+          value: false
+        }
+      }
+    }
+
+    /**
+     * Open the dialog.
+     * @param {Object} config - Object containing the following optional properties:
+     *                          focusBackElement - The element to return focus back after the dialog closes. Default: document.activeElement (at the time of opening the dialog).
+     */
+    open(config) {
+      super.open(config);
+    }
+
+    /**
+     * Close the dialog.  If focusBackElement exists, focus is returned to that element.
+     */
+    close() {
+      super.close();
+    }
 
     /**
      * Initialize the dialog, add events, and accessibility features. Should only change
