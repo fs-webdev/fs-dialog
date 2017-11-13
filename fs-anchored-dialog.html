@@ -1,4 +1,4 @@
-<!-- <script src="../webcomponentsjs/webcomponents-lite.js"></script> -->
+
 <link rel="import" href="../fs-globals/fs-globals.html">
 <link rel="import" href="../fs-dialog/fs-dialog-base.html">
 <script src="../fs-dialog/fs-dialog-positioning-obj.js"></script>
@@ -10,39 +10,46 @@
   }
 
   fs-anchored-dialog .fs-dialog-pointer {
-    border: 16px solid transparent;
+   /* TODO: after we drop IE, add back in the border, content, height, and width */
+   /* border: 16px solid transparent;
     content: '';
     height: 0;
+    width: 0;*/
     overflow: visible;
     position: absolute;
-    width: 0;
-    /*box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);*/
-    /*background-color: #fff;
-    height: 22.627px;
-    width: 22.627px;
-    transform: rotate(45deg);*/
+   /* TODO: after we drop IE, remove the box-shadow, background-color, height, width, transform, and z-index */
+    box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35), 0px 3px 2px 0px rgba(0,0,0,0.18);
+    background-color: #fff;
+    height: 22.62px;
+    width: 22.62px;
+    transform: rotate(45deg);
+    z-index: -1;
   }
   fs-anchored-dialog[pointer-direction="up"] .fs-dialog-pointer {
-    left: calc(50% - 16px);
-    top: -16px;
+   /* TODO: after we drop IE, change 11.31px to 16px */
+    left: calc(50% - 11.31px);
+    top: -11.31px;
     border-bottom-color: #FFF;
     border-top-width: 0;
   }
   fs-anchored-dialog[pointer-direction="down"] .fs-dialog-pointer {
-    left: calc(50% - 16px);
-    bottom: -16px;
+   /* TODO: after we drop IE, change 11.31px to 16px */
+    left: calc(50% - 11.31px);
+    bottom: -11.31px;
     border-top-color: #FFF;
     border-bottom-width: 0;
   }
   fs-anchored-dialog[pointer-direction="left"] .fs-dialog-pointer {
-    left: -16px;
-    top: calc(50% - 16px);
+   /* TODO: after we drop IE, change 11.31px to 16px */
+    left: -11.31px;
+    top: calc(50% - 11.31px);
     border-right-color: #FFF;
     border-left-width: 0;
   }
   fs-anchored-dialog[pointer-direction="right"] .fs-dialog-pointer {
-    right: -16px;
-    top: calc(50% - 16px);
+   /* TODO: after we drop IE, change 11.31px to 16px */
+    right: -11.31px;
+    top: calc(50% - 11.31px);
     border-left-color: #FFF;
     border-right-width: 0;
   }
@@ -78,15 +85,41 @@
   var BOTTOM = 'bottom';
   var TOP = 'top';
   var POINTER_DIRECTION = 'pointer-direction';
-  var POINTER_BASE = 32;
-  var POINTER_ALTITUDE = 16;
+  /* TODO: after we drop IE, change 22.62 to 32 and change 11.31 to 16. Then combine POINTER_ALTITUDE with REAL_POINTER_ALTITUDE */
+  var POINTER_BASE = 22.62; //32
+  var POINTER_ALTITUDE = 11.31; //16
+  var REAL_POINTER_ALTITUDE = 16;
   var PADDING = 15;
   var positionObjDefaults = {
     preferredPointerDirection: ''
   };
 
+  /**
+   * `<awesome-sauce>` injects a healthy dose of awesome into your page.
+   *
+   * In typical use, just slap some `<awesome-sauce>` at the top of your body:
+   *
+   *     <body>
+   *       <awesome-sauce></awesome-sauce>
+   *
+   * Wham! It's all awesome now!
+   *
+   * @demo demo/index.html
+   */
   class FSAnchoredDialog extends FS.dialog.baseDialogComponent {
-
+    // only used for docs.
+    static get properties(){
+      return {
+        /**
+         * Whether the dialog is opened or not.
+         * @type {boolean}
+         */
+        opened: {
+          type: Boolean,
+          value: false
+        }
+      }
+    }
     connectedCallback() {
       this.attachedCallback();
     }
@@ -399,10 +432,10 @@
               }
               break;
             case LEFT:
-              xOffset += POINTER_ALTITUDE;
+              xOffset += REAL_POINTER_ALTITUDE;
               break;
             case RIGHT:
-              xOffset -= POINTER_ALTITUDE;
+              xOffset -= REAL_POINTER_ALTITUDE;
               xOffset -= srcRect.width;
               xOffset -= dialogWidth;
               break;
@@ -414,10 +447,10 @@
           var yOffset = 0;
           switch(direction) {
             case UP:
-              yOffset += POINTER_ALTITUDE;
+              yOffset += REAL_POINTER_ALTITUDE;
               break;
             case DOWN:
-              yOffset -= POINTER_ALTITUDE;
+              yOffset -= REAL_POINTER_ALTITUDE;
               yOffset -= globalSrcRect.height;
               yOffset -= dialogHeight;
               break;
