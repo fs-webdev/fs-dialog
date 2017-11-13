@@ -2,7 +2,7 @@
   "name": "fs-dialog",
   "description": "An accessible standard dialog for FamilySearch.",
   "version": "1.0.0",
-  "main": "fs-dialog.html",
+  "main": "fs-dialog-all.html",
   "author": {
     "name": "FamilySearch",
     "url": "https://familysearch.org/"
@@ -10,7 +10,7 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "dependencies": {
     "fs-styles": "fs-webdev/fs-styles#^3.x.x",
-    "fs-globals": "fs-webdev/fs-globals",
+    "fs-globals": "fs-webdev/fs-globals#^2.0.1",
     "a11y-enhancer": "straker/a11y-enhancer",
     "inert": "https://github.com/straker/inert.git#master",
     "es6-promise": "^4.1.1"

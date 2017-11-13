@@ -48,7 +48,7 @@
       }
     },
     "size-limit": {
-      "path": "fs-dialog.html",
+      "path": "fs-dialog-all.html",
       "limit": "15 KB"
     }
   }
