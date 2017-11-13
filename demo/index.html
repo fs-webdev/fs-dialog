@@ -124,17 +124,15 @@
           </fieldset>
 
           <fieldset class="anchored-options">
-            <legend>fs-anchored-dialog-specific options:</legend>
+            <legend>fs-anchored-dialog-specific attributes:</legend>
+
+            <p>
+              <input type="checkbox" name="persistent" id="persistent"><label for="persistent">persistent (don't click away)</label>
+            </p>
 
             <p>
               <input type="checkbox" name="noPointer" id="noPointer"><label for="noPointer">no-pointer</label>
             </p>
-
-  <!--           <label for="pointerDirection">pointer-direction</label>
-            <select name="pointer-direction" id="pointerDirection">
-              <option value=""></option>
-              <option value="down">down</option>
-            </select> -->
 
             <p>
               <label for="attachDirection">attach-direction</label>
@@ -161,8 +159,69 @@
 
           </fieldset>
 
+          <fieldset class="anchored-options">
+            <legend>fs-anchored-dialog-specific open function options:</legend>
+
+            <p>
+              <label for="xCoordinate">attachToCoordinates x coordinate</label>
+              <input type="number" name="xCoordinate" id="xCoordinate">
+            </p>
+            <p>
+              <label for="yCoordinate">attachToCoordinates y coordinate</label>
+              <input type="number" name="yCoordinate" id="yCoordinate">
+            </p>
+
+
+            <p>
+              <label for="forcedPointerDirection">forcedPointerDirection</label>
+              <select name="forcedPointerDirection" id="forcedPointerDirection">
+                <option value=""></option>
+                <option value="left">left</option>
+                <option value="right">right</option>
+                <option value="up">up</option>
+                <option value="down">down</option>
+              </select>
+            </p>
+
+            <p>
+              <label for="preferredPointerDirection">preferredPointerDirection</label>
+              <select name="preferredPointerDirection" id="preferredPointerDirection">
+                <option value=""></option>
+                <option value="left right up down">left, right, up, down</option>
+                <option value="left right down up">left, right, down, up</option>
+                <option value="left up right down">left, up, right, down</option>
+                <option value="left up down right">left, up, down, right</option>
+                <option value="left down right up">left, down, right, up</option>
+                <option value="left down up right">left, down, up, right</option>
+
+                <option value="right left up down">right, left, up, down</option>
+                <option value="right left down up">right, left, down, up</option>
+                <option value="right up left down">right, up, left, down</option>
+                <option value="right up down left">right, up, down, left</option>
+                <option value="right down left up">right, down, left, up</option>
+                <option value="right down up left">right, down, up, left</option>
+
+                <option value="up right left down">up, right, left, down</option>
+                <option value="up right down left">up, right, down, left</option>
+                <option value="up left right down">up, left, right, down</option>
+                <option value="up left down right">up, left, down, right</option>
+                <option value="up down right left">up, down, right, left</option>
+                <option value="up down left right">up, down, left, right</option>
+
+                <option value="down right up left">down, right, up, left</option>
+                <option value="down right left up">down, right, left, up</option>
+                <option value="down up right left">down, up, right, left</option>
+                <option value="down up left right">down, up, left, right</option>
+                <option value="down left right up">down, left, right, up</option>
+                <option value="down left up right">down, left, up, right</option>
+
+              </select>
+            </p>
+
+          </fieldset>
+
           <fieldset class="modal-options">
-            <legend>fs-modal-dialog-specific options:</legend>
+            <legend>fs-modal-dialog-specific attributes:</legend>
 
             <input type="checkbox" name="dismissonblur" id="dismissonblur"><label for="dismissonblur">dismiss-on-blur (AKA click-away)</label>
 
@@ -230,7 +289,7 @@
           </fieldset>
 
           <fieldset>
-            <legend>Shared options:</legend>
+            <legend>Shared attributes:</legend>
 
             <p>
               <label for="transition">Mobile Transition</label>
@@ -422,6 +481,7 @@
 
         // SET ANCHORED ATTRIBUTES
         if (config.type === 'anchored') {
+          if (config.persistent) dynamicDialogEl.setAttribute('persistent', '');
           if (config.noPointer) dynamicDialogEl.setAttribute('no-pointer', '');
           if (config.noPointer && config.attachDirection) dynamicDialogEl.setAttribute('attach-direction', config.attachDirection);
           if (config.noPointer && config.alignment) dynamicDialogEl.setAttribute('alignment', config.alignment);
@@ -436,13 +496,12 @@
         openOptions = {};
         openOptions.foucsBackElement = document.querySelector('.demo-snippet > button');
         if (config.type === 'anchored') {
-          // TODO: add dom for preferredPointerDirection, forcedPointerDirection, xCoordinate, yCoordinate
           if (config.xCoordinate && config.yCoordinate) {
             openOptions.attachToCoordinates = {x: config.xCoordinate, y: config.yCoordinate};
           } else {
             openOptions.attachToElement = document.querySelector('.demo-snippet > button');
           }
-          if (config.preferredPointerDirection) openOptions.preferredPointerDirection = config.preferredPointerDirection;
+          if (config.preferredPointerDirection) openOptions.preferredPointerDirection = config.preferredPointerDirection.split(' ');
           if (config.forcedPointerDirection) openOptions.forcedPointerDirection = config.forcedPointerDirection;
         }
 

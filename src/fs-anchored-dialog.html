@@ -146,6 +146,12 @@
         window.addEventListener('resize', this._resizeThrottler);
         positionObj = positionObj || {};
 
+        if (this.getAttribute('persistent')) {
+          this.removeAttribute('dismiss-on-blur');
+        } else {
+          this.setAttribute('dismiss-on-blur', '');
+        }
+
         if (positionObj.attachToCoordinates && positionObj.attachToCoordinates.x && positionObj.attachToCoordinates.y) {
           var coordinateElement = this.coordinateElement;
           if (!coordinateElement) {
