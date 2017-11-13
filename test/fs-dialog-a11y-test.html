@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../fs-globals/fs-globals-mock.js"></script>
+    <script src="../../axe.min/index.js" ></script>
+    <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
+
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../fs-dialog-all.html">
+  </head>
+  <body>
+
+    <!-- Use the document as a place to set up your fixtures. -->
+    <test-fixture id="fs-dialog-fixture">
+      <template>
+        <fs-dialog>
+          <header>
+            <h4>Modal</h4>
+          </header>
+          <div class="fs-dialog__body">
+            <p>This is a modal dialog. It really stands out from the content and forces the user to perform an action before they can continue.</p>
+          </div>
+          <footer>
+            <button class="fs-button fs-button--recommended" data-dialog-confirm>Done</button>
+            <button class="fs-button" data-dialog-dismiss>Cancel</button>
+          </footer>
+        </fs-dialog>
+      </template>
+    </test-fixture>
+
+<!-- TODO: ADD THE OTHER DIALOG MODES FOR TESTING -->
+
+    <script>
+    function simulateEvent(type, config) {
+      var evt;
+
+      try {
+        evt = new Event(type);
+      } catch(e) {
+        evt = document.createEvent('Event');
+        evt.initEvent(type, true, false);
+      }
+
+      var config = config || {};
+      for (var prop in config) {
+        evt[prop] = config[prop];
+      }
+
+      return evt;
+    }
+
+    describe('fs-dialog', function() {
+      var el, closeEl, bodyEl, headerEl, footerEl, maskEl;
+
+      function updateSelectors() {
+        closeEl = el.querySelector('.fs-dialog__close');
+        bodyEl = el.querySelector('.fs-dialog__body');
+        headerEl = el.querySelector('header');
+        footerEl = el.querySelector('footer');
+        maskEl = el.parentNode.querySelector('.fs-dialog__mask');
+      }
+
+      beforeEach(function() {
+        el = fixture('fs-dialog-fixture');
+        updateSelectors();
+      });
+
+      afterEach(function() {
+        el.close();
+        el.remove();
+      });
+
+      describe('a11y', function() {
+
+        it('should pass accessibility guidelines', function(done) {
+          el.open();
+
+          axe.run(function (err, results) {
+            if (err) return done(err);
+
+            if (results.violations.length || results.incomplete.length) {
+              var errMsg = '';
+
+              results.violations.forEach(function(violation) {
+                errMsg += `\n\n${violation.help}:`;
+
+                violation.nodes.forEach(function(node, index) {
+                  errMsg += `\n\t${index+1}: ${node.html}`;
+                });
+              });
+
+              results.incomplete.forEach(function(incomplete) {
+                errMsg += `\n\n${incomplete.help}:`;
+
+                incomplete.nodes.forEach(function(node, index) {
+                  errMsg += `\n\t${index+1}: ${node.html}`;
+                });
+              });
+
+              var error = new Error(errMsg+'\n');
+              error.stack = null;
+
+              return done(error)
+            }
+
+            done();
+          });
+
+        });
+
+      });
+
+    });
+    </script>
+  </body>
+</html>

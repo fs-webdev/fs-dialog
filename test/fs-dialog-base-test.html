@@ -435,50 +435,6 @@
 
       });
 
-
-
-
-
-      describe('a11y', function() {
-
-        it('should pass accessibility guidelines', function(done) {
-          el.open();
-
-          axe.run(function (err, results) {
-            if (err) return done(err);
-
-            if (results.violations.length || results.incomplete.length) {
-              var errMsg = '';
-
-              results.violations.forEach(function(violation) {
-                errMsg += `\n\n${violation.help}:`;
-
-                violation.nodes.forEach(function(node, index) {
-                  errMsg += `\n\t${index+1}: ${node.html}`;
-                });
-              });
-
-              results.incomplete.forEach(function(incomplete) {
-                errMsg += `\n\n${incomplete.help}:`;
-
-                incomplete.nodes.forEach(function(node, index) {
-                  errMsg += `\n\t${index+1}: ${node.html}`;
-                });
-              });
-
-              var error = new Error(errMsg+'\n');
-              error.stack = null;
-
-              return done(error)
-            }
-
-            done();
-          });
-
-        });
-
-      });
-
     });
     </script>
   </body>

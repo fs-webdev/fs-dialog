@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../fs-globals/fs-globals-mock.js"></script>
+    <script src="../../axe.min/index.js" ></script>
+    <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
+
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../fs-dialog-all.html">
+  </head>
+  <body>
+
+    <script>
+
+      // COPIED DIRECTLY FROM NG-SHARED-COMPONENTS
+      var expect = chai.expect;
+
+      describe('positioning.obj', function() {
+        beforeEach(function() {
+          window.karmaWindow = {
+            pageYOffset: 0,
+            pageXOffset: 0,
+            innerWidth: 1000,
+            innerHeight: 600
+          };
+          window.karmaBody = {
+            scrollTop: 0,
+            scrollLeft: 0,
+            scrollWidth: 1000,
+            scrollHeight: 1500
+          };
+        });
+
+        describe('fsLocalToGlobal()', function() {
+          it('should convert to global - no scroll', function() {
+            var load = {
+              getBoundingClientRect: function() {
+                return {
+                  left: 100,
+                  top: 90,
+                  width: 200,
+                  height: 150
+                };
+              }
+            };
+
+            var rect = testPos.fsLocalToGlobal(load);
+            expect(rect.left).to.equal(100);
+            expect(rect.top).to.equal(90);
+            expect(rect.width).to.equal(200);
+            expect(rect.height).to.equal(150);
+          });
+
+          it('should convert to global - with scroll', function() {
+            window.karmaWindow.pageYOffset = 30;
+            window.karmaWindow.pageXOffset = 33;
+            var load = {
+              getBoundingClientRect: function() {
+                return {
+                  left: 100,
+                  top: 90,
+                  width: 200,
+                  height: 150
+                };
+              }
+            };
+
+            var rect = testPos.fsLocalToGlobal(load);
+            expect(rect.left).to.equal(133);
+            expect(rect.top).to.equal(120);
+            expect(rect.width).to.equal(200);
+            expect(rect.height).to.equal(150);
+          });
+        });
+
+        describe('fsGlobalToLocal()', function() {
+          it('should convert 0 to local - no scroll', function() {
+            var load = {
+              isSameNode: function() {return false},
+              getBoundingClientRect: function() {
+                return {
+                  left: 100,
+                  top: 90,
+                  width: 200,
+                  height: 150
+                };
+              }
+            };
+            var rect = testPos.fsGlobalToLocal(load);
+            expect(rect.left).to.equal(-100);
+            expect(rect.top).to.equal(-90);
+            expect(rect.width).to.equal(0);
+            expect(rect.height).to.equal(0);
+          });
+
+          it('should convert 0 to global - with scroll', function() {
+            window.karmaWindow.pageYOffset = 30;
+            window.karmaWindow.pageXOffset = 33;
+            var load = {
+              isSameNode: function() {return false},
+              getBoundingClientRect: function() {
+                return {
+                  left: 100,
+                  top: 90,
+                  width: 200,
+                  height: 150
+                };
+              }
+            };
+
+            var rect = testPos.fsGlobalToLocal(load);
+            expect(rect.left).to.equal(-133);
+            expect(rect.top).to.equal(-120);
+            expect(rect.width).to.equal(0);
+            expect(rect.height).to.equal(0);
+          });
+
+          it('should convert rect to local - no scroll', function() {
+            var load = {
+              isSameNode: function() {return false},
+              getBoundingClientRect: function() {
+                return {
+                  left: 100,
+                  top: 90,
+                  width: 200,
+                  height: 150
+                };
+              }
+            };
+            var srcRect = new testPos.fsRect(35, 54, 40, 30);
+            var rect = testPos.fsGlobalToLocal(load, srcRect);
+            expect(rect.left).to.equal(-65);
+            expect(rect.top).to.equal(-36);
+            expect(rect.width).to.equal(40);
+            expect(rect.height).to.equal(30);
+          });
+
+          it('should convert 0 to global - with scroll', function() {
+            window.karmaWindow.pageYOffset = 30;
+            window.karmaWindow.pageXOffset = 33;
+            var load = {
+              isSameNode: function() {return false},
+              getBoundingClientRect: function() {
+                return {
+                  left: 100,
+                  top: 90,
+                  width: 200,
+                  height: 150
+                };
+              }
+            };
+
+            var srcRect = new testPos.fsRect(123, 28, 55, 99);
+            var rect = testPos.fsGlobalToLocal(load, srcRect);
+            expect(rect.left).to.equal(-10);
+            expect(rect.top).to.equal(-92);
+            expect(rect.width).to.equal(55);
+            expect(rect.height).to.equal(99);
+          });
+        });
+
+        describe('fsLocalToLocal()', function() {
+          it('should convert local to local - no scroll', function() {
+            var srcEl = {
+              isSameNode: function() {return false},
+              getBoundingClientRect: function() {
+                return {
+                  left: 100,
+                  top: 90,
+                  width: 23,
+                  height: 34
+                };
+              }
+            };
+
+            var dstEl = {
+              isSameNode: function() {return false},
+              getBoundingClientRect: function() {
+                return {
+                  left: 10,
+                  top: 400,
+                  width: 1000,
+                  height: 500
+                };
+              }
+            };
+
+            var rect = testPos.fsLocalToLocal(srcEl, dstEl);
+            expect(rect.left).to.equal(90);
+            expect(rect.top).to.equal(-310);
+            expect(rect.width).to.equal(23);
+            expect(rect.height).to.equal(34);
+          });
+
+          it('should convert local to local - with scroll', function() {
+            window.karmaWindow.pageYOffset = 30;
+            window.karmaWindow.pageXOffset = 33;
+            var srcEl = {
+              isSameNode: function() {return false},
+              getBoundingClientRect: function() {
+                return {
+                  left: 100,
+                  top: 90,
+                  width: 23,
+                  height: 34
+                };
+              }
+            };
+
+            var dstEl = {
+              isSameNode: function() {return false},
+              getBoundingClientRect: function() {
+                return {
+                  left: 10,
+                  top: 400,
+                  width: 1000,
+                  height: 500
+                };
+              }
+            };
+
+            var rect = testPos.fsLocalToLocal(srcEl, dstEl);
+            expect(rect.left).to.equal(90);
+            expect(rect.top).to.equal(-310);
+            expect(rect.width).to.equal(23);
+            expect(rect.height).to.equal(34);
+          });
+        });
+      });
+
+
+    </script>
+
+  </body>
+</html>
