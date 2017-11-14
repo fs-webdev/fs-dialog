@@ -79,6 +79,7 @@
 
       /* begin fs-styles override */
       fieldset {
+        background-color: #eee;
         border: 1px solid #777;
         margin-bottom: 10px;
         padding: 8px;
@@ -136,13 +137,13 @@
 
             <section>
               <p>
-                <input type="checkbox" name="noTransition" id="noTransition" value="false"><label for="noTransition">no-transition</label>
+                <input type="checkbox" name="noTransition" id="noTransition" value="false"><label for="noTransition" title="Whether or not to disable transitions completely, and instantly display/dismiss dialogs">no-transition</label>
               </p>
             </section>
 
             <section class="modal-options anchored-options">
               <p>
-                <label for="transition">Mobile Transition</label>
+                <label for="transition" title="Whether fullscreen modals should transition in, and the direction the should come from/go">Mobile Transition</label>
                 <select name="transition" id="transition">
                   <option value=""></option>
                   <option value="from-bottom">from-bottom</option>
@@ -150,16 +151,16 @@
                 </select>
               </p>
               <p>
-                <input type="checkbox" name="noFullscreenMobile" id="noFullscreenMobile" value="false"><label for="noFullscreenMobile">no-fullscreen-mobile</label>
+                <input type="checkbox" name="noFullscreenMobile" id="noFullscreenMobile" value="false"><label for="noFullscreenMobile" title="Whether or not to go fullscreen below a certain breakpoint">no-fullscreen-mobile</label>
               </p>
               <p>
-                <input type="checkbox" name="noCloseButton" id="noCloseButton" value="false"><label for="noCloseButton">no-close-button</label>
+                <input type="checkbox" name="noCloseButton" id="noCloseButton" value="false"><label for="noCloseButton" title="Whether or not to hide the close button (most common for anchored dialogs--ignored in fullscreen mode)">no-close-button</label>
               </p>
             </section>
 
             <section class="modal-options">
 
-              <input type="checkbox" name="dismissonblur" id="dismissonblur"><label for="dismissonblur">dismiss-on-blur (AKA click-away)</label>
+              <input type="checkbox" name="dismissonblur" id="dismissonblur"><label for="dismissonblur" title="Whether clicking on the modal backdrop should dismiss the modal dialog">dismiss-on-blur (AKA click-away)</label>
             </section>
 
 
@@ -169,7 +170,7 @@
               </p>
 
               <p>
-                <label for="forcedPointerDirection">forcedPointerDirection</label>
+                <label for="forcedPointerDirection" title="The direction the attached dialog will always display in (disables positioning logic, and supercedes preferred-pointer-direction)">forcedPointerDirection</label>
                 <select name="forcedPointerDirection" id="forcedPointerDirection">
                   <option value=""></option>
                   <option value="left">left</option>
@@ -180,7 +181,7 @@
               </p>
 
               <p>
-                <label for="preferredPointerDirection">preferredPointerDirection</label>
+                <label for="preferredPointerDirection" title="Descending-ordered preference for an anchored dialog to display in (superceded by forced-pointer-direction)--the first direction that has room to completely display wins">preferredPointerDirection</label>
                 <select name="preferredPointerDirection" id="preferredPointerDirection">
                   <option value=""></option>
                   <option value="left right up down">left, right, up, down</option>
@@ -215,11 +216,11 @@
               </p>
 
               <p>
-                <input type="checkbox" name="noPointer" id="noPointer"><label for="noPointer">no-pointer</label>
+                <input type="checkbox" name="noPointer" id="noPointer"><label for="noPointer" title="Whether or not to show the callout triangle on an anchored dialog">no-pointer</label>
               </p>
 
               <p>
-                <label for="attachDirection">attach-direction</label>
+                <label for="attachDirection" title="Which direction the attached dialog should display in">attach-direction</label>
                 <select name="attachDirection" id="attachDirection">
                   <option value=""></option>
                   <option value="left">left</option>
@@ -230,7 +231,7 @@
               </p>
 
               <p>
-                <label for="alignment">alignment</label>
+                <label for="alignment" title="Where the attached dialog should be aligned to">alignment</label>
                 <select name="alignment" id="alignment">
                   <option value=""></option>
                   <option value="left">left</option>
@@ -270,22 +271,22 @@
             <div class="flex">
               <section>
                 <p>
-                  <input type="checkbox" name="showHeader" id="showHeader" checked="checked"><label for="showHeader">Include Header</label>
+                  <input type="checkbox" name="showHeader" id="showHeader" checked="checked"><label for="showHeader" title="Whether or not the header block should be included">Include Header</label>
                 </p>
 
-                <label>Content Size</label>
+                <label title="Specify how long dialog content should be">Content Size</label>
                 <ul>
                   <li>
                     <input name="content-size" type="radio" id="short" value="short" checked="">
-                    <label for="short">Short</label>
+                    <label for="short" title="Generate short content">Short</label>
                   </li>
                   <li>
                     <input name="content-size" type="radio" id="medium" value="medium">
-                    <label for="medium">Medium</label>
+                    <label for="medium" title="Generate medium-length content">Medium</label>
                   </li>
                   <li>
                     <input name="content-size" type="radio" id="long" value="long">
-                    <label for="long">Long</label>
+                    <label for="long" title="Generate long content">Long</label>
                   </li><!--
                   <li>
                     <input name="content-size" type="radio" id="custom" value="custom">
@@ -294,12 +295,12 @@
                 </ul>
 
                 <p>
-                  <input type="checkbox" name="showFooter" id="showFooter" checked="checked"><label for="showFooter">Include Footer</label>
+                  <input type="checkbox" name="showFooter" id="showFooter" checked="checked"><label for="showFooter" title="Whether or not the footer block should be included">Include Footer</label>
                 </p>
               </section>
 
               <section>
-                <label for="maxHeight">max-height</label>
+                <label for="maxHeight" title="Specify a max-height for the dialog to force inner content to scroll">max-height</label>
                 <div class="fs-field-group">
                   <input class="fs-field-group__input" name="maxheight" id="maxHeight" type="text"  maxlength="20" placeholder="example: 400px">
                   <div class="fs-field-group__attachment">
@@ -308,21 +309,22 @@
                   </div>
                 </div>
 
-                <label>Nesting</label>
-                <ul>
-                  <li>
-                    <input name="nesting" type="radio" id="none" value="" checked="">
-                    <label for="none">None</label>
-                  </li>
-                  <li>
-                    <input name="nesting" type="radio" id="one" value="one">
-                    <label for="one">One</label>
-                  </li>
-                  <li>
-                    <input name="nesting" type="radio" id="two" value="two">
-                    <label for="two">Two</label>
-                  </li>
-                </ul>
+                <label title="How many additional nested dialogs to generate">Nesting
+                  <ul>
+                    <li>
+                      <input name="nesting" type="radio" id="none" value="" checked="">
+                      <label for="none">None</label>
+                    </li>
+                    <li>
+                      <input name="nesting" type="radio" id="one" value="one">
+                      <label for="one">One</label>
+                    </li>
+                    <li>
+                      <input name="nesting" type="radio" id="two" value="two">
+                      <label for="two">Two</label>
+                    </li>
+                  </ul>
+                </label>
               <section>
             </div>
           </fieldset>
@@ -341,7 +343,7 @@
       </div>
     </div>
 
-<br><br><br>
+    <br><br><br>
 
     <h3>Other Functions and Attributes</h3>
     <div class="demo-snippet fs-card">
