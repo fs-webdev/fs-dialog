@@ -10,11 +10,34 @@
     <script src="../../axe.min/index.js" ></script>
     <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
 
+    <!-- The element to test -->
+    <link rel="import" href="../fs-dialog-base.html">
+
 
     <!-- Step 1: import the element to test -->
     <link rel="import" href="../fs-dialog-all.html">
   </head>
   <body>
+    <script>
+      describe('fsDialogBase', function() {
+        var fsDialogBase;
+
+        beforeEach(function() {
+          fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
+        });
+
+        afterEach(function() {
+        });
+
+        describe('functions', function() {
+          it('createdCallback should add the keydownHandler', function() {
+            fsDialogBase.prototype.createdCallback();
+
+            expect(fsDialogBase.prototype.keydownHandler, 'keydownHandler is not defined as a function').to.be.a('function');
+          });
+        });
+      });
+    </script>
 
     <!-- Use the document as a place to set up your fixtures. -->
     <test-fixture id="fs-dialog-fixture">
