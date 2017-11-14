@@ -427,11 +427,10 @@
             demo.parentNode.querySelector('details').remove();
           }
 
-          var code = (generatedCode) ? generatedCode.outerHTML : demo.innerHTML
+          var code = (generatedCode) ? generatedCode.outerHTML : demo.innerHTML;
+          code = code
             .trim()
-            .replace(/<\/?demo-/g, '&lt;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+            .replace(/\=\"\"/g, '')
           var preEl = document.createElement('pre');
           var codeEl = document.createElement('code');
           preEl.classList.add('language-markup');
@@ -445,7 +444,7 @@
           codeEl.innerHTML = markup;
 
           var wrapperEl = document.createElement('details');
-          if (open) { wrapperEl.setAttribute("open", ""); }
+          if (open) { wrapperEl.setAttribute('open', ''); }
           var summaryEl = document.createElement('summary');
           summaryEl.innerHTML = 'Markup';
           summaryEl.setAttribute('title', 'Show/hide associated markup');
