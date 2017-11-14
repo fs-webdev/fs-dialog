@@ -38,8 +38,17 @@ fs-modal-dialog:not([no-transition]) {
      /**
       * `<fs-modal-dialog>` is a modal dialog centered on the screen that is displayed above other content, masks the content underneath it, and prevents the user from interacting with the content underneath.
       *
-      *     <body>
-      *       <fs-modal-dialog></fs-modal-dialog>
+      *       <fs-modal-dialog>
+      *        <header>
+      *          [Header Text]
+      *        </header>
+      *        <div class="fs-dialog__body">
+      *          [dialog body content]
+      *        </div>
+      *        <footer>
+      *          [buttons or footer text]
+      *        </footer>
+      *      </fs-modal-dialog>
       *
       * @demo demo/index.html
       */
@@ -57,20 +66,20 @@ fs-modal-dialog:not([no-transition]) {
           value: false
         },
         /**
-         * The open modal transition animation.
-         * Default: 'center'. Valid values: 'from-right' (only on mobile), 'from-bottom' (only on mobile), 'center'.
-         * @type {string} [transition=center]
+         * The open modal transition animation for mobile.
+         * Default: ''. Valid values: 'from-right', 'from-bottom'.
+         * @type {string} [transition='from-bottom']
          */
         'transition':  {
           type: string,
-          value: 'center'
+          value: ''
         },
         /**
-         * Whether or not the modal should take up the entire screen.
-         * Default: true.
-         * @type {boolean} [fullscreen-on-mobile=true]
+         * Whether or not the modal should take up the entire screen below 480px.
+         * Default: false.
+         * @type {boolean} [no-fullscreen-mobile=true]
          */
-        'fullscreen-on-mobile':  {
+        'no-fullscreen-mobile':  {
           type: boolean,
           value: false
         },
@@ -101,9 +110,18 @@ fs-modal-dialog:not([no-transition]) {
         /**
          * Whether or not to disable transition animation.
          * Default: false.
-         * @type {boolean} [no-transition=false]
+         * @type {boolean} [no-transition]
          */
         'no-transition':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * Whether or not to show the close button x in the upper right corner
+         * Default: false.
+         * @type {boolean} [no-close-button]
+         */
+        'no-close-button':  {
           type: Boolean,
           value: false
         }
@@ -112,8 +130,8 @@ fs-modal-dialog:not([no-transition]) {
 
     /**
      * Open the dialog.
-     * @param {Object} config - Object containing the following optional properties:
-     *                          focusBackElement - The element to return focus back after the dialog closes. Default: document.activeElement (at the time of opening the dialog).
+     * @param {Object} config - Object containing the following property:
+     *                          focusBackElement - The element to return focus back after the dialog closes.
      */
     open(config) {
       super.open(config);

@@ -59,7 +59,7 @@
   }
 
   @media screen and (max-width: 480px) {
-    fs-anchored-dialog:not([fullscreen-on-mobile="false"]) .fs-dialog-pointer {
+    fs-anchored-dialog:not([no-fullscreen-mobile]) .fs-dialog-pointer {
       visibility: hidden;
       display: none;
     }
@@ -90,15 +90,47 @@
   var POINTER_ALTITUDE = 11.31; //16
   var REAL_POINTER_ALTITUDE = 16;
   var PADDING = 15;
-  var positionObjDefaults = {
-    preferredPointerDirection: ''
+
+
+  var attrTypeMap = {
+    'persistent' : 'boolean',
+    'no-pointer' : 'boolean',
+    'attach-direction' : 'string',
+    'alignment' : 'string',
+    'forced-pointer-direction' : 'string',
+    'preferred-pointer-direction' : 'space separated array',
   };
+  var attrNameMap = {
+    'persistent' : 'persistent',
+    'no-pointer' : 'noPointer',
+    'attach-direction' : 'attachDirection',
+    'alignment' : 'alignment',
+    'forced-pointer-direction' : 'forcedPointerDirection',
+    'preferred-pointer-direction' : 'preferredPointerDirection',
+  };
+  var attrList = [
+    'persistent',
+    'no-pointer',
+    'attach-direction',
+    'alignment',
+    'forced-pointer-direction',
+    'preferred-pointer-direction',
+  ];
 
   /**
    * `<fs-anchored-dialog>` is a dialog that is anchored to an element on the page.
    *
-   *     <body>
-   *       <fs-anchored-dialog ></fs-anchored-dialog>
+   *       <fs-anchored-dialog>
+   *        <header>
+   *          [Header Text]
+   *        </header>
+   *        <div class="fs-dialog__body">
+   *          [dialog body content]
+   *        </div>
+   *        <footer>
+   *          [buttons or footer text]
+   *        </footer>
+   *      </fs-anchored-dialog>
    *
    * @demo demo/index.html
    */
@@ -122,6 +154,24 @@
         'alignment':  {
           type: string,
           value: LEFT
+        },
+        /**
+         * Forces the pointer to be a certain direction.
+         * Default: ''. Valid values: 'up', 'down', 'left', 'right'.
+         * @type {string} [forced-pointer-direction='left']
+         */
+        'forced-pointer-direction':  {
+          type: string,
+          value: ''
+        },
+        /**
+         * Specifies the preferred order to put the pointer direction if it fits in the current view.
+         * Default: 'left right up down'. Valid values: space separated left, right, up, and down
+         * @type {string} [preferred-pointer-direction='up right down left']
+         */
+        'preferred-pointer-direction':  {
+          type: string,
+          value: 'left right up down'
         },
         /**
          * Whether or not the pointer should be hidden.
@@ -165,20 +215,20 @@
           value: false
         },
         /**
-         * The open modal transition animation.
-         * Default: 'center'. Valid values: 'from-right' (only on mobile), 'from-bottom' (only on mobile), 'center'.
-         * @type {string} [transition=center]
+         * The open modal transition animation for mobile.
+         * Default: ''. Valid values: 'from-right', 'from-bottom'.
+         * @type {string} [transition='from-bottom']
          */
         'transition':  {
           type: string,
-          value: 'center'
+          value: ''
         },
         /**
-         * Whether or not the modal should take up the entire screen.
-         * Default: true.
-         * @type {boolean} [fullscreen-on-mobile=true]
+         * Whether or not the modal should take up the entire screen below 480px.
+         * Default: false.
+         * @type {boolean} [no-fullscreen-mobile=true]
          */
-        'fullscreen-on-mobile':  {
+        'no-fullscreen-mobile':  {
           type: boolean,
           value: false
         },
@@ -190,14 +240,23 @@
         'no-transition':  {
           type: Boolean,
           value: false
+        },
+        /**
+         * Whether or not to show the close button x in the upper right corner
+         * Default: false.
+         * @type {boolean} [no-close-button]
+         */
+        'no-close-button':  {
+          type: Boolean,
+          value: false
         }
       }
     }
 
     /**
      * Open the dialog.
-     * @param {Object} config - Object containing the following optional properties:
-     *                          focusBackElement - The element to return focus back after the dialog closes. Default: document.activeElement (at the time of opening the dialog).
+     * @param {Object} config - Object containing the following properties (attachToElement and attachToCoordinates are mutually exclusive, but one is required):
+     *                          focusBackElement - The element to return focus back after the dialog closes.
      *                          attachToElement - The element to which the dialog will be attached.
      *                          attachToCoordinates - Object containing 'x' and 'y' properties representing the coordinates to attach the dialog to the element.
      */
@@ -211,6 +270,37 @@
     close() {
       super.close();
     }
+
+    static get observedAttributes() {
+      return FS.dialog.baseDialogComponent.observedAttributes.concat(attrList)
+    }
+    /**
+     * Set our attributes to be properties too
+     */
+    attributeChangedCallback(attr, oldValue, newValue) {
+      var handledByParent = super.attributeChangedCallback(attr, oldValue, newValue);
+      if (!handledByParent) {
+        attrList.some(function(attributeName) {
+          if (attr === attributeName) {
+            if (attrTypeMap[attributeName] === 'boolean') {
+              if (newValue !== undefined && newValue !== null) {
+                this[attrNameMap[attributeName]] = true;
+              } else {
+                this[attrNameMap[attributeName]] = false;
+              }
+            } else {
+              if (newValue !== undefined && newValue !== null) {
+                this[attrNameMap[attributeName]] = newValue;
+              } else {
+                this[attrNameMap[attributeName]] = null;
+              }
+            }
+            return true;
+          }
+        }.bind(this))
+      }
+    }
+
 
     /**
      * Calls attachedCallback
@@ -229,8 +319,7 @@
       var clone = document.importNode(template.content, true);
       this.appendChild(clone);
 
-      var doNotDismissOnBlur = this.getAttribute('persistent')
-      if (doNotDismissOnBlur) {
+      if (this.persistent) {
         this.removeAttribute('dismiss-on-blur');
       } else {
         this.setAttribute('dismiss-on-blur', '');
@@ -258,11 +347,10 @@
         var dialogElement = this;
         var sourceElement = this.attachToElement;
         var pointerDirection = this.getAttribute(POINTER_DIRECTION);
-        var noPointer = this.getAttribute('no-pointer');
 
         // we put this in a setTimout so that the dom can update before we do our calculations
         setTimeout(function(){
-          if (noPointer !== undefined && noPointer !== null) {
+          if (this.noPointer) {
             positionDialogWithinDom(this, pointerElement, getPointerlessDialogRect.bind(this)({attachToElement: sourceElement}), {left: 0, top: 0}, '');
           } else {
             var newRects = getRectsWithForcedDirection.bind(this)(sourceElement, dialogElement, pointerElement, pointerDirection, true);
@@ -275,7 +363,7 @@
         window.addEventListener('resize', this._resizeThrottler);
         positionObj = positionObj || {};
 
-        if (this.getAttribute('persistent') !== undefined && this.getAttribute('persistent') !== null) {
+        if (this.persistent) {
           this.removeAttribute('dismiss-on-blur');
         } else {
           this.setAttribute('dismiss-on-blur', '');
@@ -296,17 +384,6 @@
 
         positionObj.attachToElement = positionObj.attachToElement || document.activeElement;
         this.attachToElement = positionObj.attachToElement;
-        /* positionObj: {
-          preferredPointerDirection: [LEFT, RIGHT, UP, DOWN],
-          forcedPointerDirection: LEFT, // only passed through in object
-          preferredAttachDirection: [],
-          attachDirection: BELOW, // attr (attach-direction) or passed through
-          attachToElement: document.querySelector('button'), // REQUIRED
-          noPointer: false, // only attr
-          alignment: LEFT | RIGHT | CENTER | TOP | BOTTOM, // attr (alignment) or passed through
-          attachToCoordinates: {x: 0, y: 0}, // global coordinates of where you want the dialog to attach to. This will behave as if there is an invisible element at this point, so the rest of the positioning/pointer direction logic remains the same
-          TODO: closeOnScroll: false,
-        } */
         // we get the last one in the array because that should be the one that belongs to this dialog in case there are nested popovers
         var pointerElement = this.querySelectorAll('.fs-dialog-pointer')[this.querySelectorAll('.fs-dialog-pointer').length - 1];
         // reset styles on elements
@@ -315,17 +392,15 @@
         this.style.top = '';
         this.style.left = '';
 
-        var noPointer = this.getAttribute('no-pointer');
-
         // these will always be drop down type menus as far as the use cases we have currently go
-        if (noPointer !== undefined && noPointer !== null) {
+        if (this.noPointer) {
           positionDialogWithinDom(this, pointerElement, getPointerlessDialogRect.bind(this)(positionObj), {left: 0, top: 0}, '');
-        } else if (positionObj.forcedPointerDirection) {
-          var newRects = getRectsWithForcedDirection.bind(this)(positionObj.attachToElement, this, pointerElement, positionObj.forcedPointerDirection)
-          positionDialogWithinDom(this, pointerElement, newRects.dialogRect, newRects.pointerRect, positionObj.forcedPointerDirection)
+        } else if (this.forcedPointerDirection) {
+          var newRects = getRectsWithForcedDirection.bind(this)(positionObj.attachToElement, this, pointerElement, this.forcedPointerDirection)
+          positionDialogWithinDom(this, pointerElement, newRects.dialogRect, newRects.pointerRect, this.forcedPointerDirection)
         } else {
           //auto-position
-          var prefOrder = positionObj.preferredPointerDirection || [LEFT, RIGHT, UP, DOWN];
+          var prefOrder = this.preferredPointerDirection ? this.preferredPointerDirection.split(' ') : [LEFT, RIGHT, UP, DOWN];
           var best = 0;
           var pos = prefOrder[0];
           var containingRect = positioningObj.fsGetWindowRect();
@@ -374,8 +449,6 @@
       }
 
       function getPointerlessDialogRect(positionObj) {
-        var attachToElementDirection = positionObj.attachDirection || this.getAttribute('attach-direction') || BOTTOM;
-        var alignmentDirection = positionObj.alignment || this.getAttribute('alignment') || LEFT;
         var dialogElementOffsetParent = this.offsetParent || document.body;
         var srcRect = positioningObj.fsLocalToGlobal(positionObj.attachToElement);
         var dialogWidth = this.offsetWidth;
@@ -383,16 +456,11 @@
         var topOffset = getTopOffset(dialogElementOffsetParent);
         var dialogTop, dialogLeft, dialogRect;
 
-        // set the attrs on the element to match our alignment and attachDirections so we can access them on windowResize
-        this.setAttribute('attach-direction', attachToElementDirection);
-        this.setAttribute('alignment', alignmentDirection);
-
-
-        switch(attachToElementDirection) {
+        switch(this.attachDirection) {
           case BOTTOM:
           case TOP:
           default:
-            switch (alignmentDirection) {
+            switch (this.alignment) {
               case CENTER:
                 dialogLeft = srcRect.left - dialogWidth/2 + srcRect.width/2;
                 break;
@@ -407,7 +475,7 @@
             break;
           case LEFT:
           case RIGHT:
-            switch (alignmentDirection) {
+            switch (this.alignment) {
               case CENTER:
                 dialogTop = srcRect.top - dialogHeight/2 + srcRect.height/2 + topOffset;
                 break;
@@ -422,7 +490,7 @@
             break;
         }
 
-        switch(attachToElementDirection) {
+        switch(this.attachDirection) {
           case BOTTOM:
           default:
             dialogTop = srcRect.bottom + getTopOffset(dialogElementOffsetParent);
