@@ -39,8 +39,17 @@
    /**
     * `<fs-modeless-dialog>` is a modeless dialog centered on the screen and displayed above other content. It can be dragged around the screen by dragging the header of the dialog. The user can click on content below the
     *
-    *     <body>
-    *       <fs-modeless-dialog></fs-modeless-dialog>
+   *       <fs-modeless-dialog>
+   *        <header>
+   *          [Header Text]
+   *        </header>
+   *        <div class="fs-dialog__body">
+   *          [dialog body content]
+   *        </div>
+   *        <footer>
+   *          [buttons or footer text]
+   *        </footer>
+   *      </fs-modeless-dialog>
     *
     * @demo demo/index.html
     */
@@ -56,15 +65,6 @@
         'opened': {
           type: Boolean,
           value: false
-        },
-        /**
-         * The open modal transition animation.
-         * Default: 'center'. Valid values: 'from-right' (only on mobile), 'from-bottom' (only on mobile), 'center'.
-         * @type {string} [transition=center]
-         */
-        'transition':  {
-          type: string,
-          value: 'center'
         },
         /**
          * Whether or not to disable transition animation.
@@ -96,8 +96,8 @@
 
     /**
      * Open the dialog.
-     * @param {Object} config - Object containing the following optional properties:
-     *                          focusBackElement - The element to return focus back after the dialog closes. Default: document.activeElement (at the time of opening the dialog).
+     * @param {Object} config - Object containing the following property:
+     *                          focusBackElement - The element to return focus back after the dialog closes.
      */
     open(config) {
       super.open(config);

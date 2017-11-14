@@ -136,7 +136,7 @@
 
             <section>
               <p>
-                <input type="checkbox" name="notransition" id="notransition" value="false"><label for="notransition">no-transition</label>
+                <input type="checkbox" name="noTransition" id="noTransition" value="false"><label for="noTransition">no-transition</label>
               </p>
             </section>
 
@@ -146,11 +146,14 @@
                 <select name="transition" id="transition">
                   <option value=""></option>
                   <option value="from-bottom">from-bottom</option>
-                  <option value="from-left">from-left</option>
+                  <option value="from-right">from-right</option>
                 </select>
               </p>
               <p>
-                <input type="checkbox" name="fullscreenOnMobile" id="fullscreenOnMobile" value="false"><label for="fullscreenOnMobile">fullscreen-on-mobile="false"</label>
+                <input type="checkbox" name="noFullscreenMobile" id="noFullscreenMobile" value="false"><label for="noFullscreenMobile">no-fullscreen-mobile</label>
+              </p>
+              <p>
+                <input type="checkbox" name="noCloseButton" id="noCloseButton" value="false"><label for="noCloseButton">no-close-button</label>
               </p>
             </section>
 
@@ -163,6 +166,52 @@
             <section class="anchored-options">
               <p>
                 <input type="checkbox" name="persistent" id="persistent"><label for="persistent">persistent (don't click away)</label>
+              </p>
+
+              <p>
+                <label for="forcedPointerDirection">forcedPointerDirection</label>
+                <select name="forcedPointerDirection" id="forcedPointerDirection">
+                  <option value=""></option>
+                  <option value="left">left</option>
+                  <option value="right">right</option>
+                  <option value="up">up</option>
+                  <option value="down">down</option>
+                </select>
+              </p>
+
+              <p>
+                <label for="preferredPointerDirection">preferredPointerDirection</label>
+                <select name="preferredPointerDirection" id="preferredPointerDirection">
+                  <option value=""></option>
+                  <option value="left right up down">left, right, up, down</option>
+                  <option value="left right down up">left, right, down, up</option>
+                  <option value="left up right down">left, up, right, down</option>
+                  <option value="left up down right">left, up, down, right</option>
+                  <option value="left down right up">left, down, right, up</option>
+                  <option value="left down up right">left, down, up, right</option>
+
+                  <option value="right left up down">right, left, up, down</option>
+                  <option value="right left down up">right, left, down, up</option>
+                  <option value="right up left down">right, up, left, down</option>
+                  <option value="right up down left">right, up, down, left</option>
+                  <option value="right down left up">right, down, left, up</option>
+                  <option value="right down up left">right, down, up, left</option>
+
+                  <option value="up right left down">up, right, left, down</option>
+                  <option value="up right down left">up, right, down, left</option>
+                  <option value="up left right down">up, left, right, down</option>
+                  <option value="up left down right">up, left, down, right</option>
+                  <option value="up down right left">up, down, right, left</option>
+                  <option value="up down left right">up, down, left, right</option>
+
+                  <option value="down right up left">down, right, up, left</option>
+                  <option value="down right left up">down, right, left, up</option>
+                  <option value="down up right left">down, up, right, left</option>
+                  <option value="down up left right">down, up, left, right</option>
+                  <option value="down left right up">down, left, right, up</option>
+                  <option value="down left up right">down, left, up, right</option>
+
+                </select>
               </p>
 
               <p>
@@ -206,53 +255,6 @@
             <p>
               <label for="yCoordinate">attachToCoordinates y coordinate</label>
               <input type="number" name="yCoordinate" id="yCoordinate">
-            </p>
-
-
-            <p>
-              <label for="forcedPointerDirection">forcedPointerDirection</label>
-              <select name="forcedPointerDirection" id="forcedPointerDirection">
-                <option value=""></option>
-                <option value="left">left</option>
-                <option value="right">right</option>
-                <option value="up">up</option>
-                <option value="down">down</option>
-              </select>
-            </p>
-
-            <p>
-              <label for="preferredPointerDirection">preferredPointerDirection</label>
-              <select name="preferredPointerDirection" id="preferredPointerDirection">
-                <option value=""></option>
-                <option value="left right up down">left, right, up, down</option>
-                <option value="left right down up">left, right, down, up</option>
-                <option value="left up right down">left, up, right, down</option>
-                <option value="left up down right">left, up, down, right</option>
-                <option value="left down right up">left, down, right, up</option>
-                <option value="left down up right">left, down, up, right</option>
-
-                <option value="right left up down">right, left, up, down</option>
-                <option value="right left down up">right, left, down, up</option>
-                <option value="right up left down">right, up, left, down</option>
-                <option value="right up down left">right, up, down, left</option>
-                <option value="right down left up">right, down, left, up</option>
-                <option value="right down up left">right, down, up, left</option>
-
-                <option value="up right left down">up, right, left, down</option>
-                <option value="up right down left">up, right, down, left</option>
-                <option value="up left right down">up, left, right, down</option>
-                <option value="up left down right">up, left, down, right</option>
-                <option value="up down right left">up, down, right, left</option>
-                <option value="up down left right">up, down, left, right</option>
-
-                <option value="down right up left">down, right, up, left</option>
-                <option value="down right left up">down, right, left, up</option>
-                <option value="down up right left">down, up, right, left</option>
-                <option value="down up left right">down, up, left, right</option>
-                <option value="down left right up">down, left, right, up</option>
-                <option value="down left up right">down, left, up, right</option>
-
-              </select>
             </p>
 
           </fieldset>
@@ -347,7 +349,7 @@
         <h5>Open Function Options</h5>
         <p>There are some required parameters to the open function. The function takes one argument which is an options object. The options object always needs a focusBackElement property is required if you want to have the correct element focus when the dialog closes. For anchored dialogs, attachToElement or attachToCoordinates is required.</p>
         <h5>Opt-out of fullscreen on mobile</h5>
-        <p>To opt out of making an anchored or modal dialog go fullscreen on mobile devices, add the attribute <code>fullscreen-on-mobile="false"</code></p>
+        <p>To opt out of making an anchored or modal dialog go fullscreen on mobile devices, add the attribute <code>no-fullscreen-mobile</code></p>
         <h5>autofocus</h5>
         <p>Set the attribute <code>autofocus</code> on the element in the dialog that you want to be focused on first open. If autofocus is not set, the dialog itself gets focus</p>
         <h5>closeAndCloseChildren</h5>
@@ -388,7 +390,7 @@
         <ul>
           <li>Document "Gotcha's"</li>
           <li>Get unit tests written/working</li>
-          <li>Add additional configuration options: no-close-button (ignored on mobile), no-transition, inert, no-close-on-esc, modal-transition (non-mobile)</li>
+          <li>Add additional configuration options: inert, no-close-on-esc, modal-transition (non-mobile)</li>
         </ul>
       </details>
     </div>
@@ -499,19 +501,25 @@
         });
 
         // SET SHARED ATTRIBUTES
-        if (config.notransition) dynamicDialogEl.setAttribute('no-transition', '');
+        if (config.noTransition) dynamicDialogEl.setAttribute('no-transition', '');
 
         if (config.type !== 'modeless') {
-          if (config.transition) dynamicDialogEl.setAttribute('transition', config.transition);
-          if (config.fullscreenOnMobile) dynamicDialogEl.setAttribute('fullscreen-on-mobile', config.fullscreenOnMobile);
+          if (!config.noTransition && config.transition) dynamicDialogEl.setAttribute('transition', config.transition);
+          if (config.noFullscreenMobile) dynamicDialogEl.setAttribute('no-fullscreen-mobile', '');
+          if (config.noCloseButton) dynamicDialogEl.setAttribute('no-close-button', '');
         }
 
         // SET ANCHORED ATTRIBUTES
         if (config.type === 'anchored') {
           if (config.persistent) dynamicDialogEl.setAttribute('persistent', '');
-          if (config.noPointer) dynamicDialogEl.setAttribute('no-pointer', '');
-          if (config.noPointer && config.attachDirection) dynamicDialogEl.setAttribute('attach-direction', config.attachDirection);
-          if (config.noPointer && config.alignment) dynamicDialogEl.setAttribute('alignment', config.alignment);
+          if (config.noPointer) {
+            dynamicDialogEl.setAttribute('no-pointer', '');
+            if (config.attachDirection) dynamicDialogEl.setAttribute('attach-direction', config.attachDirection);
+            if (config.alignment) dynamicDialogEl.setAttribute('alignment', config.alignment);
+          } else {
+            if (config.forcedPointerDirection) dynamicDialogEl.setAttribute('forcedPointerDirection', config.forcedPointerDirection);
+            if (!config.forcedPointerDirection && config.preferredPointerDirection) dynamicDialogEl.setAttribute('preferredPointerDirection', config.preferredPointerDirection);
+          }
         }
 
         // SET MODAL ATTRIBUTES
@@ -528,8 +536,6 @@
           } else {
             openOptions.attachToElement = document.querySelector('.demo-snippet button');
           }
-          if (config.preferredPointerDirection) openOptions.preferredPointerDirection = config.preferredPointerDirection.split(' ');
-          if (config.forcedPointerDirection) openOptions.forcedPointerDirection = config.forcedPointerDirection;
         }
 
 

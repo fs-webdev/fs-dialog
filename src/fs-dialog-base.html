@@ -171,9 +171,15 @@
   /** are going to contain **/
   /** an absolute child    **/
 
+  @media screen and (min-width:480px) {
+    fs-modal-dialog[no-close-button] .fs-dialog__close,
+    fs-anchored-dialog[no-close-button] .fs-dialog__close {
+      display: none;
+    }
+  }
   @media screen and (max-width:480px) {
-    fs-modal-dialog:not([fullscreen-on-mobile="false"]),
-    fs-anchored-dialog:not([fullscreen-on-mobile="false"]) {
+    fs-modal-dialog:not([no-fullscreen-mobile]),
+    fs-anchored-dialog:not([no-fullscreen-mobile]) {
       border-radius: 0;
       top: 0 !important;
       left: 0 !important;
@@ -186,33 +192,33 @@
     }
 
     /** Mobile Transitions **/
-    fs-anchored-dialog[transition] {
+    fs-anchored-dialog[transition]:not([no-fullscreen-mobile]) {
       transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
     }
-    fs-anchored-dialog[transition][opened] {
+    fs-anchored-dialog[transition][opened]:not([no-fullscreen-mobile]) {
       transition: visibility 0s, opacity 0s;
     }
 
-    fs-modal-dialog[transition="from-bottom"],
-    fs-anchored-dialog[transition="from-bottom"] {
+    fs-modal-dialog[transition="from-bottom"]:not([no-fullscreen-mobile]),
+    fs-anchored-dialog[transition="from-bottom"]:not([no-fullscreen-mobile]) {
       top: 100% !important;
       transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
     }
 
-    fs-modal-dialog[transition="from-bottom"][opened],
-    fs-anchored-dialog[transition="from-bottom"][opened] {
+    fs-modal-dialog[transition="from-bottom"][opened]:not([no-fullscreen-mobile]),
+    fs-anchored-dialog[transition="from-bottom"][opened]:not([no-fullscreen-mobile]) {
       top: 0 !important;
       transition: top 0.3s;
     }
 
-    fs-modal-dialog[transition="from-right"],
-    fs-anchored-dialog[transition="from-right"] {
+    fs-modal-dialog[transition="from-right"]:not([no-fullscreen-mobile]),
+    fs-anchored-dialog[transition="from-right"]:not([no-fullscreen-mobile]) {
       left: 100% !important;
       transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
     }
 
-    fs-modal-dialog[transition="from-right"][opened],
-    fs-anchored-dialog[transition="from-right"][opened] {
+    fs-modal-dialog[transition="from-right"][opened]:not([no-fullscreen-mobile]),
+    fs-anchored-dialog[transition="from-right"][opened]:not([no-fullscreen-mobile]) {
       left: 0 !important;
       transition: left 0.3s;
     }
@@ -312,11 +318,24 @@
   var zIndex = 990;
   var zIndexIncrement = 10;
 
+  var attrTypeMap = {
+    'dismiss-on-blur' : 'boolean',
+    'no-fullscreen-mobile' : 'boolean',
+    'opened' : 'boolean'
+  }
+  var attrNameMap = {
+    'dismiss-on-blur' : 'dismissOnBlur',
+    'no-fullscreen-mobile' : 'noFullscreenMobile',
+    'opened' : 'opened'
+  };
+  var attrList = [
+    'dismiss-on-blur',
+    'no-fullscreen-mobile',
+    'opened'
+  ];
+
   class FSDialogBase extends HTMLElement {
 
-    static get observedAttributes() {
-      return ['opened', 'dismiss-on-blur'];
-    }
     constructor() {
       super();
 
@@ -443,8 +462,8 @@
           }.bind(this), 0);
 
           var className = this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '';
-          // don't add the class for modals that have opted out
-          if (className && this.getAttribute('fullscreen-on-mobile') === 'false') className = '';
+          // don't add the class for anchored-dialogs that have opted out
+          if (className && this.tagName === 'FS-ANCHORED-DIALOG' && this.noFullscreenMobile) className = '';
           if (className) document.body.classList.add(className);
 
           // setup event listeners
@@ -527,7 +546,7 @@
         // if there are no dialogs with the same tag name in the stack, remove the associated open class from the document body
         if(this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG') {
           var tagName = this.tagName;
-          if(FS.dialog.service.getStack().filter(function(item) { return item.tagName === tagName && item.getAttribute('fullscreen-on-mobile') !== 'false'; }).length === 0) {
+          if(FS.dialog.service.getStack().filter(function(item) { return item.tagName === tagName && !item.noFullscreenMobile; }).length === 0) {
             document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '');
           }
         }
@@ -543,10 +562,6 @@
         FS.dialog.service.closeDialogAndAllChildren(this);
       };
 
-      // set the initial dismissOnBlur value
-      if (this.hasAttribute('dismiss-on-blur')) {
-        this.dismissOnBlur = true;
-      }
       // start opened (needs to be done after adding the event listeners to open
       // otherwise it wont run any of that code)
       if (this.hasAttribute('opened')) {
@@ -556,34 +571,34 @@
 
     }
 
+    static get observedAttributes() {
+      return attrList;
+    }
     /**
-     * Listen to the open attribute.
+     * Set our attributes to be properties too
      */
     attributeChangedCallback(attr, oldValue, newValue) {
-
-      // open and close the modal with the `opened` attribute
-      if (attr === 'opened') {
-        if (newValue !== undefined && newValue !== null) {
-          this.opened = true;
+      return attrList.some(function(attributeName) {
+        if (attr === attributeName) {
+          if (attrTypeMap[attributeName] === 'boolean') {
+            if (newValue !== undefined && newValue !== null) {
+              this[attrNameMap[attributeName]] = true;
+            } else {
+              this[attrNameMap[attributeName]] = false;
+            }
+          } else {
+            if (newValue !== undefined && newValue !== null) {
+              this[attrNameMap[attributeName]] = newValue;
+            } else {
+              this[attrNameMap[attributeName]] = null;
+            }
+          }
+          return true;
         }
-        else {
-          this.opened = false;
-        }
-      }
-
-      // dismiss when the dialog loses focus
-      if (attr === 'dismiss-on-blur') {
-
-        if (newValue !== undefined && newValue !== null) {
-          this.dismissOnBlur = true;
-        }
-        else {
-          this.dismissOnBlur = false;
-        }
-      }
+      }.bind(this))
     }
-  }
 
+  }
 
   /**
    * Determine when to close the dialog.
