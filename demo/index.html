@@ -570,14 +570,20 @@
 
         oneNestedButton.addEventListener('click', function() {
           document.querySelector('#firstNestedDialog').open({focusBackElement: this, attachToElement: this});
-        })
+        });
         twoNestedButton.addEventListener('click', function() {
           document.querySelector('#secondNestedDialog').open({focusBackElement: this, attachToElement: this});
-        })
+        });
 
         document.querySelector('form').addEventListener('submit', function(evt) {
           evt.preventDefault();
-        })
+        });
+
+        document.querySelector('form').addEventListener('reset', function(evt) {
+          setTimeout(function() {
+            generateDialog();
+          });
+        });
         document.querySelector('form[dynamic]').addEventListener('keypress', function(evt){
           if (evt.code === 'Enter' || evt.keyCode === 13) {
             dynamicDialogEl.open(openOptions);
