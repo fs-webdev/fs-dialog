@@ -1,7 +1,7 @@
 {
   "name": "fs-dialog",
   "version": "1.0.0",
-  "description": "Standard display of a persons sex, name, lifespan, and id for FamilySearch.",
+  "description": "An accessible standard dialog for FamilySearch.",
   "directories": {
     "test": "test"
   },
@@ -25,7 +25,7 @@
     "pre-commit": "^1.2.2"
   },
   "scripts": {
-    "test": "wct",
+    "test": "wct --skip-plugin sauce",
     "buildDist": "gulp build && git add ."
   },
   "pre-commit": [
