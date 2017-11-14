@@ -588,6 +588,7 @@
         });
         document.querySelector('form[dynamic]').addEventListener('keypress', function(evt){
           if (evt.code === 'Enter' || evt.keyCode === 13) {
+            openOptions.focusBackElement = evt.target || openOptions.focusBackElement;
             dynamicDialogEl.open(openOptions);
           }
         });
