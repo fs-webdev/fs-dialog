@@ -160,13 +160,13 @@
 
             <section class="modal-options">
 
-              <input type="checkbox" name="dismissonblur" id="dismissonblur"><label for="dismissonblur" title="Whether clicking on the modal backdrop should dismiss the modal dialog">dismiss-on-blur (AKA click-away)</label>
+              <input type="checkbox" name="dismissOnBlur" id="dismissOnBlur"><label for="dismissOnBlur" title="Whether clicking on the modal backdrop should dismiss the modal dialog">dismiss-on-blur (AKA click-away)</label>
             </section>
 
 
             <section class="anchored-options">
               <p>
-                <input type="checkbox" name="persistent" id="persistent"><label for="persistent">persistent (don't click away)</label>
+                <input type="checkbox" name="persistent" id="persistent"><label for="persistent" title="Whether or not to continue displaying the anchored dialog after clickaway">persistent (don't click away)</label>
               </p>
 
               <p>
@@ -355,7 +355,7 @@
         <h5>autofocus</h5>
         <p>Set the attribute <code>autofocus</code> on the element in the dialog that you want to be focused on first open. If autofocus is not set, the dialog itself gets focus</p>
         <h5>closeAndCloseChildren</h5>
-        <p>To close a dialog and all the dialogs above it in the stack, you can call <code>lt;dialog-element&gt;.closeAndCloseChildren()</code> This will automatically use the same direction of transition for all dialogs (whatever the dialog element that you use to call the function has).</p>
+        <p>To close a dialog and all the dialogs above it in the stack, you can call <code>&lt;dialog-element&gt;.closeAndCloseChildren()</code> This will automatically use the same direction of transition for all dialogs (whatever the dialog element that you use to call the function has).</p>
         <h5>focusable-component</h5>
         <p>In order to loop users through the modal and anchored dialogs when they press the tab key, we do a query selector to get all focusable elements. If you put a component in the dialog that needs to be able to get focus, please add the attribute <code>focusable-component</code> to it so that we don't break tab looping.</p>
         <h5>closeAllDialogs</h5>
@@ -518,14 +518,14 @@
             if (config.attachDirection) dynamicDialogEl.setAttribute('attach-direction', config.attachDirection);
             if (config.alignment) dynamicDialogEl.setAttribute('alignment', config.alignment);
           } else {
-            if (config.forcedPointerDirection) dynamicDialogEl.setAttribute('forcedPointerDirection', config.forcedPointerDirection);
-            if (!config.forcedPointerDirection && config.preferredPointerDirection) dynamicDialogEl.setAttribute('preferredPointerDirection', config.preferredPointerDirection);
+            if (config.forcedPointerDirection) dynamicDialogEl.setAttribute('forced-pointer-direction', config.forcedPointerDirection);
+            if (!config.forcedPointerDirection && config.preferredPointerDirection) dynamicDialogEl.setAttribute('preferred-pointer-direction', config.preferredPointerDirection);
           }
         }
 
         // SET MODAL ATTRIBUTES
         if (config.type === 'modal') {
-          if (config.dismissonblur) dynamicDialogEl.setAttribute('dismiss-on-blur', '');
+          if (config.dismissOnBlur) dynamicDialogEl.setAttribute('dismiss-on-blur', '');
         }
 
         // SET OPEN FUNCTION OPTIONS
