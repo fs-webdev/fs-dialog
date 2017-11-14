@@ -6,22 +6,16 @@
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
-    <script src="../../fs-globals/fs-globals-mock.js"></script>
-    <script src="../../axe.min/index.js" ></script>
-    <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
 
 
-    <!-- Step 1: import the element to test -->
     <link rel="import" href="../fs-dialog-all.html">
   </head>
   <body>
 
     <script>
+      var positioningObj = FS.dialog.service.positioningObj;
 
-      // COPIED DIRECTLY FROM NG-SHARED-COMPONENTS
-      var expect = chai.expect;
-
-      describe('positioning.obj', function() {
+      describe('fs-dialog-positioning-object', function() {
         beforeEach(function() {
           window.karmaWindow = {
             pageYOffset: 0,
@@ -37,6 +31,8 @@
           };
         });
 
+        // These tests were ported directly from the ng-shared-components implementation
+        // Originally created by Mike Collins
         describe('fsLocalToGlobal()', function() {
           it('should convert to global - no scroll', function() {
             var load = {
@@ -50,7 +46,7 @@
               }
             };
 
-            var rect = testPos.fsLocalToGlobal(load);
+            var rect = positioningObj.fsLocalToGlobal(load);
             expect(rect.left).to.equal(100);
             expect(rect.top).to.equal(90);
             expect(rect.width).to.equal(200);
@@ -71,7 +67,7 @@
               }
             };
 
-            var rect = testPos.fsLocalToGlobal(load);
+            var rect = positioningObj.fsLocalToGlobal(load);
             expect(rect.left).to.equal(133);
             expect(rect.top).to.equal(120);
             expect(rect.width).to.equal(200);
@@ -92,7 +88,7 @@
                 };
               }
             };
-            var rect = testPos.fsGlobalToLocal(load);
+            var rect = positioningObj.fsGlobalToLocal(load);
             expect(rect.left).to.equal(-100);
             expect(rect.top).to.equal(-90);
             expect(rect.width).to.equal(0);
@@ -114,7 +110,7 @@
               }
             };
 
-            var rect = testPos.fsGlobalToLocal(load);
+            var rect = positioningObj.fsGlobalToLocal(load);
             expect(rect.left).to.equal(-133);
             expect(rect.top).to.equal(-120);
             expect(rect.width).to.equal(0);
@@ -133,8 +129,8 @@
                 };
               }
             };
-            var srcRect = new testPos.fsRect(35, 54, 40, 30);
-            var rect = testPos.fsGlobalToLocal(load, srcRect);
+            var srcRect = new positioningObj.fsRect(35, 54, 40, 30);
+            var rect = positioningObj.fsGlobalToLocal(load, srcRect);
             expect(rect.left).to.equal(-65);
             expect(rect.top).to.equal(-36);
             expect(rect.width).to.equal(40);
@@ -156,8 +152,8 @@
               }
             };
 
-            var srcRect = new testPos.fsRect(123, 28, 55, 99);
-            var rect = testPos.fsGlobalToLocal(load, srcRect);
+            var srcRect = new positioningObj.fsRect(123, 28, 55, 99);
+            var rect = positioningObj.fsGlobalToLocal(load, srcRect);
             expect(rect.left).to.equal(-10);
             expect(rect.top).to.equal(-92);
             expect(rect.width).to.equal(55);
@@ -191,7 +187,7 @@
               }
             };
 
-            var rect = testPos.fsLocalToLocal(srcEl, dstEl);
+            var rect = positioningObj.fsLocalToLocal(srcEl, dstEl);
             expect(rect.left).to.equal(90);
             expect(rect.top).to.equal(-310);
             expect(rect.width).to.equal(23);
@@ -225,7 +221,7 @@
               }
             };
 
-            var rect = testPos.fsLocalToLocal(srcEl, dstEl);
+            var rect = positioningObj.fsLocalToLocal(srcEl, dstEl);
             expect(rect.left).to.equal(90);
             expect(rect.top).to.equal(-310);
             expect(rect.width).to.equal(23);
@@ -233,7 +229,6 @@
           });
         });
       });
-
 
     </script>
 
