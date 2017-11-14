@@ -8,7 +8,7 @@
   var INSET2 = INSET*2;
 
   /*********************/
-  /* PRIVATE FUNCITONS */
+  /* PRIVATE FUNCTIONS */
   /*********************/
 
   // Calculate scores based on what percentage of the dialog will be on the screen

@@ -120,17 +120,29 @@
   /**
    * `<fs-anchored-dialog>` is a dialog that is anchored to an element on the page.
    *
-   *       <fs-anchored-dialog>
-   *        <header>
-   *          [Header Text]
-   *        </header>
-   *        <div class="fs-dialog__body">
-   *          [dialog body content]
-   *        </div>
-   *        <footer>
-   *          [buttons or footer text]
-   *        </footer>
-   *      </fs-anchored-dialog>
+   *     <body>
+   *       <button onclick="dialog.open({
+   *         focusBackElement: this,
+   *         attachToElement: this,
+   *         attachToCoordinates: { x: 4, y: 6}
+   *       });">Open Dialog</button>
+   *       <fs-anchored-dialog
+   *           attach-direction="right"
+   *           alignment="left"
+   *           no-transition
+   *           no-fullscreen-mobile
+   *           persistent>
+   *         <header>
+   *           [Header Text]
+   *         </header>
+   *         <div class="fs-dialog__body">
+   *           [Dialog Body Content]
+   *         </div>
+   *         <footer>
+   *           [Buttons or Footer Text]
+   *         </footer>
+   *       </fs-anchored-dialog>
+   *     </body>
    *
    * @demo demo/index.html
    */
