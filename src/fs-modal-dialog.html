@@ -29,26 +29,27 @@ fs-modal-dialog:not([no-transition]) {
 (function() {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
 
-    /**
-     * The config object argument to pass to the public .open() function.
-     * @typedef {Object} ConfigObject
-     * @property {element} focusBackElement - The element to return focus back to after the dialog closes. Default: document.activeElement (at the time of opening the dialog).
-     */
-
      /**
       * `<fs-modal-dialog>` is a modal dialog centered on the screen that is displayed above other content, masks the content underneath it, and prevents the user from interacting with the content underneath.
       *
-      *       <fs-modal-dialog>
-      *        <header>
-      *          [Header Text]
-      *        </header>
-      *        <div class="fs-dialog__body">
-      *          [dialog body content]
-      *        </div>
-      *        <footer>
-      *          [buttons or footer text]
-      *        </footer>
-      *      </fs-modal-dialog>
+      *     <body>
+      *       <button onclick="dialog.open({
+      *         focusBackElement: this
+      *       });">Open Dialog</button>
+      *       <fs-modal-dialog
+      *           transition="from-bottom"
+      *           no-close-button>
+      *         <header>
+      *           [Header Text]
+      *         </header>
+      *         <div class="fs-dialog__body">
+      *           [Dialog Body Content]
+      *         </div>
+      *         <footer>
+      *           [Buttons or Footer Text]
+      *         </footer>
+      *       </fs-modal-dialog>
+      *     </body>
       *
       * @demo demo/index.html
       */
