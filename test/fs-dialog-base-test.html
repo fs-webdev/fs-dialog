@@ -20,10 +20,9 @@
   <body>
     <script>
       describe('fsDialogBase', function() {
-        var fsDialogBase;
+        var fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
 
         beforeEach(function() {
-          fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
         });
 
         afterEach(function() {
@@ -34,6 +33,16 @@
             fsDialogBase.prototype.createdCallback();
 
             expect(fsDialogBase.prototype.keydownHandler, 'keydownHandler is not defined as a function').to.be.a('function');
+          });
+
+          it('connectedCallback should call attachedCallback', function() {
+            var attachedCallbackStub = sinon.stub(fsDialogBase.prototype, 'attachedCallback');
+
+            fsDialogBase.prototype.connectedCallback();
+
+            expect(attachedCallbackStub.callCount, 'attachedCallback was not called just once').to.equal(1);
+
+            attachedCallbackStub.restore();
           });
         });
       });
