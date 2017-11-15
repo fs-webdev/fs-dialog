@@ -1,20 +1,136 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
-    <script src="../../fs-globals/fs-globals-mock.js"></script>
-    <script src="../../axe.min/index.js" ></script>
-    <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
-
-
-    <!-- Step 1: import the element to test -->
-    <link rel="import" href="../fs-dialog-all.html">
+    <script src="../fs-dialog-service.js"></script>
   </head>
   <body>
+    <script>
+      var listOfElements = [
+        document.createElement('div'),
+        document.createElement('div'),
+        document.createElement('div'),
+        document.createElement('div'),
+        document.createElement('div'),
+        document.createElement('div'),
+        document.createElement('div'),
+        document.createElement('div'),
+        document.createElement('div'),
+        document.createElement('div')
+      ];
+      listOfElements.forEach(function(el, index) {
+        el.close = function() {
+          el.setAttribute('closed', '');
+        };
+        el.resetState = function() {
+          el.removeAttribute('closed');
+        };
+        if (index > 4) {
+          el.setAttribute('transition', 'from-right');
+        } else {
+          el.setAttribute('transition', 'from-bottom');
+        }
+      })
 
+      // HELPER FUNCTIONS
+      function populateStack() {
+        listOfElements.forEach(function(el) {
+          FS.dialog.service.addDialogToStack(el);
+        })
+      };
+      function emptyStack() {
+        listOfElements.forEach(function(el) {
+          FS.dialog.service.removeDialogFromStack(el);
+        })
+      };
+      function resetDialogClosedState() {
+        listOfElements.forEach(function(el) {
+          el.resetState();
+        })
+      }
+
+      describe('FS.dialog.service', function() {
+        describe('addDialogToStack', function() {
+          it('add the dialog to the stack', function() {
+            FS.dialog.service.addDialogToStack(listOfElements[0]);
+            expect(FS.dialog.service.getStack()[0]).to.deep.equal(listOfElements[0])
+          })
+
+          it('should not put duplicates in the stack', function() {
+            FS.dialog.service.addDialogToStack(listOfElements[0]);
+            expect(FS.dialog.service.getStack().length).to.equal(1)
+          })
+        })
+
+        describe('removeDialogFromStack', function() {
+          it('should remove the dialog from the stack', function() {
+            FS.dialog.service.addDialogToStack(listOfElements[1]);
+            FS.dialog.service.removeDialogFromStack(listOfElements[0])
+            expect(FS.dialog.service.getStack().length).to.equal(1)
+          })
+        })
+
+        describe('dialogIsOnTop', function() {
+          it('should return true if the dialog is on top', function() {
+            populateStack();
+            expect(FS.dialog.service.dialogIsOnTop(listOfElements[9])).to.be.true
+          })
+
+          it('should return false if the dialog is not on top', function() {
+            populateStack();
+            expect(FS.dialog.service.dialogIsOnTop(listOfElements[5])).to.be.false
+          })
+        })
+
+        describe('closeAllDialogs', function() {
+          it('should call the close function for all dialogs in the stack', function() {
+            populateStack();
+            FS.dialog.service.closeAllDialogs();
+            expect(listOfElements[0].hasAttribute('closed')).to.be.true;
+            expect(listOfElements[1].hasAttribute('closed')).to.be.true;
+            expect(listOfElements[2].hasAttribute('closed')).to.be.true;
+            expect(listOfElements[3].hasAttribute('closed')).to.be.true;
+            expect(listOfElements[4].hasAttribute('closed')).to.be.true;
+            expect(listOfElements[5].hasAttribute('closed')).to.be.true;
+            expect(listOfElements[6].hasAttribute('closed')).to.be.true;
+            expect(listOfElements[7].hasAttribute('closed')).to.be.true;
+            expect(listOfElements[8].hasAttribute('closed')).to.be.true;
+            expect(listOfElements[9].hasAttribute('closed')).to.be.true;
+          })
+        })
+
+        describe('closeDialogAndAllChildren', function() {
+
+          it('should set and then restore the transitions', function(done) {
+            populateStack();
+            FS.dialog.service.closeDialogAndAllChildren(listOfElements[2])
+            expect(listOfElements[9].getAttribute('transition')).to.equal('from-bottom');
+            setTimeout(function() {
+              expect(listOfElements[9].getAttribute('transition')).to.equal('from-right');
+              done()
+            }, 350)
+          })
+
+          it('should not close parent dialogs', function() {
+            resetDialogClosedState();
+            populateStack();
+            FS.dialog.service.closeDialogAndAllChildren(listOfElements[5]);
+            expect(listOfElements[4].hasAttribute('closed')).to.be.false;
+          })
+
+          it('should close all children dialogs', function() {
+            resetDialogClosedState();
+            populateStack();
+            FS.dialog.service.closeDialogAndAllChildren(listOfElements[5]);
+            expect(listOfElements[5].hasAttribute('closed')).to.be.true;
+            expect(listOfElements[6].getAttribute('transition')).to.equal('from-right');
+          })
+
+        })
+      });
+
+      describe('FS.dialog.register', function() {
+      });
+    </script>
   </body>
 </html>
