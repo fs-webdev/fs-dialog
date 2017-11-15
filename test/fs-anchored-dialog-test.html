@@ -148,13 +148,13 @@
           })
 
           describe('when the positionObj has coordinates', function() {
-            it('should create a coordinate elment', function() {
+            it('should create a coordinate element', function() {
               el.coordinateElement = undefined;
               el._openAnchoredFunction({attachToCoordinates: {x: 0, y: 0}})
               expect(el.coordinateElement).to.be.ok;
             })
 
-            it('should not create a coordinate elment if one exists', function() {
+            it('should not create a coordinate element if one exists', function() {
               var spanEl = document.createElement('span');
               document.body.appendChild(spanEl);
               el.coordinateElement = spanEl
@@ -162,7 +162,7 @@
               expect(el.coordinateElement).to.equal(spanEl);
             })
 
-            it('should should position the coordinate elment and set it as the attachToElement', function() {
+            it('should position the coordinate element and set it as the attachToElement', function() {
               el._openAnchoredFunction({attachToCoordinates: {x: 17, y: 250}})
               expect(el.coordinateElement.style.position).to.equal('absolute');
               expect(el.coordinateElement.style.left).to.equal('17px');
