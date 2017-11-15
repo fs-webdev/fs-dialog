@@ -17,9 +17,9 @@
   <body>
 
     <!-- Use the document as a place to set up your fixtures. -->
-    <test-fixture id="fs-dialog-fixture">
+    <test-fixture id="fs-modal-dialog-fixture">
       <template>
-        <fs-dialog>
+        <fs-modal-dialog>
           <header>
             <h4>Modal</h4>
           </header>
@@ -30,93 +30,209 @@
             <button class="fs-button fs-button--recommended" data-dialog-confirm>Done</button>
             <button class="fs-button" data-dialog-dismiss>Cancel</button>
           </footer>
-        </fs-dialog>
+        </fs-modal-dialog>
+      </template>
+    </test-fixture>
+    <test-fixture id="fs-anchored-dialog-fixture">
+      <template>
+        <fs-anchored-dialog>
+          <header>
+            <h4>anchored</h4>
+          </header>
+          <div class="fs-dialog__body">
+            <p>This is a anchored dialog. It really stands out from the content and forces the user to perform an action before they can continue.</p>
+          </div>
+          <footer>
+            <button class="fs-button fs-button--recommended" data-dialog-confirm>Done</button>
+            <button class="fs-button" data-dialog-dismiss>Cancel</button>
+          </footer>
+        </fs-anchored-dialog>
+      </template>
+    </test-fixture>
+    <test-fixture id="fs-modeless-dialog-fixture">
+      <template>
+        <fs-modeless-dialog>
+          <header>
+            <h4>modeless</h4>
+          </header>
+          <div class="fs-dialog__body">
+            <p>This is a modeless dialog. It really stands out from the content and forces the user to perform an action before they can continue.</p>
+          </div>
+          <footer>
+            <button class="fs-button fs-button--recommended" data-dialog-confirm>Done</button>
+            <button class="fs-button" data-dialog-dismiss>Cancel</button>
+          </footer>
+        </fs-modeless-dialog>
       </template>
     </test-fixture>
 
-<!-- TODO: ADD THE OTHER DIALOG MODES FOR TESTING -->
-
     <script>
-    function simulateEvent(type, config) {
-      var evt;
 
-      try {
-        evt = new Event(type);
-      } catch(e) {
-        evt = document.createEvent('Event');
-        evt.initEvent(type, true, false);
-      }
+      document.addEventListener('WebComponentsReady', function(){
 
-      var config = config || {};
-      for (var prop in config) {
-        evt[prop] = config[prop];
-      }
+        describe('fs-modal-dialog', function() {
+          var el;
 
-      return evt;
-    }
+          beforeEach(function() {
+            el = fixture('fs-modal-dialog-fixture');
+          });
 
-    describe('fs-dialog', function() {
-      var el, closeEl, bodyEl, headerEl, footerEl, maskEl;
+          afterEach(function() {
+            el.close();
+            el.remove();
+          });
 
-      function updateSelectors() {
-        closeEl = el.querySelector('.fs-dialog__close');
-        bodyEl = el.querySelector('.fs-dialog__body');
-        headerEl = el.querySelector('header');
-        footerEl = el.querySelector('footer');
-        maskEl = el.parentNode.querySelector('.fs-dialog__mask');
-      }
+          describe('a11y', function() {
 
-      beforeEach(function() {
-        el = fixture('fs-dialog-fixture');
-        updateSelectors();
-      });
+            it('should pass accessibility guidelines', function(done) {
+              el.open();
 
-      afterEach(function() {
-        el.close();
-        el.remove();
-      });
+              axe.run(function (err, results) {
+                if (err) return done(err);
 
-      describe('a11y', function() {
+                if (results.violations.length || results.incomplete.length) {
+                  var errMsg = '';
 
-        it('should pass accessibility guidelines', function(done) {
-          el.open();
+                  results.violations.forEach(function(violation) {
+                    errMsg += `\n\n${violation.help}:`;
 
-          axe.run(function (err, results) {
-            if (err) return done(err);
+                    violation.nodes.forEach(function(node, index) {
+                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    });
+                  });
 
-            if (results.violations.length || results.incomplete.length) {
-              var errMsg = '';
+                  results.incomplete.forEach(function(incomplete) {
+                    errMsg += `\n\n${incomplete.help}:`;
 
-              results.violations.forEach(function(violation) {
-                errMsg += `\n\n${violation.help}:`;
+                    incomplete.nodes.forEach(function(node, index) {
+                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    });
+                  });
 
-                violation.nodes.forEach(function(node, index) {
-                  errMsg += `\n\t${index+1}: ${node.html}`;
-                });
+                  var error = new Error(errMsg+'\n');
+                  error.stack = null;
+
+                  return done(error)
+                }
+
+                done();
               });
 
-              results.incomplete.forEach(function(incomplete) {
-                errMsg += `\n\n${incomplete.help}:`;
+            });
 
-                incomplete.nodes.forEach(function(node, index) {
-                  errMsg += `\n\t${index+1}: ${node.html}`;
-                });
+          });
+
+        });
+
+        describe('fs-anchored-dialog', function() {
+          var el;
+
+          beforeEach(function() {
+            el = fixture('fs-anchored-dialog-fixture');
+          });
+
+          afterEach(function() {
+            el.close();
+            el.remove();
+          });
+
+          describe('a11y', function() {
+
+            it('should pass accessibility guidelines', function(done) {
+              el.open();
+
+              axe.run(function (err, results) {
+                if (err) return done(err);
+
+                if (results.violations.length || results.incomplete.length) {
+                  var errMsg = '';
+
+                  results.violations.forEach(function(violation) {
+                    errMsg += `\n\n${violation.help}:`;
+
+                    violation.nodes.forEach(function(node, index) {
+                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    });
+                  });
+
+                  results.incomplete.forEach(function(incomplete) {
+                    errMsg += `\n\n${incomplete.help}:`;
+
+                    incomplete.nodes.forEach(function(node, index) {
+                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    });
+                  });
+
+                  var error = new Error(errMsg+'\n');
+                  error.stack = null;
+
+                  return done(error)
+                }
+
+                done();
               });
 
-              var error = new Error(errMsg+'\n');
-              error.stack = null;
+            });
 
-              return done(error)
-            }
+          });
 
-            done();
+        });
+
+        describe('fs-modeless-dialog', function() {
+          var el;
+
+          beforeEach(function() {
+            el = fixture('fs-modeless-dialog-fixture');
+          });
+
+          afterEach(function() {
+            el.close();
+            el.remove();
+          });
+
+          describe('a11y', function() {
+
+            it('should pass accessibility guidelines', function(done) {
+              el.open();
+
+              axe.run(function (err, results) {
+                if (err) return done(err);
+
+                if (results.violations.length || results.incomplete.length) {
+                  var errMsg = '';
+
+                  results.violations.forEach(function(violation) {
+                    errMsg += `\n\n${violation.help}:`;
+
+                    violation.nodes.forEach(function(node, index) {
+                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    });
+                  });
+
+                  results.incomplete.forEach(function(incomplete) {
+                    errMsg += `\n\n${incomplete.help}:`;
+
+                    incomplete.nodes.forEach(function(node, index) {
+                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    });
+                  });
+
+                  var error = new Error(errMsg+'\n');
+                  error.stack = null;
+
+                  return done(error)
+                }
+
+                done();
+              });
+
+            });
+
           });
 
         });
 
       });
-
-    });
     </script>
   </body>
 </html>
