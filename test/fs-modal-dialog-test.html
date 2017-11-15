@@ -15,6 +15,105 @@
     <link rel="import" href="../fs-dialog-all.html">
   </head>
   <body>
+    <button id="open-modal-button"></button>
+    <test-fixture id="fs-modal-dialog-fixture">
+      <template>
+        <fs-modal-dialog>
+          <header>
+            Header Text
+          </header>
+          <div class="fs-dialog__body">
+            <p>
+              And, now Your Highness, we will discuss the location of your hidden Rebel base.
+              <br>
+              <br>
+              Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.
+              <br>
+              <br>
+              Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?
+              <br>
+              <br>
+              Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.
+              <br>
+            </p>
+          </div>
+          <footer>
+            <button class="fs-button" data-dialog-dismiss>
+              Done
+            </button>
+          </footer>
+        </fs-modal-dialog>
+      </template>
+    </test-fixture>
+    <script>
+      document.addEventListener('WebComponentsReady', function(){
+        var modalFixture;
 
+        describe('<fs-modal-dialog>', function(){
+          beforeEach(function() {
+            modalFixture = fixture('fs-modal-dialog-fixture');
+          });
+          afterEach(function() {
+            modalFixture.close();
+          });
+
+          describe('setup', function(){
+            it('should have a previous sibling element with a class of fs-dialog__mask', function(){
+              expect(modalFixture.previousSibling.classList.contains('fs-dialog__mask'), "mask was not the previous sibling element of the dialog").to.be.true;
+            });
+            it('should have a role of main on the body element', function(){
+              var bodyEl = modalFixture.querySelector('.fs-dialog__body');
+              expect(bodyEl.hasAttribute('role') && bodyEl.attributes.role.value === 'main', "body did not have a 'main' role").to.be.true;
+            });
+            it('should have tabindex of -1', function(){
+              expect(modalFixture.hasAttribute('tabindex') && modalFixture.attributes.tabindex.value === '-1', "did not have tabindex of -1").to.be.true;
+            });
+            it('should not have a data-no-inert attribute', function(){
+              expect(modalFixture.hasAttribute('data-no-inert'), "had a data-no-inert attribute").to.be.false;
+            });
+          });
+
+          describe('after opening', function(){
+            it('mask should not have a no-transition attribute', function(){
+              modalFixture.previousSibling.setAttribute('no-transition', 'true');
+              modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
+              expect(modalFixture.previousSibling.hasAttribute('no-transition'), "had a no-transition attribute").to.be.false;
+            });
+            it('mask should have an opened attribute', function(){
+              modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
+              expect(modalFixture.previousSibling.hasAttribute('opened'), "mask did not have opened attribute").to.be.true;
+            });
+            describe('a11y', function() {
+              it('parent element should not have inert property', function() {
+                modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
+                expect(modalFixture.parentNode.inert, "had aria-hidden attribute").to.be.falsy;
+              });
+              it('other elements whose ancestor is not the dialog parent or does not have data-no-inert attribute should have inert property', function() {
+                modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
+                expect(document.querySelector('#open-modal-button').inert, "did not have inert property").to.be.true;
+              });
+            });
+          });
+
+          describe('after closing', function() {
+            it('mask should not have an opened attribute', function(){
+              modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
+              modalFixture.close();
+              expect(modalFixture.previousSibling.hasAttribute('opened'), "had a no-transition attribute").to.be.false;
+            });
+            describe('a11y', function() {
+              it('other elements whose ancestor is not the dialog parent should not have inert property', function(done) {
+                modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
+                modalFixture.close();
+                setTimeout(function() {
+                  expect(document.querySelector('#open-modal-button').inert, "had inert property").to.be.false;
+                  done();
+                }, 110);
+              });
+            });
+          });
+        });
+      });
+    </script>
   </body>
 </html>
