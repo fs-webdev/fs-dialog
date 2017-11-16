@@ -253,10 +253,12 @@
               attachToElement.style.top = '200px';
               positionObj = {attachToElement: attachToElement}
               fsRectStub = sinon.spy(FS.dialog.service.positioningObj, 'fsRect')
+              fsGlobalToLocalStub = sinon.stub(FS.dialog.service.positioningObj, 'fsGlobalToLocal')
             })
 
             afterEach(function() {
               fsRectStub.restore();
+              fsGlobalToLocalStub.restore();
             });
 
             it('should set the global dialog left and top based on the attach direction and alignment', function() {
