@@ -65,8 +65,8 @@
             beforeEach(function() {
               el.open();
               positionDialogWithinDomStub = sinon.stub(el, '_positionDialogWithinDom');
-              getPointerlessDialogRectStub = sinon.spy(el, '_getPointerlessDialogRect');
-              getRectsWithForcedDirectionStub = sinon.spy(el, '_getRectsWithForcedDirection');
+              getPointerlessDialogRectStub = sinon.stub(el, '_getPointerlessDialogRect');
+              getRectsWithForcedDirectionStub = sinon.stub(el, '_getRectsWithForcedDirection', function() { return {}; });
             });
 
             afterEach(function() {
@@ -106,7 +106,7 @@
 
             beforeEach(function() {
               positionDialogWithinDomStub = sinon.stub(el, '_positionDialogWithinDom');
-              getPointerlessDialogRectStub = sinon.spy(el, '_getPointerlessDialogRect');
+              getPointerlessDialogRectStub = sinon.stub(el, '_getPointerlessDialogRect');
               getRectsWithForcedDirectionStub = sinon.stub(el, '_getRectsWithForcedDirection', function(el1, el2, el3, dir) {
                 return {
                   dialogRect: dir,
