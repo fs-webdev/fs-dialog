@@ -161,8 +161,7 @@ fs-modal-dialog:not([no-transition]) {
       this._a11yClose = a11yClose.bind(this);
 
       // use the attachedCallback for the base dialog and pass in our open and close functions
-      super.attachedCallback(openModalFunction, closeModalFunction)
-
+      super.attachedCallback(openModalFunction, closeModalFunction);
 
       // each modal dialog will get its own mask so when dialogs stack we can
       // know exactly which one to close

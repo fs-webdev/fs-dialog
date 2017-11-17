@@ -16,5 +16,353 @@
   </head>
   <body>
 
+ <!-- Use the document as a place to set up your fixtures. -->
+    <test-fixture id="fs-anchored-dialog-fixture">
+      <template>
+        <fs-anchored-dialog>
+          <header>
+            <h4>Anchored Dialog</h4>
+          </header>
+          <div class="fs-dialog__body">
+            <p>This is an anchored dialog - it is very configurable.</p>
+          </div>
+          <footer>
+            <button class="fs-button fs-button--recommended" data-dialog-confirm>Done</button>
+            <button class="fs-button" data-dialog-dismiss>Cancel</button>
+          </footer>
+        </fs-anchored-dialog>
+      </template>
+    </test-fixture>
+
+    <script>
+      document.addEventListener('WebComponentsReady', function(){
+        describe('fs-anchored-dialog', function() {
+          var el, closeEl, bodyEl, headerEl, footerEl, pointerEl;
+
+          function updateSelectors() {
+            closeEl = el.querySelector('.fs-dialog__close');
+            bodyEl = el.querySelector('.fs-dialog__body');
+            headerEl = el.querySelector('header');
+            footerEl = el.querySelector('footer');
+            pointerEl = el.querySelector('.fs-dialog-pointer');
+          }
+
+          beforeEach(function() {
+            el = fixture('fs-anchored-dialog-fixture');
+            updateSelectors();
+          });
+
+          // afterEach(function() {
+          //   el.close();
+          //   el.remove();
+          // });
+
+          describe('resizeHandler', function() {
+            var positionDialogWithinDomStub;
+            var getPointerlessDialogRectStub;
+            var getRectsWithForcedDirectionStub;
+
+            beforeEach(function() {
+              el.open();
+              positionDialogWithinDomStub = sinon.stub(el, '_positionDialogWithinDom');
+              getPointerlessDialogRectStub = sinon.spy(el, '_getPointerlessDialogRect');
+              getRectsWithForcedDirectionStub = sinon.spy(el, '_getRectsWithForcedDirection');
+            });
+
+            afterEach(function() {
+              positionDialogWithinDomStub.restore();
+              getPointerlessDialogRectStub.restore();
+              getRectsWithForcedDirectionStub.restore();
+            });
+
+
+            it('should call the correct functions', function(done) {
+              el._resizeHandler();
+              setTimeout(function(){
+                expect(positionDialogWithinDomStub.callCount).to.equal(1);
+                expect(getRectsWithForcedDirectionStub.callCount).to.equal(1);
+                expect(getPointerlessDialogRectStub.callCount).to.equal(0);
+                done()
+              }, 15)
+            })
+
+            it('should call the correct functions with no-pointer', function(done) {
+              el.setAttribute('no-pointer', '');
+              el._resizeHandler();
+              setTimeout(function(){
+                expect(positionDialogWithinDomStub.callCount).to.equal(1);
+                expect(getRectsWithForcedDirectionStub.callCount).to.equal(0);
+                expect(getPointerlessDialogRectStub.callCount).to.equal(1);
+                done()
+              }, 15)
+            })
+          });
+
+          describe('openAnchoredFunction', function() {
+            var positionDialogWithinDomStub;
+            var getPointerlessDialogRectStub;
+            var getRectsWithForcedDirectionStub;
+            var calculatePercentageVisibleStub
+
+            beforeEach(function() {
+              positionDialogWithinDomStub = sinon.stub(el, '_positionDialogWithinDom');
+              getPointerlessDialogRectStub = sinon.spy(el, '_getPointerlessDialogRect');
+              getRectsWithForcedDirectionStub = sinon.stub(el, '_getRectsWithForcedDirection', function(el1, el2, el3, dir) {
+                return {
+                  dialogRect: dir,
+                  pointerRect: dir,
+                };
+              });
+              calculatePercentageVisibleStub = sinon.stub(FS.dialog.service.positioningObj, 'fsCalculatePercentageVisible', function(dialogRect, containtingRect) {
+                switch(dialogRect) {
+                  case 'left':
+                    return 1;
+                    break;
+                  case 'right':
+                    return 2;
+                    break;
+                  case 'up':
+                    return 2;
+                    break;
+                  case 'down':
+                    return 2;
+                    break;
+                }
+              });
+            });
+
+            afterEach(function() {
+              positionDialogWithinDomStub.restore();
+              getPointerlessDialogRectStub.restore();
+              getRectsWithForcedDirectionStub.restore();
+              calculatePercentageVisibleStub.restore();
+            });
+
+            it('should add dismiss-on-blur', function() {
+              el._openAnchoredFunction();
+              expect(el.hasAttribute('dismiss-on-blur')).to.be.true;
+            })
+
+            it('should remove dismiss-on-blur if the persistent attribute is set', function() {
+              el.setAttribute('persistent', '');
+              el._openAnchoredFunction();
+              expect(el.hasAttribute('dismiss-on-blur')).to.be.false;
+            })
+
+            describe('when the positionObj has coordinates', function() {
+              it('should create a coordinate element', function() {
+                el.coordinateElement = undefined;
+                el._openAnchoredFunction({attachToCoordinates: {x: 0, y: 0}})
+                expect(el.coordinateElement).to.be.ok;
+              })
+
+              it('should not create a coordinate element if one exists', function() {
+                var spanEl = document.createElement('span');
+                document.body.appendChild(spanEl);
+                el.coordinateElement = spanEl
+                el._openAnchoredFunction({attachToCoordinates: {x: 0, y: 0}})
+                expect(el.coordinateElement).to.equal(spanEl);
+              })
+
+              it('should position the coordinate element and set it as the attachToElement', function() {
+                el._openAnchoredFunction({attachToCoordinates: {x: 17, y: 250}})
+                expect(el.coordinateElement.style.position).to.equal('absolute');
+                expect(el.coordinateElement.style.left).to.equal('17px');
+                expect(el.coordinateElement.style.top).to.equal('250px');
+                expect(el.attachToElement).to.equal(el.coordinateElement);
+              })
+            })
+
+            it('should set this.attachToElement to the positionObj attachToElement', function() {
+              var spanEl = document.createElement('span');
+              el._openAnchoredFunction({attachToElement: spanEl});
+              expect(el.attachToElement).to.equal(spanEl);
+            })
+
+            it('should reset the positioning for the pointer element and the dialog element', function() {
+              var spanEl = document.createElement('span');
+              el._openAnchoredFunction({attachToElement: spanEl});
+              expect(pointerEl.style.top).to.equal('');
+              expect(pointerEl.style.left).to.equal('');
+              expect(el.style.top).to.equal('');
+              expect(el.style.left).to.equal('');
+            })
+
+            describe('with no-pointer', function() {
+              it('should call the correct functions', function() {
+                el.setAttribute('no-pointer', '');
+                el._openAnchoredFunction();
+                expect(positionDialogWithinDomStub.callCount).to.equal(1)
+                expect(getPointerlessDialogRectStub.callCount).to.equal(1)
+                expect(getRectsWithForcedDirectionStub.callCount).to.equal(0)
+              })
+            })
+
+            describe('with forced pointer positioning', function() {
+              it('should call the correct functions', function() {
+                el.setAttribute('forced-pointer-direction', 'up');
+                el._openAnchoredFunction();
+                expect(positionDialogWithinDomStub.callCount).to.equal(1)
+                expect(getPointerlessDialogRectStub.callCount).to.equal(0)
+                expect(getRectsWithForcedDirectionStub.callCount).to.equal(1)
+              })
+            })
+
+            describe('with auto pointer positioning', function() {
+              it('should call getRectsWithForcedDirection for each direction', function() {
+                el._openAnchoredFunction();
+                expect(getRectsWithForcedDirectionStub.callCount).to.equal(4)
+              })
+
+              it('should call calculatePercentageVisible for each direction', function() {
+                el._openAnchoredFunction();
+                expect(calculatePercentageVisibleStub.callCount).to.equal(4)
+              })
+
+              it('should use the best direction for fitting on the screen', function() {
+                el._openAnchoredFunction();
+                expect(positionDialogWithinDomStub.calledWithExactly(el, pointerEl, 'right', 'right', 'right')).to.be.true;
+              })
+
+              it('should take into account the preferred order when caluclating the best direction for fitting on the screen', function() {
+                el.setAttribute('preferred-pointer-direction', 'left down up right');
+                el._openAnchoredFunction();
+                expect(positionDialogWithinDomStub.calledWithExactly(el, pointerEl, 'down', 'down', 'down')).to.be.true;
+              })
+
+              it('should call positionDialogWithinDom', function() {
+                el._openAnchoredFunction();
+                expect(positionDialogWithinDomStub.callCount).to.equal(1)
+              })
+            })
+          });
+
+          describe('getPointerlessDialogRect', function() {
+            var attachToElement;
+            var positionObj;
+            var fsRectStub;
+
+            beforeEach(function() {
+              attachToElement = document.createElement('div');
+              document.body.appendChild(attachToElement);
+              attachToElement.style.content = '';
+              attachToElement.style.position = 'absolute';
+              attachToElement.style.height = '20px';
+              attachToElement.style.width = '20px';
+              attachToElement.style.left = '200px';
+              attachToElement.style.top = '200px';
+              positionObj = {attachToElement: attachToElement}
+              fsRectStub = sinon.spy(FS.dialog.service.positioningObj, 'fsRect')
+            })
+
+            afterEach(function() {
+              fsRectStub.restore();
+            });
+
+            it('should set the global dialog left and top based on the attach direction and alignment', function() {
+              el.style.width = '100px';
+              el.style.height = '100px';
+
+              el.setAttribute('attach-direction', 'bottom');
+              el.setAttribute('alignment', 'left');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(200, 228, 100, 100)).to.be.true;
+              el.setAttribute('attach-direction', 'bottom');
+              el.setAttribute('alignment', 'center');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(160, 228, 100, 100)).to.be.true;
+              el.setAttribute('attach-direction', 'bottom');
+              el.setAttribute('alignment', 'right');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(120, 228, 100, 100)).to.be.true;
+
+              el.setAttribute('attach-direction', 'top');
+              el.setAttribute('alignment', 'left');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(200, 108, 100, 100)).to.be.true;
+              el.setAttribute('attach-direction', 'top');
+              el.setAttribute('alignment', 'center');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(160, 108, 100, 100)).to.be.true;
+              el.setAttribute('attach-direction', 'top');
+              el.setAttribute('alignment', 'right');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(120, 108, 100, 100)).to.be.true;
+
+              el.setAttribute('attach-direction', 'left');
+              el.setAttribute('alignment', 'top');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(100, 208, 100, 100)).to.be.true;
+              el.setAttribute('attach-direction', 'left');
+              el.setAttribute('alignment', 'center');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(100, 168, 100, 100)).to.be.true;
+              el.setAttribute('attach-direction', 'left');
+              el.setAttribute('alignment', 'bottom');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(100, 128, 100, 100)).to.be.true;
+
+              el.setAttribute('attach-direction', 'right');
+              el.setAttribute('alignment', 'top');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(220, 208, 100, 100)).to.be.true;
+              el.setAttribute('attach-direction', 'right');
+              el.setAttribute('alignment', 'center');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(220, 168, 100, 100)).to.be.true;
+              el.setAttribute('attach-direction', 'right');
+              el.setAttribute('alignment', 'bottom');
+              el._getPointerlessDialogRect(positionObj)
+              expect(fsRectStub.calledWithExactly(220, 128, 100, 100)).to.be.true;
+            })
+          });
+
+          describe('positionDialogWithinDom', function() {
+            it('should set the pointer-direction attribute and position for the dialog and pointer', function() {
+              var dialogRect = {left:50 , top:50};
+              var pointerRect = {left:70 , top:70};
+              var direction = 'up';
+              el._positionDialogWithinDom(el, pointerEl, dialogRect, pointerRect, direction);
+              expect(el.getAttribute('pointer-direction')).to.equal(direction);
+              expect(el.style.left).to.equal('50px');
+              expect(el.style.top).to.equal('50px');
+              expect(pointerEl.style.left).to.equal('20px');
+              expect(pointerEl.style.top).to.equal('');
+
+            })
+
+            it('should set the pointer-direction attribute and position for the dialog and pointer', function() {
+              var dialogRect = {left:50 , top:50};
+              var pointerRect = {left:70 , top:70};
+              var direction = 'right';
+              el._positionDialogWithinDom(el, pointerEl, dialogRect, pointerRect, direction);
+              expect(el.getAttribute('pointer-direction')).to.equal(direction);
+              expect(el.style.left).to.equal('50px');
+              expect(el.style.top).to.equal('50px');
+              expect(pointerEl.style.left).to.equal('');
+              expect(pointerEl.style.top).to.equal('20px');
+            })
+          });
+
+          // describe('getRectsWithForcedDirection', function() {
+          //   // TODO: Maybe figure out how to test this function - not really sure how to do this reliably because it is dependent on the window size.
+          // });
+
+          describe('getNewPointerRect', function() {
+            it('should return the correct rect for up or down direction', function() {
+              var rect = new FS.dialog.service.positioningObj.fsRect(63.69, 10, 22.62, 11.31);
+              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'up')).to.deep.equal(rect);
+              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'down')).to.deep.equal(rect);
+            })
+            it('should return the correct rect for left or right direction', function() {
+              var rect = new FS.dialog.service.positioningObj.fsRect(10, 0, 11.31, 22.62);
+              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'left')).to.deep.equal(rect);
+              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'right')).to.deep.equal(rect);
+            })
+          });
+        });
+      });
+    </script>
+
   </body>
 </html>

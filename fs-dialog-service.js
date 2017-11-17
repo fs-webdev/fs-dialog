@@ -13,8 +13,6 @@
    * @param {string} elementName - The name of the element to register e.g. fs-person-card
    * @returns {undefined} - Returns void.
    */
-
-
   FS.dialog.register = function(elementName) {
     if (bufferElements) {
       buffer.push(elementName);
@@ -60,11 +58,6 @@
     return index === lastIndex;
   };
 
-  // not 100% sure if this is needed
-  FS.dialog.service.isDialogInStack = function(dialogElement) {
-    return dialogStack.indexOf(dialogElement) > -1;
-  };
-
   FS.dialog.service.closeAllDialogs = function() {
     var reverseStack = [].concat(dialogStack.reverse());
     reverseStack.forEach(function(dialog) {
@@ -101,6 +94,4 @@
   };
 
   FS.dialog.service.windowHasFocus = true;
-  // not 100% sure if this is needed
-  FS.dialog.service.mobileBreakpoint = 480;
 })();

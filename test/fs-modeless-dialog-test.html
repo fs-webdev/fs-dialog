@@ -15,6 +15,171 @@
     <link rel="import" href="../fs-dialog-all.html">
   </head>
   <body>
+    <button id="open-modeless-button"></button>
+    <test-fixture id="fs-modeless-dialog-fixture">
+      <template>
+        <fs-modeless-dialog>
+          <header>
+            Header Text
+          </header>
+          <div class="fs-dialog__body">
+            <p>
+              And, now Your Highness, we will discuss the location of your hidden Rebel base.
+              <br>
+              <br>
+              Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.
+              <br>
+              <br>
+              Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?
+              <br>
+              <br>
+              Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.
+              <br>
+            </p>
+          </div>
+          <footer>
+            <button class="fs-button" data-dialog-dismiss>
+              Done
+            </button>
+          </footer>
+        </fs-modeless-dialog>
+      </template>
+    </test-fixture>
+    <test-fixture id="fs-modeless-dialog-no-header-fixture">
+      <template>
+        <fs-modeless-dialog>
+          <div class="fs-dialog__body"></div>
+        </fs-modeless-dialog>
+      </template>
+    </test-fixture>
+    <script>
+      function simulateEvent(type, config) {
+        var evt;
 
+        try {
+          evt = new Event(type);
+        } catch(e) {
+          evt = document.createEvent('Event');
+          evt.initEvent(type, true, false);
+        }
+
+        var config = config || {};
+        for (var prop in config) {
+          evt[prop] = config[prop];
+        }
+
+        return evt;
+      }
+
+      document.addEventListener('WebComponentsReady', function(){
+        var el, headerEl;
+
+        describe('<fs-modeless-dialog>', function() {
+          beforeEach(function() {
+            el = fixture('fs-modeless-dialog-fixture');
+            headerEl = el.querySelector('header');
+          });
+          afterEach(function() {
+            el.close();
+          });
+
+          describe('setup', function(){
+            it('should have a type="modeless" attribute', function() {
+              expect(el.getAttribute('type'), 'does not have type="modeless" attribute').to.equal('modeless');
+            });
+          });
+
+          describe('after opening', function() {
+
+            it('should be centered', function() {
+              el.open({focusBackElement: document.querySelector('#open-modeless-button')});
+              var x = (window.innerWidth / 2) - (el.offsetWidth / 2);
+              var y = (window.innerHeight / 2) - (el.offsetHeight / 2);
+              var transform = 'translateX(' + x + 'px) translateY(' + y + 'px)';
+              expect(el.style.transform, "is not centered").to.equal(transform);
+            });
+
+          });
+
+          describe('drag', function() {
+
+            it('should allow dragging with "mousedown"', function() {
+              el.open();
+
+              var event = simulateEvent('mousedown', {button: 0, clientX: 10, clientY: 10});
+              headerEl.dispatchEvent(event);
+
+              expect(el._drag).to.exist;
+            });
+
+            it('should not drag with anything but the left mouse button', function() {
+              el.open();
+
+              var event = simulateEvent('mousedown', {button: 1, clientX: 10, clientY: 10});
+              headerEl.dispatchEvent(event);
+
+              expect(el._drag).to.not.exist;
+            });
+
+            it('should not allow drag if there is no header', function() {
+              var el = fixture('fs-modeless-dialog-no-header-fixture');
+              el.open();
+
+              var event = simulateEvent('mousedown', {button: 0, clientX: 10, clientY: 10});
+              el.dispatchEvent(event);
+
+              expect(el._drag).to.not.exist;
+            });
+
+            it('should update the transform when dragged', function() {
+              var xPos, yPos;
+              el.open();
+
+              var event = simulateEvent('mousedown', {button: 0, clientX: 10, clientY: 10});
+              headerEl.dispatchEvent(event);
+
+              var event = simulateEvent('mousemove', {button: 0, clientX: 20, clientY: 20});
+              window.dispatchEvent(event);
+
+              expect(el._drag.xPos).to.not.equal(xPos);
+              expect(el._drag.yPos).to.not.equal(yPos);
+            });
+
+            it('should not move the dialog outside the window', function() {
+              el.open();
+
+              var event = simulateEvent('mousedown', {button: 0, clientX: 0, clientY: 0});
+              headerEl.dispatchEvent(event);
+
+              var event = simulateEvent('mousemove', {button: 0, clientX: -100000, clientY: -10000});
+              window.dispatchEvent(event);
+
+              expect(el._drag.xPos).to.equal(0);
+              expect(el._drag.yPos).to.equal(0);
+
+              var event = simulateEvent('mousemove', {button: 0, clientX: 10000, clientY: 1000});
+              window.dispatchEvent(event);
+
+              expect(el._drag.xPos).to.equal(el._drag.maxX);
+              expect(el._drag.yPos).to.equal(el._drag.maxY);
+            });
+
+            it('should stop drag on mouseup', function() {
+              el.open();
+
+              var event = simulateEvent('mousedown', {button: 0, clientX: 10, clientY: 10});
+              headerEl.dispatchEvent(event);
+
+              var event = simulateEvent('mouseup', {button: 0, clientX: 20, clientY: 20});
+              window.dispatchEvent(event);
+
+              expect(el._drag).to.not.exist;
+            });
+
+          });
+
+        });
+      });
+    </script>
   </body>
 </html>
