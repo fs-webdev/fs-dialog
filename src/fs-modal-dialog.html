@@ -193,9 +193,13 @@ fs-modal-dialog:not([no-transition]) {
         }
         maskEl.setAttribute('opened', '');
         maskEl.style.zIndex = this.style.zIndex;
+        window.addEventListener('fs-dialog-open', dialogOpenEH);
+        window.addEventListener('fs-dialog-close', dialogCloseEH);
       }
 
       function closeModalFunction() {
+        window.removeEventListener('fs-dialog-open', dialogOpenEH);
+        window.removeEventListener('fs-dialog-close', dialogCloseEH);
         this._a11yClose();
         maskEl.removeAttribute('opened');
         maskEl.removeEventListener('keydown', keydownHandler);
@@ -259,6 +263,40 @@ fs-modal-dialog:not([no-transition]) {
       this._uninertedElements = null;
     }.bind(this), 100);
   }
+
+  function uninertChildDialog (childDialog) {
+    childDialog.inert = false;
+    childDialog._uninertedElements = [childDialog];
+    // we have the empty inerted elements so that we can reuse a11y close
+    // to re-inert the necessary elements after the childDialog gets closed again
+    childDialog._inertedElements = [];
+    el = childDialog;
+    do {
+      // an element that is a child of a shadowroot will have a parentNode but not
+      // a parentElement. a shadowroot element has neither but instead has a host
+      var parent = el.parentNode || el.host;
+
+      // if the dialogs subtree has already been inerted, then we need to uninert it
+      if (parent.inert) {
+        parent.inert = false;
+        childDialog._uninertedElements.push(parent);
+      }
+
+      el = parent;
+    } while (el !== document.body);
+  }
+
+  function dialogOpenEH (event) {
+    if (event && event.target && (event.target.tagName === 'FS-ANCHORED-DIALOG' || event.target.tagName === 'FS-MODELESS-DIALOG')) {
+      uninertChildDialog(event.target);
+    }
+  };
+
+  function dialogCloseEH (event) {
+    if (event && event.target && (event.target.tagName === 'FS-ANCHORED-DIALOG' || event.target.tagName === 'FS-MODELESS-DIALOG')) {
+      a11yClose.bind(event.target)();
+    }
+  };
 
   if('customElements' in window){
     customElements.define('fs-modal-dialog', FSModalDialog);
