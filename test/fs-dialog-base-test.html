@@ -23,8 +23,7 @@
       describe('fsDialogBase', function() {
         var fsDialogBase;
         if('customElements' in window){
-          customElements.define('fs-dialog-base', FS.dialog.baseDialogComponent);
-          fsDialogBase = document.createElement('fs-dialog-base');
+          fsDialogBase = FS.dialog.baseDialogComponent;
         } else {
           fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
         }
