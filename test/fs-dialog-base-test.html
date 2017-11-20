@@ -19,8 +19,15 @@
   </head>
   <body>
     <script>
+    document.addEventListener('WebComponentsReady', function(){
       describe('fsDialogBase', function() {
-        var fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
+        var fsDialogBase;
+        if('customElements' in window){
+          customElements.define('fs-dialog-base', FS.dialog.baseDialogComponent);
+          fsDialogBase = document.createelement('fs-dialog-base');
+        } else {
+          fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
+        }
 
         describe('functions', function() {
           it('createdCallback should add the keydownHandler', function() {
@@ -93,6 +100,7 @@
           });
         });
       });
+    });
     </script>
 
 
