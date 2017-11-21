@@ -2,7 +2,6 @@
 <link rel="import" href="../a11y-enhancer/dialog.html">
 <link rel="import" href="../inert/inert.html">
 
-<script src="../../webcomponentsjs/custom-elements-es5-adapter.js"></script>
 <script src="../fs-dialog/fs-dialog-service.js"></script>
 <script src="../fs-dialog/get-root-node-polyfill.js"></script>
 <style data-fs-dialog>
@@ -531,13 +530,13 @@
         if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
           // this has a settimeout because of modal dialog's uninert needing to run before we can do the focusback
           setTimeout(function() {
-            this.focusBackElement.focus();
+            this.focusBackElement && this.focusBackElement.focus();
             this.cancelFocusback = false;
             this.focusBackElement = null;
           }.bind(this), 100);
         } else {
           if (!this.cancelFocusback) {
-            this.focusBackElement.focus();
+            this.focusBackElement && this.focusBackElement.focus();
           }
           this.cancelFocusback = false;
           this.focusBackElement = null;

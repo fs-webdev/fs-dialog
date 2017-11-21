@@ -12,13 +12,13 @@
     <script>
       // Load and run all tests (.html, .js):
       WCT.loadSuites([
-        'fs-anchored-dialog-test.html', // This seems to have one less test running in safari vs other browsers but is passing
-        // 'fs-dialog-a11y-test.html',
-        'fs-dialog-base-test.html', //This seems to have 8 less tests running in safari vs other browsers, but is passing
-        'fs-dialog-positioning-object-test.html',
-        'fs-dialog-service-test.html',
-        // 'fs-modal-dialog-test.html', // This has 9 tests timing out in safari
-        'fs-modeless-dialog-test.html' // This has one test timing out in safari
+        'fs-anchored-dialog-test.html', // PASSING, BUT NOT COMMUNICATING SUCCESS AFTER TESTS PASS
+        // 'fs-dialog-a11y-test.html', // FAILING BUT WORKING
+        'fs-dialog-base-test.html', // WORKING
+        'fs-dialog-positioning-object-test.html', // WORKING
+        'fs-dialog-service-test.html', // WORKING
+        'fs-modal-dialog-test.html', // PASSING, BUT NOT COMMUNICATING SUCCESS AFTER TESTS PASS
+        'fs-modeless-dialog-test.html' // PASSING, BUT NOT COMMUNICATING SUCCESS AFTER TESTS PASS
       ]);
     </script>
 </body>
