@@ -17,8 +17,6 @@ const uglify = require('gulp-uglify');
 
 var path = require('path');
 
-// gulp.task('build', ['transpileAndMinify']);
-
 gulp.task('watch', function() {
   gulp.watch('src/*', ['build']);
 });
