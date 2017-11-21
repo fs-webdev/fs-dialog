@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../webcomponentsjs/custom-elements-es5-adapter.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
     <script src="../../fs-globals/fs-globals-mock.js"></script>
     <script src="../../axe.min/index.js" ></script>
@@ -19,8 +20,14 @@
   </head>
   <body>
     <script>
+    document.addEventListener('WebComponentsReady', function(){
       describe('fsDialogBase', function() {
-        var fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
+        var fsDialogBase;
+        if('customElements' in window){
+          fsDialogBase = FS.dialog.baseDialogComponent;
+        } else {
+          fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
+        }
 
         describe('functions', function() {
           it('createdCallback should add the keydownHandler', function() {
@@ -93,6 +100,7 @@
           });
         });
       });
+    });
     </script>
 
 

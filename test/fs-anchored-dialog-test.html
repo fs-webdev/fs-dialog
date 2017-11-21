@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../webcomponentsjs/custom-elements-es5-adapter.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
     <script src="../../fs-globals/fs-globals-mock.js"></script>
     <script src="../../axe.min/index.js" ></script>
@@ -65,8 +66,8 @@
             beforeEach(function() {
               el.open();
               positionDialogWithinDomStub = sinon.stub(el, '_positionDialogWithinDom');
-              getPointerlessDialogRectStub = sinon.spy(el, '_getPointerlessDialogRect');
-              getRectsWithForcedDirectionStub = sinon.spy(el, '_getRectsWithForcedDirection');
+              getPointerlessDialogRectStub = sinon.stub(el, '_getPointerlessDialogRect');
+              getRectsWithForcedDirectionStub = sinon.stub(el, '_getRectsWithForcedDirection', function() { return {}; });
             });
 
             afterEach(function() {
@@ -106,7 +107,7 @@
 
             beforeEach(function() {
               positionDialogWithinDomStub = sinon.stub(el, '_positionDialogWithinDom');
-              getPointerlessDialogRectStub = sinon.spy(el, '_getPointerlessDialogRect');
+              getPointerlessDialogRectStub = sinon.stub(el, '_getPointerlessDialogRect');
               getRectsWithForcedDirectionStub = sinon.stub(el, '_getRectsWithForcedDirection', function(el1, el2, el3, dir) {
                 return {
                   dialogRect: dir,
@@ -253,10 +254,12 @@
               attachToElement.style.top = '200px';
               positionObj = {attachToElement: attachToElement}
               fsRectStub = sinon.spy(FS.dialog.service.positioningObj, 'fsRect')
+              fsGlobalToLocalStub = sinon.stub(FS.dialog.service.positioningObj, 'fsGlobalToLocal')
             })
 
             afterEach(function() {
               fsRectStub.restore();
+              fsGlobalToLocalStub.restore();
             });
 
             it('should set the global dialog left and top based on the attach direction and alignment', function() {

@@ -530,13 +530,13 @@
         if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
           // this has a settimeout because of modal dialog's uninert needing to run before we can do the focusback
           setTimeout(function() {
-            this.focusBackElement.focus();
+            this.focusBackElement && this.focusBackElement.focus();
             this.cancelFocusback = false;
             this.focusBackElement = null;
           }.bind(this), 100);
         } else {
           if (!this.cancelFocusback) {
-            this.focusBackElement.focus();
+            this.focusBackElement && this.focusBackElement.focus();
           }
           this.cancelFocusback = false;
           this.focusBackElement = null;

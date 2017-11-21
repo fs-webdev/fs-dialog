@@ -4,7 +4,7 @@
   var buffer = [];
   var bufferElements = true;
 
-  FS = window.FS || {};
+  window.FS = window.FS || {};
   FS.dialog = FS.dialog || {};
   FS.dialog.service = FS.dialog.service || {};
 
