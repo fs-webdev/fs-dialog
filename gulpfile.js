@@ -17,11 +17,24 @@ const uglify = require('gulp-uglify');
 
 var path = require('path');
 
-gulp.task('build', function(done) {
-  let langObj = {};
+gulp.task('build', ['injectLocales', 'moveFiles', 'transpileAndMinify']);
 
+gulp.task('watch', function() {
+  gulp.watch('src/*', ['build']);
+});
+
+gulp.task('default', ['build']);
+
+gulp.task('moveFiles', function(done) {
+  return gulp.src(['./src/*', '!./src/fs-dialog-base.html'])
+    .pipe(gulp.dest('./'))
+});
+
+gulp.task('injectLocales', function(done) {
   glob('locales/*.json', function(err, files) {
     if (err) done(err);
+
+    let langObj = {};
 
     files.forEach(function(file) {
       const filePath = path.basename(file, '.json');
@@ -35,43 +48,48 @@ gulp.task('build', function(done) {
       }
     });
 
-    gulp.src(['./src/*', '!./src/fs-dialog-base.html']).pipe(gulp.dest('./'));
     fs.readFile('./src/fs-dialog-base.html', 'utf-8', function(err, file) {
       if (err) done(err);
 
       file = file.replace('/* LANG CODE */', JSON.stringify(langObj));
 
-      fs.writeFile('./fs-dialog-base.html', file, 'utf-8', transpileAndMinify);
+      fs.writeFile('./fs-dialog-base.html', file, 'utf-8', done);
     });
   });
+});
 
-  function transpileAndMinify () {
-    try {
-      const sourcesHtmlSplitter = new HtmlSplitter();
-      const sourcesStream = project.sources()
-        .pipe(sourcesHtmlSplitter.split()) // split inline JS & CSS out into individual .js & .css files
-        .pipe(gulpif(/\.js$/, babel())) // transpile to es5
-        .pipe(gulpif(/\.js$/, uglify())) // minify
-        .pipe(gulpif(/\.css$/, cssSlam())) // minify css (but it may not actually do anything)
-        .pipe(gulpif(/\.html$/, cssSlam())) // there is a bug in polymer-build that makes it so that css doesn't actually get split out - we can still run the css minifier on the html part of the file though.
-        .pipe(gulpif(/\.html$/, htmlMinifier({
-          collapseBooleanAttributes: true,
-          collapseWhitespace: true,
-          removeComments: true,
-          minifyCss: true
-        }))) // minify html
-        .pipe(sourcesHtmlSplitter.rejoin()) // rejoins those files back into their original location
-        .pipe(gulp.dest('./'));
-      done()
-    } catch (err) {
-      done(err)
-    }
+gulp.task('transpileAndMinify', function(done) {
+  try {
+    const sourcesHtmlSplitter = new HtmlSplitter();
+    const sourcesStream = project.sources()
+      .pipe(sourcesHtmlSplitter.split()) // split inline JS & CSS out into individual .js & .css files
+      .pipe(gulpif(/\.js$/, babel())) // transpile to es5
+      .pipe(gulpif(/\.js$/, uglify())) // minify
+      .pipe(gulpif(/\.css$/, cssSlam())) // minify css (but it may not actually do anything)
+      .pipe(gulpif(/\.html$/, cssSlam())) // there is a bug in polymer-build that makes it so that css doesn't actually get split out - we can still run the css minifier on the html part of the file though.
+      .pipe(gulpif(/\.html$/, htmlMinifier({
+        collapseBooleanAttributes: true,
+        collapseWhitespace: true,
+        removeComments: true,
+        minifyCss: true
+      }))) // minify html
+      .pipe(sourcesHtmlSplitter.rejoin()) // rejoins those files back into their original location
+      .pipe(gulp.dest('./'));
+  } catch (err) {
+    done(err)
   }
-
 });
 
-gulp.task('watch', function() {
-  gulp.watch('src/*', ['build']);
-});
 
-gulp.task('default', ['build']);
+
+
+
+
+
+
+
+
+
+
+
+
