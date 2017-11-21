@@ -20,15 +20,24 @@
   },
   "homepage": "https://github.com/fs-webdev/fs-dialog#readme",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "css-slam": "^2.0.2",
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
-    "pre-commit": "^1.2.2"
+    "gulp-babel": "^7.0.0",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-if": "^2.0.2",
+    "gulp-uglify": "^3.0.0",
+    "polymer-build": "^2.1.1"
   },
   "scripts": {
-    "test": "wct --skip-plugin sauce",
-    "buildDist": "gulp build && git add ."
+    "test": "wct --skip-plugin sauce"
   },
-  "pre-commit": [
-    "buildDist"
-  ]
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
 }
