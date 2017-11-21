@@ -27,20 +27,15 @@
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
-    "gulp-cssmin": "^0.2.0",
     "gulp-html-minifier": "^0.1.8",
+    "gulp-htmlmin": "^3.0.0",
     "gulp-if": "^2.0.2",
     "gulp-uglify": "^3.0.0",
-    "polymer-build": "^2.1.1",
-    "pre-commit": "^1.2.2"
+    "polymer-build": "^2.1.1"
   },
   "scripts": {
-    "test": "wct --skip-plugin sauce",
-    "buildDist": "gulp build && git add ."
+    "test": "wct --skip-plugin sauce"
   },
-  "pre-commit": [
-    "buildDist"
-  ],
   "babel": {
     "presets": [
       "es2015"
