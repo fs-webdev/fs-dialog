@@ -9,7 +9,12 @@ const glob = require('glob');
 const PolymerProject = require('polymer-build').PolymerProject;
 const project = new PolymerProject({
   sources: [
-   './fs*.+(html|js)',
+   './fs-anchored-dialog.html',
+   './fs-dialog-base.html',
+   './fs-dialog-positioning-obj.js',
+   './fs-dialog-service.js',
+   './fs-modal-dialog.html',
+   './fs-modeless-dialog.html',
    './get-root-node-polyfill.js'
   ],
 });
