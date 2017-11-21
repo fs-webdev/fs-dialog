@@ -1,5 +1,10 @@
-const gulp = require('gulp');
+const babel = require('gulp-babel');
+const cssSlam = require('css-slam').gulp;
 const fs = require('fs');
+const gulp = require('gulp');
+const gulpif = require('gulp-if');
+const htmlMinifier = require('gulp-htmlmin');
+const HtmlSplitter = require('polymer-build').HtmlSplitter;
 const glob = require('glob');
 const PolymerProject = require('polymer-build').PolymerProject;
 const project = new PolymerProject({
@@ -8,14 +13,7 @@ const project = new PolymerProject({
    './get-root-node-polyfill.js'
   ],
 });
-const gulpif = require('gulp-if');
 const uglify = require('gulp-uglify');
-const cssSlam = require('css-slam').gulp;
-const htmlMinifier = require('gulp-htmlmin');
-// const htmlMinifier = require('gulp-html-minifier');
-const HtmlSplitter = require('polymer-build').HtmlSplitter;
-const babel = require('gulp-babel');
-
 
 var path = require('path');
 
