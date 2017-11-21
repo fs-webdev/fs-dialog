@@ -82,17 +82,3 @@ gulp.task('build', ['injectLocales'], function(done) {
     done(err)
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
