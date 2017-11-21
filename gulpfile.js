@@ -17,7 +17,7 @@ const uglify = require('gulp-uglify');
 
 var path = require('path');
 
-gulp.task('build', ['injectLocales', 'moveFiles', 'transpileAndMinify']);
+// gulp.task('build', ['transpileAndMinify']);
 
 gulp.task('watch', function() {
   gulp.watch('src/*', ['build']);
@@ -30,7 +30,7 @@ gulp.task('moveFiles', function(done) {
     .pipe(gulp.dest('./'))
 });
 
-gulp.task('injectLocales', function(done) {
+gulp.task('injectLocales', ['moveFiles'], function(done) {
   glob('locales/*.json', function(err, files) {
     if (err) done(err);
 
@@ -58,7 +58,7 @@ gulp.task('injectLocales', function(done) {
   });
 });
 
-gulp.task('transpileAndMinify', function(done) {
+gulp.task('build', ['injectLocales'], function(done) {
   try {
     const sourcesHtmlSplitter = new HtmlSplitter();
     const sourcesStream = project.sources()
