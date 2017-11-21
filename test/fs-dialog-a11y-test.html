@@ -80,7 +80,6 @@
 
           afterEach(function() {
             el.close();
-            el.remove();
           });
 
           describe('a11y', function() {
@@ -88,7 +87,11 @@
             it('should pass accessibility guidelines', function(done) {
               el.open();
 
-              axe.run(function (err, results) {
+              axe.run(el, {
+                'rules': {
+                  'color-contrast': { enabled: false }
+                }
+              }, function (err, results) {
                 if (err) return done(err);
 
                 if (results.violations.length || results.incomplete.length) {
@@ -134,7 +137,6 @@
 
           afterEach(function() {
             el.close();
-            el.remove();
           });
 
           describe('a11y', function() {
@@ -142,7 +144,11 @@
             it('should pass accessibility guidelines', function(done) {
               el.open();
 
-              axe.run(function (err, results) {
+              axe.run(el, {
+                'rules': {
+                  'color-contrast': { enabled: false }
+                }
+              }, function (err, results) {
                 if (err) return done(err);
 
                 if (results.violations.length || results.incomplete.length) {
@@ -188,7 +194,6 @@
 
           afterEach(function() {
             el.close();
-            el.remove();
           });
 
           describe('a11y', function() {
@@ -196,7 +201,11 @@
             it('should pass accessibility guidelines', function(done) {
               el.open();
 
-              axe.run(function (err, results) {
+              axe.run(el, {
+                'rules': {
+                  'color-contrast': { enabled: false }
+                }
+              }, function (err, results) {
                 if (err) return done(err);
 
                 if (results.violations.length || results.incomplete.length) {
