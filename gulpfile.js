@@ -61,7 +61,37 @@ gulp.task('injectLocales', ['moveFiles'], function(done) {
   });
 });
 
-gulp.task('build', ['injectLocales'], function(done) {
+// gulp.task('buildEs6', ['injectLocales'], function(done) {
+//   try {
+//     const sourcesHtmlSplitter = new HtmlSplitter();
+//     const sourcesStreamUncompiled = project.sources()
+//       .pipe(sourcesHtmlSplitter.split()) // split inline JS & CSS out into individual .js & .css files
+//       .pipe(gulpif(/\.css$/, cssSlam())) // minify css (but it may not actually do anything)
+//       .pipe(gulpif(/\.html$/, cssSlam())) // there is a bug in polymer-build that makes it so that css doesn't actually get split out - we can still run the css minifier on the html part of the file though.
+//       .pipe(gulpif(/\.html$/, htmlMinifier({
+//         collapseBooleanAttributes: true,
+//         collapseWhitespace: true,
+//         removeComments: true,
+//         minifyCss: true
+//       }))) // minify html
+//       .pipe(sourcesHtmlSplitter.rejoin()) // rejoins those files back into their original location
+//       .pipe(gulp.dest('./es6'));
+//     done();
+//   } catch (err) {
+//     done(err)
+//   }
+// });
+
+// gulp.task('injectAdapter', ['buildEs6'], function(done) {
+gulp.task('injectAdapter', ['injectLocales'], function(done) {
+  fs.readFile('./fs-dialog-base.html', 'utf-8', function(err, file) {
+    if (err) done(err);
+    file = file.replace('<!-- ADAPTER CODE -->', '<link rel="import" href="../webcomponentsjsv1/custom-elements-es5-adapter.js.html">');
+    fs.writeFile('./fs-dialog-base.html', file, 'utf-8', done);
+  });
+})
+
+gulp.task('build', ['injectAdapter'], function(done) {
   try {
     const sourcesHtmlSplitter = new HtmlSplitter();
     const sourcesStream = project.sources()
@@ -78,6 +108,7 @@ gulp.task('build', ['injectLocales'], function(done) {
       }))) // minify html
       .pipe(sourcesHtmlSplitter.rejoin()) // rejoins those files back into their original location
       .pipe(gulp.dest('./'));
+    done();
   } catch (err) {
     done(err)
   }
