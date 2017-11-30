@@ -86,7 +86,7 @@ gulp.task('injectLocales', ['moveFiles'], function(done) {
 gulp.task('injectAdapter', ['injectLocales'], function(done) {
   fs.readFile('./fs-dialog-base.html', 'utf-8', function(err, file) {
     if (err) done(err);
-    file = file.replace('<!-- ADAPTER CODE -->', '<link rel="import" href="../webcomponentsjsv1/custom-elements-es5-adapter.js.html">');
+    file = file.replace('<!-- ADAPTER CODE -->', '<script src="../webcomponentsjsv1/custom-elements-es5-adapter.js"></script>');
     fs.writeFile('./fs-dialog-base.html', file, 'utf-8', done);
   });
 })
