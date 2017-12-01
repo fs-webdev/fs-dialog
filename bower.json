@@ -1,7 +1,7 @@
 {
   "name": "fs-dialog",
   "description": "An accessible standard dialog for FamilySearch.",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "fs-dialog-all.html",
   "author": {
     "name": "FamilySearch",
@@ -13,7 +13,8 @@
     "fs-globals": "fs-webdev/fs-globals#^2.0.1",
     "a11y-enhancer": "straker/a11y-enhancer",
     "inert": "https://github.com/straker/inert.git#master",
-    "es6-promise": "^4.1.1"
+    "es6-promise": "^4.1.1",
+    "webcomponentsjsv1": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "devDependencies": {
     "axe.min": "https://unpkg.com/axe-core/axe.min.js",

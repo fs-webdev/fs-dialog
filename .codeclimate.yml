@@ -55,6 +55,7 @@ exclude_paths:
 - bower_components/
 - build/
 - dist/
+- es6/
 - "**/*-polyfill.js"
 - node_modules/
 - "**/reports/**/*"

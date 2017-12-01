@@ -6,6 +6,7 @@ const gulpif = require('gulp-if');
 const htmlMinifier = require('gulp-htmlmin');
 const HtmlSplitter = require('polymer-build').HtmlSplitter;
 const glob = require('glob');
+const replace = require('gulp-replace');
 const PolymerProject = require('polymer-build').PolymerProject;
 const project = new PolymerProject({
   sources: [
@@ -61,7 +62,21 @@ gulp.task('injectLocales', ['moveFiles'], function(done) {
   });
 });
 
-gulp.task('build', ['injectLocales'], function(done) {
+gulp.task('buildEs6', ['injectLocales'], function(done) {
+  return gulp.src([
+      './fs-anchored-dialog.html',
+      './fs-dialog-base.html',
+      './fs-dialog-positioning-obj.js',
+      './fs-dialog-service.js',
+      './fs-modal-dialog.html',
+      './fs-modeless-dialog.html',
+      './get-root-node-polyfill.js'
+    ])
+    .pipe(replace('rel="import" href="../', 'rel="import" href="../../'))
+    .pipe(gulp.dest('./es6'))
+});
+
+gulp.task('build', ['buildEs6'], function(done) {
   try {
     const sourcesHtmlSplitter = new HtmlSplitter();
     const sourcesStream = project.sources()
@@ -78,6 +93,7 @@ gulp.task('build', ['injectLocales'], function(done) {
       }))) // minify html
       .pipe(sourcesHtmlSplitter.rejoin()) // rejoins those files back into their original location
       .pipe(gulp.dest('./'));
+    done();
   } catch (err) {
     done(err)
   }
