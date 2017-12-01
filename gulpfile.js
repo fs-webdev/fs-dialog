@@ -74,16 +74,7 @@ gulp.task('buildEs6', ['injectLocales'], function(done) {
     .pipe(gulp.dest('./es6'))
 });
 
-gulp.task('injectAdapter', ['buildEs6'], function(done) {
-// gulp.task('injectAdapter', ['injectLocales'], function(done) {
-  fs.readFile('./fs-dialog-base.html', 'utf-8', function(err, file) {
-    if (err) done(err);
-    file = file.replace('<!-- ADAPTER CODE -->', '<script src="../webcomponentsjsv1/custom-elements-es5-adapter.js"></script>');
-    fs.writeFile('./fs-dialog-base.html', file, 'utf-8', done);
-  });
-})
-
-gulp.task('build', ['injectAdapter'], function(done) {
+gulp.task('build', ['buildEs6'], function(done) {
   try {
     const sourcesHtmlSplitter = new HtmlSplitter();
     const sourcesStream = project.sources()
