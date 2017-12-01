@@ -6,6 +6,7 @@ const gulpif = require('gulp-if');
 const htmlMinifier = require('gulp-htmlmin');
 const HtmlSplitter = require('polymer-build').HtmlSplitter;
 const glob = require('glob');
+const replace = require('gulp-replace');
 const PolymerProject = require('polymer-build').PolymerProject;
 const project = new PolymerProject({
   sources: [
@@ -71,6 +72,7 @@ gulp.task('buildEs6', ['injectLocales'], function(done) {
       './fs-modeless-dialog.html',
       './get-root-node-polyfill.js'
     ])
+    .pipe(replace('rel="import" href="../', 'rel="import" href="../../'))
     .pipe(gulp.dest('./es6'))
 });
 

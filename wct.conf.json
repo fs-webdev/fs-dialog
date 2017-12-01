@@ -54,7 +54,7 @@
     },
     "size-limit": {
       "path": "fs-dialog-all.html",
-      "limit": "15 KB"
+      "limit": "24 KB"
     }
   }
 }

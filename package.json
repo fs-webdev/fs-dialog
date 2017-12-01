@@ -29,6 +29,7 @@
     "gulp-babel": "^7.0.0",
     "gulp-htmlmin": "^3.0.0",
     "gulp-if": "^2.0.2",
+    "gulp-replace": "^0.6.1",
     "gulp-uglify": "^3.0.0",
     "polymer-build": "^2.1.1"
   },
