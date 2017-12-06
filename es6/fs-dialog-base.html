@@ -36,6 +36,13 @@
     width: 100%;
   }
 
+  fs-modeless-dialog:not([opened]),
+  fs-modal-dialog:not([opened]),
+  fs-anchored-dialog:not([opened]),
+  .fs-dialog__mask:not([opened]) {
+    pointer-events: none;
+  }
+
   fs-modeless-dialog:not([no-transition]),
   fs-anchored-dialog:not([no-transition]) {
     transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
