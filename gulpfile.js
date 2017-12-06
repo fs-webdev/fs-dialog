@@ -82,15 +82,15 @@ gulp.task('build', ['buildEs6'], function(done) {
     const sourcesStream = project.sources()
       .pipe(sourcesHtmlSplitter.split()) // split inline JS & CSS out into individual .js & .css files
       .pipe(gulpif(/\.js$/, babel())) // transpile to es5
-      .pipe(gulpif(/\.js$/, uglify())) // minify
-      .pipe(gulpif(/\.css$/, cssSlam())) // minify css (but it may not actually do anything)
-      .pipe(gulpif(/\.html$/, cssSlam())) // there is a bug in polymer-build that makes it so that css doesn't actually get split out - we can still run the css minifier on the html part of the file though.
-      .pipe(gulpif(/\.html$/, htmlMinifier({
-        collapseBooleanAttributes: true,
-        collapseWhitespace: true,
-        removeComments: true,
-        minifyCss: true
-      }))) // minify html
+      // .pipe(gulpif(/\.js$/, uglify())) // minify
+      // .pipe(gulpif(/\.css$/, cssSlam())) // minify css (but it may not actually do anything)
+      // .pipe(gulpif(/\.html$/, cssSlam())) // there is a bug in polymer-build that makes it so that css doesn't actually get split out - we can still run the css minifier on the html part of the file though.
+      // .pipe(gulpif(/\.html$/, htmlMinifier({
+      //   collapseBooleanAttributes: true,
+      //   collapseWhitespace: true,
+      //   removeComments: true,
+      //   minifyCss: true
+      // }))) // minify html
       .pipe(sourcesHtmlSplitter.rejoin()) // rejoins those files back into their original location
       .pipe(gulp.dest('./'));
     done();
