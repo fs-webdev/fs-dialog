@@ -1,5 +1,7 @@
 # \<fs-dialog\>
 
+[![Code Climate](https://codeclimate.com/repos/59f368e2098d8e028b000022/badges/0bc25c442f3c57feddae/gpa.svg)](https://codeclimate.com/repos/59f368e2098d8e028b000022/feed) [![Test Coverage](https://codeclimate.com/repos/59f368e2098d8e028b000022/badges/0bc25c442f3c57feddae/coverage.svg)](https://codeclimate.com/repos/59f368e2098d8e028b000022/coverage) [![Issue Count](https://codeclimate.com/repos/59f368e2098d8e028b000022/badges/0bc25c442f3c57feddae/issue_count.svg)](https://codeclimate.com/repos/59f368e2098d8e028b000022/feed) [![Build Status](https://travis-ci.com/fs-webdev/fs-dialog.svg?token=WUXxpezanxE53AS27xNg&branch=master)](https://travis-ci.com/fs-webdev/fs-dialog)
+
 An accessible standard dialog for FamilySearch.
 
 ![](/../screenshots/modal.png?raw=true)
