@@ -429,6 +429,12 @@
           // Do not open a dialog that is already opened
           if (this.opened) return;
 
+          // If dialog was just closed by clicking on the attachToElement, don't reopen.
+          if(this.attachedToElementClicked) {
+            this.attachedToElementClicked = false;
+            return;
+          }
+
           // add dialog to the stack unless it is a modeless dialog
           if (!this.doNotUseInStack) {
             FS.dialog.service.addDialogToStack(this);
@@ -674,6 +680,7 @@
           reverseStack.some(function(dialog) {
             if (dialog.dismissOnBlur && !dialog.contains(e.relatedTarget)) {
               dialog.cancelFocusback = true;
+              dialog.attachedToElementClicked = dialog.attachToElement === e.relatedTarget;
               dialog.close();
               return;
             } else {
