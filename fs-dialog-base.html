@@ -661,7 +661,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         e.stopPropagation();
       }
 
-      el = el.parentElement;
+      if (el.parentElement) {
+        el = el.parentElement;
+      } else {
+
+        // If `el.parentElement` is `null`, that means the target
+        // element or one of it's parents was removed from the dom which
+        // will cause the dialog to lose focus and close. This will reset
+        // the target and focus, keeping the dialog open.
+        el = this;
+        this.focus();
+      }
     }
   }
 
