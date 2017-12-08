@@ -379,6 +379,13 @@
     attachedCallback(onOpenDialogFunction, onCloseDialogFunction) {
       this.appendStyles(doc, 'style[data-fs-dialog]', this);
 
+      // initialize the attributes that were set before the component got upgraded.
+      // This may not be needed anymore after webcomponents are native everywhere
+      var that = this;
+      attrList.forEach(function(attr) {
+        that.attributeChangedCallback(attr, null, that.getAttribute(attr));
+      })
+
       var clone = document.importNode(template.content, true);
 
       // selectors
