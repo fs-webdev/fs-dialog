@@ -92,6 +92,7 @@ gulp.task('build', ['buildEs6'], function(done) {
       //   minifyCss: true
       // }))) // minify html
       .pipe(sourcesHtmlSplitter.rejoin()) // rejoins those files back into their original location
+      .pipe(replace('if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); }', ''))
       .pipe(gulp.dest('./'));
     done();
   } catch (err) {
