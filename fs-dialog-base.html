@@ -181,8 +181,8 @@
   /** an absolute child    **/
 
   @media screen and (min-width:480px) {
-    fs-modal-dialog[no-close-button] .fs-dialog__close,
-    fs-anchored-dialog[no-close-button] .fs-dialog__close {
+    fs-modal-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close,
+    fs-anchored-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close {
       display: none;
     }
   }
@@ -232,6 +232,53 @@
       transition: left 0.3s;
     }
   }
+
+    fs-modal-dialog[keep-fullscreen],
+    fs-anchored-dialog[keep-fullscreen] {
+      border-radius: 0;
+      top: 0 !important;
+      left: 0 !important;
+      bottom: 0 !important;
+      right: 0 !important;
+      transform: translate(0, 0) !important;
+      max-height: 100% !important;
+      height: 100% !important;
+      position: fixed;
+      max-width: 100%;
+      width: 100%;
+    }
+
+    /** Mobile Transitions **/
+    fs-anchored-dialog[transition][keep-fullscreen] {
+      transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+    }
+    fs-anchored-dialog[transition][opened][keep-fullscreen] {
+      transition: visibility 0s, opacity 0s;
+    }
+
+    fs-modal-dialog[transition="from-bottom"][keep-fullscreen],
+    fs-anchored-dialog[transition="from-bottom"][keep-fullscreen] {
+      top: 100% !important;
+      transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+    }
+
+    fs-modal-dialog[transition="from-bottom"][opened][keep-fullscreen],
+    fs-anchored-dialog[transition="from-bottom"][opened][keep-fullscreen] {
+      top: 0 !important;
+      transition: top 0.3s;
+    }
+
+    fs-modal-dialog[transition="from-right"][keep-fullscreen],
+    fs-anchored-dialog[transition="from-right"][keep-fullscreen] {
+      left: 100% !important;
+      transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+    }
+
+    fs-modal-dialog[transition="from-right"][opened][keep-fullscreen],
+    fs-anchored-dialog[transition="from-right"][opened][keep-fullscreen] {
+      left: 0 !important;
+      transition: left 0.3s;
+    }
 
   /** Mobile Transitions **/
   /** TODO: do we need  transitions when we are not on mobile? **/
