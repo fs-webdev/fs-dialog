@@ -751,6 +751,15 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
             value: false
           },
           /**
+           * Whether or not the modal should take up the entire screen regardless of screen size.
+           * Default: false.
+           * @type {boolean} [keep-fullscreen=true]
+           */
+          'keep-fullscreen': {
+            type: boolean,
+            value: false
+          },
+          /**
            * Whether or not to disable transition animation.
            * Default: false.
            * @type {boolean} [no-transition=false]

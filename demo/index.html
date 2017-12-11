@@ -159,6 +159,9 @@
                 <input type="checkbox" name="noFullscreenMobile" id="noFullscreenMobile" value="false"><label for="noFullscreenMobile" title="Whether or not to go fullscreen below a certain breakpoint">no-fullscreen-mobile</label>
               </p>
               <p>
+                <input type="checkbox" name="keepFullscreen" id="keepFullscreen" value="false"><label for="keepFullscreen" title="Whether or not to keep the dialog fullscreen regardless of window size">keep-fullscreen</label>
+              </p>
+              <p>
                 <input type="checkbox" name="noCloseButton" id="noCloseButton" value="false"><label for="noCloseButton" title="Whether or not to hide the close button (most common for anchored dialogs--ignored in fullscreen mode)">no-close-button</label>
               </p>
             </section>
@@ -514,6 +517,7 @@
         if (config.type !== 'modeless') {
           if (!config.noTransition && config.transition) dynamicDialogEl.setAttribute('transition', config.transition);
           if (config.noFullscreenMobile) dynamicDialogEl.setAttribute('no-fullscreen-mobile', '');
+          if (config.keepFullscreen) dynamicDialogEl.setAttribute('keep-fullscreen', '');
           if (config.noCloseButton) dynamicDialogEl.setAttribute('no-close-button', '');
         }
 
