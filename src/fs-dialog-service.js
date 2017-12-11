@@ -34,12 +34,12 @@
         return element;
       }
     });
-
-    document.addEventListener("DOMContentLoaded", function() {
-      bufferElements = false;
-      buffer.forEach(registerElement)
-    });
   }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    bufferElements = false;
+    buffer.forEach(registerElement)
+  });
 
 
   FS.dialog.service.addDialogToStack = function(dialogElement) {

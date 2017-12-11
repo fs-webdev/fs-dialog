@@ -85,6 +85,15 @@ fs-modal-dialog:not([no-transition]) {
           value: false
         },
         /**
+         * Whether or not the modal should take up the entire screen regardless of screen size.
+         * Default: false.
+         * @type {boolean} [keep-fullscreen=true]
+         */
+        'keep-fullscreen':  {
+          type: boolean,
+          value: false
+        },
+        /**
          * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-dismiss' event and close the dialog on click.
          * @type {boolean} [data-dialog-dismiss=false]
          */
