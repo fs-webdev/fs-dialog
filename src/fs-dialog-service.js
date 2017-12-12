@@ -2,7 +2,7 @@
 (function() {
   var dialogStack = [];
   var buffer = [];
-  var bufferElements = true;
+  var bufferElements = (document.readyState === 'loading');
 
   window.FS = window.FS || {};
   FS.dialog = FS.dialog || {};
@@ -36,10 +36,12 @@
     });
   }
 
-  document.addEventListener("DOMContentLoaded", function() {
-    bufferElements = false;
-    buffer.forEach(registerElement)
-  });
+  if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", function() {
+      bufferElements = false;
+      buffer.forEach(registerElement)
+    });
+  }
 
 
   FS.dialog.service.addDialogToStack = function(dialogElement) {
