@@ -1,7 +1,7 @@
 {
   "name": "fs-dialog",
   "description": "An accessible standard dialog for FamilySearch.",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "main": "fs-dialog-all.html",
   "author": {
     "name": "FamilySearch",
