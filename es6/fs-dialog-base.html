@@ -31,7 +31,6 @@
     max-height: 100vh;
     max-width: 545px;
     opacity: 0;
-    position: fixed;
     visibility: hidden;
     width: 100%;
   }
@@ -742,7 +741,8 @@
         }
       } else {
         setTimeout(function(){
-          var activeElement = document.activeElement;
+          var root = dialog.getRootNode();
+          var activeElement = root.activeElement;
           if (!FS.dialog.service.windowHasFocus) {
             // listen for when the window does get focus and run this function again
             window.addEventListener('focus', dialog._focusoutHandler);
