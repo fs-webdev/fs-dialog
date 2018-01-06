@@ -103,11 +103,13 @@
             var positionDialogWithinDomStub;
             var getPointerlessDialogRectStub;
             var getRectsWithForcedDirectionStub;
-            var calculatePercentageVisibleStub
+            var calculatePercentageVisibleStub;
+            var adjustDialogRectForTranslatesStub;
 
             beforeEach(function() {
               positionDialogWithinDomStub = sinon.stub(el, '_positionDialogWithinDom');
               getPointerlessDialogRectStub = sinon.stub(el, '_getPointerlessDialogRect');
+              adjustDialogRectForTranslatesStub = sinon.stub(el, '_adjustDialogRectForTranslates', function(rect) { return rect });
               getRectsWithForcedDirectionStub = sinon.stub(el, '_getRectsWithForcedDirection', function(el1, el2, el3, dir) {
                 return {
                   dialogRect: dir,
@@ -241,6 +243,7 @@
           describe('getPointerlessDialogRect', function() {
             var attachToElement;
             var positionObj;
+            var scaleRectStub;
             var fsRectStub;
 
             beforeEach(function() {
@@ -253,11 +256,13 @@
               attachToElement.style.left = '200px';
               attachToElement.style.top = '200px';
               positionObj = {attachToElement: attachToElement}
+              scaleRectStub = sinon.stub(el, '_scaleRect');
               fsRectStub = sinon.spy(FS.dialog.service.positioningObj, 'fsRect')
               fsGlobalToLocalStub = sinon.stub(FS.dialog.service.positioningObj, 'fsGlobalToLocal')
             })
 
             afterEach(function() {
+              scaleRectStub.restore();
               fsRectStub.restore();
               fsGlobalToLocalStub.restore();
             });
@@ -353,14 +358,16 @@
 
           describe('getNewPointerRect', function() {
             it('should return the correct rect for up or down direction', function() {
+              debugger;
               var rect = new FS.dialog.service.positioningObj.fsRect(63.69, 10, 22.62, 11.31);
-              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'up')).to.deep.equal(rect);
-              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'down')).to.deep.equal(rect);
+              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'up', 1)).to.deep.equal(rect);
+              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'down', 1)).to.deep.equal(rect);
             })
             it('should return the correct rect for left or right direction', function() {
+              debugger;
               var rect = new FS.dialog.service.positioningObj.fsRect(10, 0, 11.31, 22.62);
-              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'left')).to.deep.equal(rect);
-              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'right')).to.deep.equal(rect);
+              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'left', 1)).to.deep.equal(rect);
+              expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'right', 1)).to.deep.equal(rect);
             })
           });
         });
