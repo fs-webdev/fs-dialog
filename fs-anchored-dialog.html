@@ -259,6 +259,8 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
         this._positionDialogWithinDom = positionDialogWithinDom.bind(this);
         this._getRectsWithForcedDirection = getRectsWithForcedDirection.bind(this);
         this._getNewPointerRect = getNewPointerRect.bind(this);
+        this._adjustDialogRectForTranslates = adjustDialogRectForTranslates.bind(this);
+        this._scaleRect = scaleRect.bind(this);
 
         _get(FSAnchoredDialog.prototype.__proto__ || Object.getPrototypeOf(FSAnchoredDialog.prototype), 'attachedCallback', this).call(this, openAnchoredFunction, closeAnchoredFunction);
 
@@ -414,7 +416,7 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
 
           dialogRect = new positioningObj.fsRect(dialogLeft, dialogTop, dialogWidth, dialogHeight);
           dialogRect = positioningObj.fsGlobalToLocal(dialogElementOffsetParent, dialogRect);
-          dialogRect = scaleRect(dialogRect, scale);
+          dialogRect = this._scaleRect(dialogRect, scale);
           return dialogRect;
         }
 
@@ -431,10 +433,10 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
           var scores = {};
 
           containingRect = adjustContainingRectForTransform(containingRect, this);
-          leftDialogScoringRect = adjustDialogRectForTranslates(leftRects.dialogRect, this);
-          rightDialogScoringRect = adjustDialogRectForTranslates(rightRects.dialogRect, this);
-          upDialogScoringRect = adjustDialogRectForTranslates(upRects.dialogRect, this);
-          downDialogScoringRect = adjustDialogRectForTranslates(downRects.dialogRect, this);
+          var leftDialogScoringRect = this._adjustDialogRectForTranslates(leftRects.dialogRect, this);
+          var rightDialogScoringRect = this._adjustDialogRectForTranslates(rightRects.dialogRect, this);
+          var upDialogScoringRect = this._adjustDialogRectForTranslates(upRects.dialogRect, this);
+          var downDialogScoringRect = this._adjustDialogRectForTranslates(downRects.dialogRect, this);
 
           scores.left = positioningObj.fsCalculatePercentageVisible(leftDialogScoringRect, containingRect);
           scores.right = positioningObj.fsCalculatePercentageVisible(rightDialogScoringRect, containingRect);
@@ -600,8 +602,8 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
                 break;
             }
             return {
-              dialogRect: scaleRect(newDialogRect, scale),
-              pointerRect: scaleRect(newPointerRect, scale)
+              dialogRect: dialogElement._scaleRect(newDialogRect, scale),
+              pointerRect: dialogElement._scaleRect(newPointerRect, scale)
             };
           }
         };
