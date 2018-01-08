@@ -105,10 +105,12 @@
             var getRectsWithForcedDirectionStub;
             var calculatePercentageVisibleStub;
             var adjustDialogRectForTranslatesStub;
+            var getBestFittingDialogRectSpy;
 
             beforeEach(function() {
               positionDialogWithinDomStub = sinon.stub(el, '_positionDialogWithinDom');
               getPointerlessDialogRectStub = sinon.stub(el, '_getPointerlessDialogRect');
+              getBestFittingDialogRectSpy = sinon.spy(el, '_getBestFittingDialogRect');
               adjustDialogRectForTranslatesStub = sinon.stub(el, '_adjustDialogRectForTranslates', function(rect) { return rect });
               getRectsWithForcedDirectionStub = sinon.stub(el, '_getRectsWithForcedDirection', function(el1, el2, el3, dir) {
                 return {
@@ -135,6 +137,7 @@
             });
 
             afterEach(function() {
+              getBestFittingDialogRectSpy.restore();
               positionDialogWithinDomStub.restore();
               getPointerlessDialogRectStub.restore();
               getRectsWithForcedDirectionStub.restore();
@@ -198,6 +201,7 @@
                 expect(positionDialogWithinDomStub.callCount).to.equal(1)
                 expect(getPointerlessDialogRectStub.callCount).to.equal(1)
                 expect(getRectsWithForcedDirectionStub.callCount).to.equal(0)
+                expect(getBestFittingDialogRectSpy.callCount).to.equal(0)
               })
             })
 
@@ -208,37 +212,93 @@
                 expect(positionDialogWithinDomStub.callCount).to.equal(1)
                 expect(getPointerlessDialogRectStub.callCount).to.equal(0)
                 expect(getRectsWithForcedDirectionStub.callCount).to.equal(1)
+                expect(getBestFittingDialogRectSpy.callCount).to.equal(0)
               })
             })
 
             describe('with auto pointer positioning', function() {
-              it('should call getRectsWithForcedDirection for each direction', function() {
+              it('should call the correct functions', function() {
+                debugger;
                 el._openAnchoredFunction();
-                expect(getRectsWithForcedDirectionStub.callCount).to.equal(4)
-              })
-
-              it('should call calculatePercentageVisible for each direction', function() {
-                el._openAnchoredFunction();
-                expect(calculatePercentageVisibleStub.callCount).to.equal(4)
-              })
-
-              it('should use the best direction for fitting on the screen', function() {
-                el._openAnchoredFunction();
-                expect(positionDialogWithinDomStub.calledWithExactly(el, pointerEl, 'right', 'right', 'right')).to.be.true;
-              })
-
-              it('should take into account the preferred order when caluclating the best direction for fitting on the screen', function() {
-                el.setAttribute('preferred-pointer-direction', 'left down up right');
-                el._openAnchoredFunction();
-                expect(positionDialogWithinDomStub.calledWithExactly(el, pointerEl, 'down', 'down', 'down')).to.be.true;
-              })
-
-              it('should call positionDialogWithinDom', function() {
-                el._openAnchoredFunction();
+                debugger;
                 expect(positionDialogWithinDomStub.callCount).to.equal(1)
+                expect(getPointerlessDialogRectStub.callCount).to.equal(0)
+                expect(getRectsWithForcedDirectionStub.callCount).to.equal(4)
+                expect(getBestFittingDialogRectSpy.callCount).to.equal(1)
               })
             })
+
+
           });
+
+          describe('getBestFittingDialogRect', function() {
+            var positionDialogWithinDomStub;
+            var getPointerlessDialogRectStub;
+            var getRectsWithForcedDirectionStub;
+            var calculatePercentageVisibleStub;
+            var adjustDialogRectForTranslatesStub;
+
+            beforeEach(function() {
+              positionDialogWithinDomStub = sinon.stub(el, '_positionDialogWithinDom');
+              getPointerlessDialogRectStub = sinon.stub(el, '_getPointerlessDialogRect');
+              adjustDialogRectForTranslatesStub = sinon.stub(el, '_adjustDialogRectForTranslates', function(rect) { return rect });
+              getRectsWithForcedDirectionStub = sinon.stub(el, '_getRectsWithForcedDirection', function(el1, el2, el3, dir) {
+                return {
+                  dialogRect: dir,
+                  pointerRect: dir,
+                };
+              });
+              calculatePercentageVisibleStub = sinon.stub(FS.dialog.service.positioningObj, 'fsCalculatePercentageVisible', function(dialogRect, containtingRect) {
+                switch(dialogRect) {
+                  case 'left':
+                    return 1;
+                    break;
+                  case 'right':
+                    return 2;
+                    break;
+                  case 'up':
+                    return 2;
+                    break;
+                  case 'down':
+                    return 2;
+                    break;
+                }
+              });
+            });
+
+            afterEach(function() {
+              positionDialogWithinDomStub.restore();
+              getPointerlessDialogRectStub.restore();
+              getRectsWithForcedDirectionStub.restore();
+              calculatePercentageVisibleStub.restore();
+            });
+
+            it('should call getRectsWithForcedDirection for each direction', function() {
+              el._openAnchoredFunction();
+              expect(getRectsWithForcedDirectionStub.callCount).to.equal(4)
+            })
+
+            it('should call calculatePercentageVisible for each direction', function() {
+              el._openAnchoredFunction();
+              expect(calculatePercentageVisibleStub.callCount).to.equal(4)
+            })
+
+            it('should use the best direction for fitting on the screen', function() {
+              el._openAnchoredFunction();
+              expect(positionDialogWithinDomStub.calledWithExactly(el, pointerEl, 'right', 'right', 'right')).to.be.true;
+            })
+
+            it('should take into account the preferred order when caluclating the best direction for fitting on the screen', function() {
+              el.setAttribute('preferred-pointer-direction', 'left down up right');
+              el._openAnchoredFunction();
+              expect(positionDialogWithinDomStub.calledWithExactly(el, pointerEl, 'down', 'down', 'down')).to.be.true;
+            })
+
+            it('should call positionDialogWithinDom', function() {
+              el._openAnchoredFunction();
+              expect(positionDialogWithinDomStub.callCount).to.equal(1)
+            })
+          })
 
           describe('getPointerlessDialogRect', function() {
             var attachToElement;
