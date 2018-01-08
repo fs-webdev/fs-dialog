@@ -218,9 +218,7 @@
 
             describe('with auto pointer positioning', function() {
               it('should call the correct functions', function() {
-                debugger;
                 el._openAnchoredFunction();
-                debugger;
                 expect(positionDialogWithinDomStub.callCount).to.equal(1)
                 expect(getPointerlessDialogRectStub.callCount).to.equal(0)
                 expect(getRectsWithForcedDirectionStub.callCount).to.equal(4)
@@ -418,13 +416,11 @@
 
           describe('getNewPointerRect', function() {
             it('should return the correct rect for up or down direction', function() {
-              debugger;
               var rect = new FS.dialog.service.positioningObj.fsRect(63.69, 10, 22.62, 11.31);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'up', 1)).to.deep.equal(rect);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'down', 1)).to.deep.equal(rect);
             })
             it('should return the correct rect for left or right direction', function() {
-              debugger;
               var rect = new FS.dialog.service.positioningObj.fsRect(10, 0, 11.31, 22.62);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'left', 1)).to.deep.equal(rect);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'right', 1)).to.deep.equal(rect);
