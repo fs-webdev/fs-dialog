@@ -541,7 +541,7 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
               case UP:
               case DOWN:
                 if (doNotAdjustForWindow) {
-                  return (dialogRect.width - pointer_base) / 2 - parseFloat(pointerElement.style.left.split('px')[0]);
+                  return (dialogElement.offsetWidth - POINTER_BASE) / 2 - parseFloat(pointerElement.style.left.split('px')[0]);
                   break;
                 }
                 if (globalDialogRight > windowRect.right) {
@@ -576,7 +576,7 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
               case LEFT:
               case RIGHT:
                 if (doNotAdjustForWindow) {
-                  return (dialogRect.height - pointer_base) / 2 - parseFloat(pointerElement.style.top.split('px')[0]);
+                  return (dialogElement.offsetHeight - POINTER_BASE) / 2 - parseFloat(pointerElement.style.top.split('px')[0]);
                   break;
                 }
                 if (globalDialogBottom > windowRect.bottom) {
