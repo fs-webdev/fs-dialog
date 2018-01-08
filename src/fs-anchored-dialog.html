@@ -542,6 +542,24 @@
         var upDialogScoringRect = this._adjustDialogRectForTranslates(upRects.dialogRect, this);
         var downDialogScoringRect = this._adjustDialogRectForTranslates(downRects.dialogRect, this);
 
+        // The following two blocks of code are for debugging purposes and should never be running in production
+
+        // drawRect(this, 'red', containingRect)
+        // drawRect(this, 'blue', adjustDialogRectForTranslates(leftRects.dialogRect, this))
+        // drawRect(this, 'green', adjustDialogRectForTranslates(upRects.dialogRect, this))
+        // drawRect(this, 'orange', adjustDialogRectForTranslates(downRects.dialogRect, this))
+        // drawRect(this, 'purple', adjustDialogRectForTranslates(rightRects.dialogRect, this))
+
+        // function drawRect(dialog, color, rect) {
+        //   var newDiv = dialog.offsetParent.appendChild(document.createElement('div'));
+        //   newDiv.style.border = '2px solid ' + color;
+        //   newDiv.style.position = 'absolute';
+        //   newDiv.style.width = rect.width + 'px';
+        //   newDiv.style.height = rect.height + 'px';
+        //   newDiv.style.left = rect.left + 'px';
+        //   newDiv.style.top = rect.top + 'px';
+        // }
+
         scores.left = positioningObj.fsCalculatePercentageVisible(leftDialogScoringRect, containingRect);
         scores.right = positioningObj.fsCalculatePercentageVisible(rightDialogScoringRect, containingRect);
         scores.up = positioningObj.fsCalculatePercentageVisible(upDialogScoringRect, containingRect);
@@ -756,18 +774,31 @@
 
       function adjustContainingRectForTransform(containingRect, dialogElement) {
         var scale = dialogElement.getBoundingClientRect().width / dialogElement.offsetWidth;
-        var translateX = dialogElement.getBoundingClientRect().left - dialogElement.offsetLeft * scale;
-        var translateY = dialogElement.getBoundingClientRect().top - dialogElement.offsetTop * scale;
+        var translates = getOffsetParentTranslates(dialogElement);
 
-        if (scale === 1 && translateX === 0 && translateY === 0) return containingRect;
+        if (scale === 1 && translates.x === 0 && translates.y === 0) return containingRect;
 
-        var left = (containingRect.left - translateX) / scale;
-        var top = (containingRect.top - translateY) / scale;
+        var left = (containingRect.left - translates.x) / scale;
+        var top = (containingRect.top - translates.y) / scale;
         var width = containingRect.width / scale;
         var height = containingRect.height / scale;
 
         var rect = new positioningObj.fsRect(left, top, width, height);
         return rect;
+      }
+
+      function getOffsetParentTranslates(element) {
+        // Unfortunately, there's really no programmatic way to figure out what the translate values are
+        // because of scrolling. This function gets any translates explicitly set on the offset parent of the dialog
+        var translates = {x: 0, y: 0}
+        var transform = window.getComputedStyle(element.offsetParent).transform;
+
+        if (transform.includes('matrix')) {
+          translates.x = transform.split(', ')[4];
+          translates.y = transform.split(', ')[5].split(')')[0];
+        }
+
+        return translates;
       }
 
       function scaleRect(rect, scale) {
