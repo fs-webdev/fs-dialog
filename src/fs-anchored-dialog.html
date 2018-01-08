@@ -363,6 +363,7 @@
       this._positionDialogWithinDom = positionDialogWithinDom.bind(this);
       this._getRectsWithForcedDirection = getRectsWithForcedDirection.bind(this);
       this._getNewPointerRect = getNewPointerRect.bind(this);
+      this._getBestFittingDialogRect = getBestFittingDialogRect.bind(this);
       this._adjustDialogRectForTranslates = adjustDialogRectForTranslates.bind(this);
       this._scaleRect = scaleRect.bind(this);
 
@@ -438,7 +439,7 @@
           this._positionDialogWithinDom(this, pointerElement, newRects.dialogRect, newRects.pointerRect, this.forcedPointerDirection)
         } else {
           //auto-position
-          var newRects = getBestFittingDialogRect.bind(this)(positionObj, pointerElement)
+          var newRects = this._getBestFittingDialogRect(positionObj, pointerElement)
           this._positionDialogWithinDom(this, pointerElement, newRects.dialogRect, newRects.pointerRect, newRects.direction)
         }
       }
