@@ -721,7 +721,9 @@
     // use setTimout so that we get the correct document.activeElement
     // TODO: look into using the related target instead of activeElement if possible
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
-      if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
+      if (styles.visibility === 'hidden' || styles.display === 'none') {
+        dialog.focus();
+      } else if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
         if (!FS.dialog.service.windowHasFocus) {
           // listen for when the window does get focus and run this function again
           window.addEventListener('focus', dialog._focusoutHandler);
