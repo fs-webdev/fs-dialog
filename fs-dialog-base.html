@@ -745,6 +745,8 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
     // use setTimout so that we get the correct document.activeElement
     // TODO: look into using the related target instead of activeElement if possible
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
+      // don't close if a node loses focus from dissapearing.
+      var styles = e.target && e.target instanceof Element ? window.getComputedStyle(e.target) : {};
       if (styles.visibility === 'hidden' || styles.display === 'none') {
         dialog.focus();
       } else if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
