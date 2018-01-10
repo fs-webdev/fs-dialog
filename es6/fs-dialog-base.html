@@ -537,7 +537,7 @@
           this.addEventListener('keydown', keydownHandler);
 
           if (this.dismissOnBlur) {
-            this.addEventListener('focusout', this._focusoutHandler);
+            this.addEventListener('focusout', this._focusoutHandler, true);
           }
 
           // when the body of the dialog scrolls we need to allow keyboard users to
@@ -722,9 +722,12 @@
     // TODO: look into using the related target instead of activeElement if possible
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
       // don't close if a node loses focus from dissapearing.
-      var styles = e.target && e.target instanceof Element ? window.getComputedStyle(e.target) : {};
-      if (styles.visibility === 'hidden' || styles.display === 'none') {
-        dialog.focus();
+      var targetDisappeared = !e.target.offsetHeight && !e.target.offsetWidth;
+      if (targetDisappeared) {
+        setTimeout(function() {
+          var root = dialog.getRootNode();
+          if (!dialog.contains(root.activeElement)) dialog.focus();
+        }, 0)
       } else if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
         if (!FS.dialog.service.windowHasFocus) {
           // listen for when the window does get focus and run this function again
