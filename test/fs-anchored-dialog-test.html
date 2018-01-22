@@ -415,12 +415,12 @@
 
           describe('getNewPointerRect', function() {
             it('should return the correct rect for up or down direction', function() {
-              var rect = new FS.dialog.service.positioningObj.fsRect(63.69, 10, 22.62, 11.31);
+              var rect = new FS.dialog.service.positioningObj.fsRect(59, 10, 32, 16);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'up', 1)).to.deep.equal(rect);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'down', 1)).to.deep.equal(rect);
             })
             it('should return the correct rect for left or right direction', function() {
-              var rect = new FS.dialog.service.positioningObj.fsRect(10, 0, 11.31, 22.62);
+              var rect = new FS.dialog.service.positioningObj.fsRect(10, 0, 16, 32);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'left', 1)).to.deep.equal(rect);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'right', 1)).to.deep.equal(rect);
             })
