@@ -1,7 +1,7 @@
 <link rel="import" href="../fs-globals/fs-globals.html">
 <link rel="import" href="./fs-dialog-base.html">
 
-<style data-fs-modeless-dialog="">
+<style data-fs-modeless-dialog>
   /*
    * 1. Touch-action is not supported in safari but is the recommended solution
    *    to prevent touch events from scrolling the page - preventDefault() will
@@ -32,225 +32,186 @@
   }
 </style>
 
-<script>'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) {  subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-(function () {
+<script>
+(function() {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
 
-  /**
-   * `<fs-modeless-dialog>` is a modeless dialog centered on the screen and displayed above other content. It can be dragged around the screen by dragging the header of the dialog. The user can click on content below the
-   *
-   *     <body>
-   *       <button onclick="dialog.open({
-   *         focusBackElement: this
-   *       });">Open Dialog</button>
-   *       <fs-modeless-dialog
-   *           no-transition>
-   *         <header>
-   *           [Header Text]
-   *         </header>
-   *         <div class="fs-dialog__body">
-   *           [Dialog Body Content]
-   *         </div>
-   *         <footer>
-   *           [Buttons or Footer Text]
-   *         </footer>
-   *       </fs-modeless-dialog>
-   *     </body>
-   *
-   * @demo demo/index.html
-   */
+   /**
+    * `<fs-modeless-dialog>` is a modeless dialog centered on the screen and displayed above other content. It can be dragged around the screen by dragging the header of the dialog. The user can click on content below the
+    *
+    *     <body>
+    *       <button onclick="dialog.open({
+    *         focusBackElement: this
+    *       });">Open Dialog</button>
+    *       <fs-modeless-dialog
+    *           no-transition>
+    *         <header>
+    *           [Header Text]
+    *         </header>
+    *         <div class="fs-dialog__body">
+    *           [Dialog Body Content]
+    *         </div>
+    *         <footer>
+    *           [Buttons or Footer Text]
+    *         </footer>
+    *       </fs-modeless-dialog>
+    *     </body>
+    *
+    * @demo demo/index.html
+    */
+  class FSModelessDialog extends FS.dialog.baseDialogComponent {
 
-  var FSModelessDialog = function (_FS$dialog$baseDialog) {
-    _inherits(FSModelessDialog, _FS$dialog$baseDialog);
-
-    function FSModelessDialog() {
-      _classCallCheck(this, FSModelessDialog);
-
-      return _possibleConstructorReturn(this, (FSModelessDialog.__proto__ || Object.getPrototypeOf(FSModelessDialog)).apply(this, arguments));
+    // only used for docs.
+    static get properties(){
+      return {
+        /**
+         * Whether or not the dialog is opened.
+         * @type {boolean} [opened=false]
+         */
+        'opened': {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * Whether or not to disable transition animation.
+         * Default: false.
+         * @type {boolean} [no-transition=false]
+         */
+        'no-transition':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-dismiss' event and close the dialog on click.
+         * @type {boolean} [data-dialog-dismiss=false]
+         */
+        'data-dialog-dismiss':  {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-confirm' event on click.
+         * @type {boolean} [data-dialog-confirm=false]
+         */
+        'data-dialog-confirm':  {
+          type: Boolean,
+          value: false
+        }
+      }
     }
 
-    _createClass(FSModelessDialog, [{
-      key: 'open',
+    /**
+     * Open the dialog.
+     * @param {Object} config - Object containing the following property:
+     *                          focusBackElement - The element to return focus back after the dialog closes.
+     */
+    open(config) {
+      super.open(config);
+    }
 
+    /**
+     * Close the dialog.  If focusBackElement exists, focus is returned to that element.
+     */
+    close() {
+      super.close();
+    }
 
-      /**
-       * Open the dialog.
-       * @param {Object} config - Object containing the following property:
-       *                          focusBackElement - The element to return focus back after the dialog closes.
-       */
-      value: function open(config) {
-        _get(FSModelessDialog.prototype.__proto__ || Object.getPrototypeOf(FSModelessDialog.prototype), 'open', this).call(this, config);
+    /**
+     * Initialize the dialog, add events, and accessibility features. Should only change
+     * the DOM on attached callback otherwise it breaks Polymer bindings.
+     */
+    attachedCallback() {
+      // set the type="modeless" for the a11y enhancer
+      this.setAttribute('type', 'modeless')
+      this.doNotUseInStack = true;
+
+      this.appendStyles(doc, 'style[data-fs-modeless-dialog]', this);
+
+      // use the attachedCallback for the base dialog and pass in our open and close functions
+      super.attachedCallback(openModelessFunction, closeModelessFunction);
+
+      // bind the functions that will be used in event listeners to avoid losing reference
+      this._startDragHandler = startDragHandler.bind(this);
+      this._dragHandler = dragHandler.bind(this);
+      this._endDragHandler = endDragHandler.bind(this);
+      this._resizeHandler = resizeHandler.bind(this);
+      this._centerDialog = centerDialog.bind(this);
+      this._resizeThrottler = resizeThrottler.bind(this);
+
+      // selector for open and close functions
+      var headerEl = this.querySelector('header');
+
+      // On resize of window, if dialog is not open, clear this.style.transform.
+      // If dialog is open, re-center it
+
+      window.addEventListener('resize', this._resizeThrottler, false);
+
+      var resizeTimeout;
+      function resizeThrottler() {
+        // ignore resize events as long as an resizeHandler execution is in the queue
+        if ( !resizeTimeout ) {
+          resizeTimeout = setTimeout(function() {
+            resizeTimeout = null;
+            this._resizeHandler();
+            // The resizeHandler will execute at a rate of 15fps
+          }.bind(this), 66);
+        }
       }
 
-      /**
-       * Close the dialog.  If focusBackElement exists, focus is returned to that element.
-       */
-
-    }, {
-      key: 'close',
-      value: function close() {
-        _get(FSModelessDialog.prototype.__proto__ || Object.getPrototypeOf(FSModelessDialog.prototype), 'close', this).call(this);
-      }
-
-      /**
-       * Initialize the dialog, add events, and accessibility features. Should only change
-       * the DOM on attached callback otherwise it breaks Polymer bindings.
-       */
-
-    }, {
-      key: 'attachedCallback',
-      value: function attachedCallback() {
-        // set the type="modeless" for the a11y enhancer
-        this.setAttribute('type', 'modeless');
-        this.doNotUseInStack = true;
-
-        this.appendStyles(doc, 'style[data-fs-modeless-dialog]', this);
-
-        // use the attachedCallback for the base dialog and pass in our open and close functions
-        _get(FSModelessDialog.prototype.__proto__ || Object.getPrototypeOf(FSModelessDialog.prototype), 'attachedCallback', this).call(this, openModelessFunction, closeModelessFunction);
-
-        // bind the functions that will be used in event listeners to avoid losing reference
-        this._startDragHandler = startDragHandler.bind(this);
-        this._dragHandler = dragHandler.bind(this);
-        this._endDragHandler = endDragHandler.bind(this);
-        this._resizeHandler = resizeHandler.bind(this);
-        this._centerDialog = centerDialog.bind(this);
-        this._resizeThrottler = resizeThrottler.bind(this);
-
-        // selector for open and close functions
-        var headerEl = this.querySelector('header');
-
-        // On resize of window, if dialog is not open, clear this.style.transform.
-        // If dialog is open, re-center it
-
-        window.addEventListener('resize', this._resizeThrottler, false);
-
-        var resizeTimeout;
-        function resizeThrottler() {
-          // ignore resize events as long as an resizeHandler execution is in the queue
-          if (!resizeTimeout) {
-            resizeTimeout = setTimeout(function () {
-              resizeTimeout = null;
-              this._resizeHandler();
-              // The resizeHandler will execute at a rate of 15fps
-            }.bind(this), 66);
-          }
-        }
-
-        function resizeHandler() {
-          this.style.transform = '';
-          if (this.opened) {
-            this._centerDialog();
-          }
-        }
-
-        // modeless specific logic to do on open
-        function openModelessFunction() {
-
+      function resizeHandler() {
+        this.style.transform = '';
+        if(this.opened) {
           this._centerDialog();
-
-          // add events to modeless dialog for dragging
-          // TODO: add an opt out for dragging (?)
-          if (headerEl) {
-            headerEl.addEventListener('mousedown', this._startDragHandler);
-            headerEl.addEventListener('touchstart', this._startDragHandler);
-            window.addEventListener('mouseup', this._endDragHandler);
-            window.addEventListener('touchend', this._endDragHandler);
-          }
-        }
-
-        // modeless specific logic to do on close
-        function closeModelessFunction() {
-          // clean up events to modeless dialog for dragging
-          headerEl.removeEventListener('mousedown', this._startDragHandler);
-          headerEl.removeEventListener('touchstart', this._startDragHandler);
-          window.removeEventListener('mouseup', this._endDragHandler);
-          window.removeEventListener('touchend', this._endDragHandler);
         }
       }
 
-      /**
-       * Calls detachedCallback
-       */
+      // modeless specific logic to do on open
+      function openModelessFunction() {
 
-    }, {
-      key: 'disconnectedCallback',
-      value: function disconnectedCallback() {
-        this.detachedCallback();
+        this._centerDialog();
+
+        // add events to modeless dialog for dragging
+        // TODO: add an opt out for dragging (?)
+        if (headerEl) {
+          headerEl.addEventListener('mousedown', this._startDragHandler);
+          headerEl.addEventListener('touchstart', this._startDragHandler);
+          window.addEventListener('mouseup', this._endDragHandler);
+          window.addEventListener('touchend', this._endDragHandler);
+        }
       }
 
-      /**
-       * Remove listeners that were added during attachedCallback.
-       */
-
-    }, {
-      key: 'detachedCallback',
-      value: function detachedCallback() {
-        window.removeEventListener('resize', this._resizeThrottler);
+      // modeless specific logic to do on close
+      function closeModelessFunction() {
+        // clean up events to modeless dialog for dragging
+        headerEl.removeEventListener('mousedown', this._startDragHandler);
+        headerEl.removeEventListener('touchstart', this._startDragHandler);
+        window.removeEventListener('mouseup', this._endDragHandler);
+        window.removeEventListener('touchend', this._endDragHandler);
       }
-    }], [{
-      key: 'properties',
+
+    }
+
+    /**
+     * Calls detachedCallback
+     */
+    disconnectedCallback(){
+      this.detachedCallback();
+    }
 
 
-      // only used for docs.
-      get: function get() {
-        return {
-          /**
-           * Whether or not the dialog is opened.
-           * @type {boolean} [opened=false]
-           */
-          'opened': {
-            type: Boolean,
-            value: false
-          },
-          /**
-           * Whether or not to disable transition animation.
-           * Default: false.
-           * @type {boolean} [no-transition=false]
-           */
-          'no-transition': {
-            type: Boolean,
-            value: false
-          },
-          /**
-           * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-dismiss' event and close the dialog on click.
-           * @type {boolean} [data-dialog-dismiss=false]
-           */
-          'data-dialog-dismiss': {
-            type: Boolean,
-            value: false
-          },
-          /**
-           * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-confirm' event on click.
-           * @type {boolean} [data-dialog-confirm=false]
-           */
-          'data-dialog-confirm': {
-            type: Boolean,
-            value: false
-          }
-        };
-      }
-    }]);
-
-    return FSModelessDialog;
-  }(FS.dialog.baseDialogComponent);
+    /**
+     * Remove listeners that were added during attachedCallback.
+     */
+    detachedCallback() {
+      window.removeEventListener('resize', this._resizeThrottler);
+    }
+  }
 
   function centerDialog() {
     // calc center of screen for initial modeless dialog transform property
     if (!this.style.transform) {
-      var x = window.innerWidth / 2 - this.offsetWidth / 2;
-      var y = window.innerHeight / 2 - this.offsetHeight / 2;
+      var x = (window.innerWidth / 2) - (this.offsetWidth / 2);
+      var y = (window.innerHeight / 2) - (this.offsetHeight / 2);
       this.style.transform = 'translateX(' + x + 'px) translateY(' + y + 'px)';
     }
   }
@@ -320,13 +281,15 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
     // bind x/y to window
     if (x < 0) {
       x = 0;
-    } else if (x > this._drag.maxX) {
-      x = this._drag.maxX;
+    }
+    else if (x > this._drag.maxX) {
+      x = this._drag.maxX
     }
 
     if (y < 0) {
       y = 0;
-    } else if (y > this._drag.maxY) {
+    }
+    else if (y > this._drag.maxY) {
       y = this._drag.maxY;
     }
 
@@ -350,9 +313,10 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
     window.removeEventListener('touchmove', this._dragHandler, true);
   }
 
-  if ('customElements' in window) {
+  if('customElements' in window){
     customElements.define('fs-modeless-dialog', FSModelessDialog);
   } else {
-    document.registerElement('fs-modeless-dialog', { prototype: Object.create(FSModelessDialog.prototype) });
+    document.registerElement('fs-modeless-dialog', {prototype: Object.create(FSModelessDialog.prototype)});
   }
-})();</script>
+})();
+</script>

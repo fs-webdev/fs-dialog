@@ -34,7 +34,7 @@ gulp.task('moveFiles', function(done) {
     .pipe(gulp.dest('./'))
 });
 
-gulp.task('injectLocales', ['moveFiles'], function(done) {
+gulp.task('build', ['moveFiles'], function(done) {
   glob('locales/*.json', function(err, files) {
     if (err) done(err);
 
@@ -62,40 +62,3 @@ gulp.task('injectLocales', ['moveFiles'], function(done) {
   });
 });
 
-gulp.task('buildEs6', ['injectLocales'], function(done) {
-  return gulp.src([
-      './fs-anchored-dialog.html',
-      './fs-dialog-base.html',
-      './fs-dialog-positioning-obj.js',
-      './fs-dialog-service.js',
-      './fs-modal-dialog.html',
-      './fs-modeless-dialog.html',
-      './get-root-node-polyfill.js'
-    ])
-    .pipe(replace('rel="import" href="../', 'rel="import" href="../../'))
-    .pipe(gulp.dest('./es6'))
-});
-
-gulp.task('build', ['buildEs6'], function(done) {
-  try {
-    const sourcesHtmlSplitter = new HtmlSplitter();
-    const sourcesStream = project.sources()
-      .pipe(sourcesHtmlSplitter.split()) // split inline JS & CSS out into individual .js & .css files
-      .pipe(gulpif(/\.js$/, babel())) // transpile to es5
-      // .pipe(gulpif(/\.js$/, uglify())) // minify
-      // .pipe(gulpif(/\.css$/, cssSlam())) // minify css (but it may not actually do anything)
-      // .pipe(gulpif(/\.html$/, cssSlam())) // there is a bug in polymer-build that makes it so that css doesn't actually get split out - we can still run the css minifier on the html part of the file though.
-      // .pipe(gulpif(/\.html$/, htmlMinifier({
-      //   collapseBooleanAttributes: true,
-      //   collapseWhitespace: true,
-      //   removeComments: true,
-      //   minifyCss: true
-      // }))) // minify html
-      .pipe(sourcesHtmlSplitter.rejoin()) // rejoins those files back into their original location
-      .pipe(replace('if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); }', ''))
-      .pipe(gulp.dest('./'));
-    done();
-  } catch (err) {
-    done(err)
-  }
-});
