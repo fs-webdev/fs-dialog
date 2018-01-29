@@ -2,7 +2,7 @@
 
 [![Code Climate](https://codeclimate.com/repos/59f368e2098d8e028b000022/badges/0bc25c442f3c57feddae/gpa.svg)](https://codeclimate.com/repos/59f368e2098d8e028b000022/feed) [![Test Coverage](https://codeclimate.com/repos/59f368e2098d8e028b000022/badges/0bc25c442f3c57feddae/coverage.svg)](https://codeclimate.com/repos/59f368e2098d8e028b000022/coverage) [![Issue Count](https://codeclimate.com/repos/59f368e2098d8e028b000022/badges/0bc25c442f3c57feddae/issue_count.svg)](https://codeclimate.com/repos/59f368e2098d8e028b000022/feed) [![Build Status](https://travis-ci.org/fs-webdev/fs-dialog.svg?branch=master)](https://travis-ci.org/fs-webdev/fs-dialog)
 
-An accessible standard dialog for FamilySearch.
+An accessible standard dialog implemented in native web components for FamilySearch.
 
 ![](/../screenshots/modal.png?raw=true)
 
@@ -25,6 +25,12 @@ Modeless dialogs do not darken the screen and do not prevent interaction of all 
 ```
 $ bower install --save fs-webdev/fs-dialog
 ```
+
+## Demo
+
+If you attempt to `frontier element serve` on a clean install, you will get an error, stating that the analysis.json file (used to populate the documentation page) does not exist. You can fix this by either running `frontier element serve -a`, or by auto-loading the demo page via: 
+
+`frontier element serve -d`
 
 ## Usage
 
@@ -97,14 +103,41 @@ git pull --recurse-submodules; git submodule update --remote --recursive
 
 This component is set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester).
 
+In order to run the `wct` command, you need to globally install web-component-tester:
+
+> NOTE OF WARNING: This component is using a [patcharound](https://github.com/thedeeno/web-component-tester-istanbul/issues/38#issuecomment-287544522) in order to incorporate code coverage reporting. In order to be able to run unit tests locally, (as of 2017-05-18) you must install the *patched* versions of web-component-tester and web-component-tester-istanbul. (You may need to uninstall other versions, first)
+
+```bash
+npm install -g t2ym/web-component-tester#6.0.0-wct6-plugin.1
+npm install -g t2ym/web-component-tester-istanbul#0.10.1-wct6.11
+```
+
+In order for the `size-limit` WCT plugin to run, you need to globally install it:
+
+```bash
+npm install --g fs-webdev/size-limit
+```
+
 To run tests locally, run:
 
 ```bash
 wct --skip-plugin sauce
 ```
 
-If you need to debug locally, run:
+If you need to debug locally (keeping the browser open), run:
+
+```bash
+wct --skip-plugin sauce -p
+```
+
+or
 
 ```bash
 polymer test --skip-plugin sauce --local chrome -p
+``` 
+
+If you want to run the full suite of SauceLabs browser tests, run:
+
+```bash
+wct test/index.html --configFile wct.conf.json  --sauce-username {USERNAME} --sauce-access-key {ACCESS_KEY}
 ```
