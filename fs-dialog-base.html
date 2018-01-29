@@ -651,6 +651,9 @@ function _inherits(subClass, superClass) {  subClass.prototype = Object.create(s
         if (this.hasAttribute('opened')) {
           this.open();
         }
+
+        this.dispatchEvent(new Event('fs-dialog-ready', { bubbles: true }));
+        this.fsDialogReady = true;
       }
     }, {
       key: "attributeChangedCallback",

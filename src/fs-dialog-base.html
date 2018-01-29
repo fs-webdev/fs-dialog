@@ -634,6 +634,8 @@
         this.open();
       }
 
+      this.dispatchEvent(new Event('fs-dialog-ready', { bubbles: true }));
+      this.fsDialogReady = true;
 
     }
 
