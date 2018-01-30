@@ -4,7 +4,6 @@
     "components/a11y-enhancer/*(!src)/dialog.+(html|js)",
     "components/fs-globals/*.+(html|css|js|json)",
     "components/webcomponentsjsv1/custom-elements-es5-adapter.js",
-    "es6/fs*.+(html|js)",
     "components/fs-dialog/get-root-node-polyfill.js",
     "components/fs-dialog/fs-*.+(html|js)"
   ]
