@@ -634,6 +634,12 @@
         this.open();
       }
 
+      // HACK for browsers that don't natively support custom elements. This
+      // event will fire after our element is all set up and ready to use.
+      // we can remove this when all browsers support custom elements natively,
+      // but that will be a breaking change to our API.
+      this.dispatchEvent(new Event('fs-dialog-ready', { bubbles: true }));
+      this.fsDialogReady = true;
 
     }
 
