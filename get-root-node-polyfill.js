@@ -1,9 +1,5 @@
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 // service to handle stacking of dialogs
-(function () {
+(function() {
   // Node getRootNode(optional GetRootNodeOptions options);
 
   /**
@@ -23,7 +19,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
    * @returns {!Node} The root node.
    */
   function getRootNode(opt) {
-    var composed = (typeof opt === 'undefined' ? 'undefined' : _typeof(opt)) === 'object' && Boolean(opt.composed);
+    var composed = typeof opt === 'object' && Boolean(opt.composed);
 
     return composed ? getShadowIncludingRoot(this) : getRoot(this);
   }
@@ -54,7 +50,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     return Object.prototype.hasOwnProperty.call(Node.prototype, 'getRootNode');
   }
 
-  if (!isImplemented()) {
+  if(!isImplemented()) {
     Node.prototype.getRootNode = getRootNode;
   }
+
 })();

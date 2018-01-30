@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../webcomponentsjs/custom-elements-es5-adapter.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
     <script src="../../fs-globals/fs-globals-mock.js"></script>
     <script src="../../axe.min/index.js" ></script>
@@ -416,12 +415,12 @@
 
           describe('getNewPointerRect', function() {
             it('should return the correct rect for up or down direction', function() {
-              var rect = new FS.dialog.service.positioningObj.fsRect(63.69, 10, 22.62, 11.31);
+              var rect = new FS.dialog.service.positioningObj.fsRect(59, 10, 32, 16);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'up', 1)).to.deep.equal(rect);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'down', 1)).to.deep.equal(rect);
             })
             it('should return the correct rect for left or right direction', function() {
-              var rect = new FS.dialog.service.positioningObj.fsRect(10, 0, 11.31, 22.62);
+              var rect = new FS.dialog.service.positioningObj.fsRect(10, 0, 16, 32);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'left', 1)).to.deep.equal(rect);
               expect(el._getNewPointerRect({left: 10, top: 10}, {left: 50, width: 50}, 'right', 1)).to.deep.equal(rect);
             })

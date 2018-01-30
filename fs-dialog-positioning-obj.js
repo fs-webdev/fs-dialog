@@ -1,13 +1,11 @@
-"use strict";
-
-(function () {
+(function() {
   var WIDE_ARROW_INSET = 15;
   var TALL_ARROW_INSET = 50;
   var WIDE_ARROW_HEIGHT = 16;
   var WIDE_ARROW_WIDTH = 32;
   // var INSET = 15;
   var INSET = 0;
-  var INSET2 = INSET * 2;
+  var INSET2 = INSET*2;
 
   /*********************/
   /* PRIVATE FUNCTIONS */
@@ -79,7 +77,7 @@
   /********************/
 
   function fp2(value) {
-    return Math.round(Number(value || 0) * 100) / 100;
+    return Math.round(Number(value || 0)*100)/100;
   }
 
   //**********************************
@@ -87,13 +85,13 @@
   // members: left, top, width, height
   // All values defult to 0
   function fsRect(left, top, width, height) {
-    this.top = fp2(top);
+    this.top    = fp2(top);
     this.height = fp2(height);
     this.bottom = fp2(this.top + this.height);
 
-    this.left = fp2(left);
-    this.width = fp2(width);
-    this.right = fp2(this.left + this.width);
+    this.left   = fp2(left);
+    this.width  = fp2(width);
+    this.right  = fp2(this.left + this.width);
   }
 
   function windowTop() {
@@ -105,10 +103,10 @@
   }
 
   function fsGetWindowRect() {
-    var top = windowTop() + INSET;
-    var left = windowLeft() + INSET;
-    var width = myWin().innerWidth - INSET2;
-    var height = myWin().innerHeight - INSET2;
+    var top = windowTop()+INSET;
+    var left = windowLeft()+INSET;
+    var width = myWin().innerWidth-INSET2;
+    var height = myWin().innerHeight-INSET2;
     return new fsRect(left, top, width, height);
   }
 
@@ -119,21 +117,22 @@
     var globalRect = localEl.getBoundingClientRect();
 
     if (!rect) {
-      left = globalRect.left;
-      top = globalRect.top;
-      width = globalRect.width;
+      left   = globalRect.left;
+      top    = globalRect.top;
+      width  = globalRect.width;
       height = globalRect.height;
-    } else {
+    }
+    else {
       // Convert from local to global coordinates
-      left = rect.left - globalRect.left;
-      top = rect.top - globalRect.top;
-      width = rect.width;
+      left   = rect.left - globalRect.left;
+      top    = rect.top  - globalRect.top;
+      width  = rect.width;
       height = rect.height;
     }
 
     // Adjust for page scroll offsets
     left += windowLeft();
-    top += windowTop();
+    top  += windowTop();
 
     // Create a new rect in global coordinates
     return new fsRect(left, top, width, height);
@@ -146,24 +145,25 @@
     var globalRect = localEl.getBoundingClientRect();
     // Bug Fix: OFT-69340/TW-47 - Global flyout positioning does not take body offset into account when walkMeEx is enabled
     // bodyLeftOffset = (FS.showEx('walkMeEx') && localEl.isSameNode(body()) && !body().scrollLeft)? body().getBoundingClientRect().left : 0;
-    bodyLeftOffset = localEl.isSameNode(body()) && !body().scrollLeft ? body().getBoundingClientRect().left : 0;
+    bodyLeftOffset = (localEl.isSameNode(body()) && !body().scrollLeft)? body().getBoundingClientRect().left : 0;
 
     if (rect) {
-      left = rect.left;
-      top = rect.top;
-      width = rect.width;
+      left   = rect.left;
+      top    = rect.top;
+      width  = rect.width;
       height = rect.height;
-    } else {
-      left = 0;
-      top = 0;
-      width = 0;
+    }
+    else {
+      left   = 0;
+      top    = 0;
+      width  = 0;
       height = 0;
     }
 
     // Convert from global to local coordinates
-    left -= globalRect.left + windowLeft();
+    left -= (globalRect.left + windowLeft());
     left += bodyLeftOffset;
-    top -= globalRect.top + windowTop();
+    top  -= (globalRect.top + windowTop());
 
     // Create a new rect in locale coordinates
     return new fsRect(left, top, width, height);
@@ -189,4 +189,5 @@
     fsGlobalToLocal: fsGlobalToLocal,
     fsLocalToLocal: fsLocalToLocal
   };
+
 })();
