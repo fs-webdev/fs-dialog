@@ -253,16 +253,17 @@ fs-modal-dialog:not([no-transition]) {
     // to get it off the current frame (50ms doesn't seem to be enough)
     setTimeout(function () {
       document.body.style.overflow = null;
-
-      // uninert all nodes
-      this._inertedElements.forEach(function (node) {
-        node.inert = false;
-      });
-      this._uninertedElements.forEach(function (node) {
-        node.inert = true;
-      });
-      this._inertedElements = null;
-      this._uninertedElements = null;
+      if (this._inertedElements) {
+        // uninert all nodes
+        this._inertedElements.forEach(function (node) {
+          node.inert = false;
+        });
+        this._uninertedElements.forEach(function (node) {
+          node.inert = true;
+        });
+        this._inertedElements = null;
+        this._uninertedElements = null;
+      }
     }.bind(this), 100);
   }
 
