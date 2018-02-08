@@ -68,9 +68,9 @@
   };
 
   FS.dialog.service.closeDialogAndAllChildren = function(dialogElement) {
-    var reverseStack = [].concat(dialogStack.reverse());
+    var reverseStack = [].concat(dialogStack).reverse();
     var index = reverseStack.indexOf(dialogElement);
-    var closeDialogs = [];
+
     var animationToUseToClose = dialogElement.getAttribute('transition');
     reverseStack.some(function(dialog, dialogIndex) {
       if (dialogIndex <= index) {
@@ -79,7 +79,7 @@
           dialog.setAttribute('transition', animationToUseToClose);
         }
         dialog.close();
-          // Restsore the animation direction after the transition has finished
+        // Restsore the animation direction after the transition has finished
         if (animationToUseToClose) {
           setTimeout(function(){
             dialog.setAttribute('transition', animationToRestore);
