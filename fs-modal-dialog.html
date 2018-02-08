@@ -111,14 +111,6 @@ fs-modal-dialog:not([no-transition]) {
           value: false
         },
         /**
-         * Whether or not to emit a 'fs-dialog-confirm' event instead of closing dialog.
-         * @type {boolean} [data-dialog-confirm=false]
-         */
-        'data-dialog-confirm':  {
-          type: Boolean,
-          value: false
-        },
-        /**
          * Whether or not to disable transition animation.
          * Default: false.
          * @type {boolean} [no-transition]
@@ -300,13 +292,13 @@ fs-modal-dialog:not([no-transition]) {
     if (event && event.target && (event.target.tagName === 'FS-ANCHORED-DIALOG' || event.target.tagName === 'FS-MODELESS-DIALOG')) {
       uninertChildDialog(event.target);
     }
-  };
+  }
 
   function dialogCloseEH (event) {
     if (event && event.target && (event.target.tagName === 'FS-ANCHORED-DIALOG' || event.target.tagName === 'FS-MODELESS-DIALOG')) {
       a11yClose.bind(event.target)();
     }
-  };
+  }
 
   if('customElements' in window){
     customElements.define('fs-modal-dialog', FSModalDialog);
