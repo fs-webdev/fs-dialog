@@ -174,12 +174,11 @@
   /** are going to contain **/
   /** an absolute child    **/
 
-  @media screen and (min-width:480px) {
-    fs-modal-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close,
-    fs-anchored-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close {
-      display: none;
-    }
+  fs-modal-dialog[no-close-button] .fs-dialog__close,
+  fs-anchored-dialog[no-close-button] .fs-dialog__close {
+    display: none;
   }
+
   @media screen and (max-width:480px) {
     fs-modal-dialog:not([no-fullscreen-mobile]),
     fs-anchored-dialog:not([no-fullscreen-mobile]) {
@@ -710,7 +709,7 @@
           reverseStack.some(function(dialog) {
             if (dialog.dismissOnBlur && !dialog.contains(e.relatedTarget)) {
               dialog.cancelFocusback = true;
-              dialog.attachedToElementClicked = dialog.attachToElement === e.relatedTarget;
+              dialog.attachedToElementClicked = (dialog.attachToElement.contains(e.relatedTarget) || dialog.focusBackElement.contains(e.relatedTarget));
               dialog.close();
               return;
             } else {
@@ -749,6 +748,7 @@
   function keydownHandler(event) {
     if (event.which === 27) {
       // 27 is the code for the escape key
+      this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true}));
       this.close();
     } else if (this.tagName !== 'FS-MODELESS-DIALOG' && event.which === 9) {
       // catches tab key
