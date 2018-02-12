@@ -709,7 +709,7 @@
           reverseStack.some(function(dialog) {
             if (dialog.dismissOnBlur && !dialog.contains(e.relatedTarget)) {
               dialog.cancelFocusback = true;
-              dialog.attachedToElementClicked = (dialog.attachToElement.contains(e.relatedTarget) || dialog.focusBackElement.contains(e.relatedTarget));
+              dialog.attachedToElementClicked = ((dialog.attachToElement && dialog.attachToElement.contains(e.relatedTarget)) || (dialog.focusBackElement && dialog.focusBackElement.contains(e.relatedTarget)));
               dialog.close();
               return;
             } else {
