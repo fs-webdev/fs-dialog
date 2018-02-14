@@ -467,7 +467,7 @@
             FS.dialog.service.addDialogToStack(this);
           }
 
-          this.focusBackElement = optionsObj.focusBackElement || document.activeElement;
+          this.focusBackElement = optionsObj.focusBackElement;
 
           // allow multiple dialogs to be open at a time by incrementing z-index by
           // the order they were opened
@@ -540,7 +540,7 @@
         // remove event listeners
         // consider reducing event listeners by putting them in the service
         if (this.dismissOnBlur) {
-          this.removeEventListener('focusout', this._focusoutHandler);
+          this.removeEventListener('focusout', this._focusoutHandler, true);
         }
         // do these functions need to be bound to this/be added to this?
         this.removeEventListener('click', dialogClickHandler);
