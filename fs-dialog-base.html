@@ -174,8 +174,15 @@
   /** are going to contain **/
   /** an absolute child    **/
 
-  fs-modal-dialog[no-close-button] .fs-dialog__close,
-  fs-anchored-dialog[no-close-button] .fs-dialog__close {
+  @media screen and (min-width:480px) {
+    fs-modal-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close,
+    fs-anchored-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close {
+      display: none;
+    }
+  }
+
+  fs-modal-dialog[no-close-button][no-fullscreen-mobile] .fs-dialog__close,
+  fs-anchored-dialog[no-close-button][no-fullscreen-mobile] .fs-dialog__close {
     display: none;
   }
 
