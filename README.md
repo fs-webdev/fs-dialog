@@ -28,7 +28,7 @@ $ bower install --save fs-webdev/fs-dialog
 
 ## Demo
 
-If you attempt to `frontier element serve` on a clean install, you will get an error, stating that the analysis.json file (used to populate the documentation page) does not exist. You can fix this by either running `frontier element serve -a`, or by auto-loading the demo page via: 
+If you attempt to `frontier element serve` on a clean install, you will get an error, stating that the analysis.json file (used to populate the documentation page) does not exist. You can fix this by either running `frontier element serve -a`, or by auto-loading the demo page via:
 
 `frontier element serve -d`
 
@@ -71,7 +71,7 @@ All classes are optional.
 * `fs-dialog__body` - Provides default padding and scrolling content. Modal dialogs will add `role=main` to this element for screen readers.
 
 > NOTE: If you do not include an overflow-capable element (generally a `<section>` or `<div>`, lists do not work) with the `fs-dialog__body` class that wraps your dialog content, your dialog will not take advantage of the built-in inner scrolling functionality
- 
+
 ### Elements
 
 All elements are optional.
@@ -117,7 +117,7 @@ npm install -g fs-webdev/size-limit
 
 ### Development Standards Enforcement
 
-> FamilySearch components are developed in compliance with ESLint and CSSLint common standards. Standards checking is run as part of an npm-based husky pre-commit hook, and can also be explicitly run via the `npm test` and `npm run standard` commands. 
+> FamilySearch components are developed in compliance with ESLint and CSSLint common standards. Standards checking is run as part of an npm-based husky pre-commit hook, and can also be explicitly run via the `npm test` and `npm run standard` commands.
 
 In order for **`standard`** to run, you generally need to globally install it:
 
@@ -127,7 +127,7 @@ npm install -g eslint-plugin-html
 npm install -g snazzy
 ```
 
-and then you can run: 
+and then you can run:
 
 ```bash
 semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy
@@ -142,7 +142,7 @@ npm install stylelint
 npm install -g stylelint-config-standard
 ```
 
-and then you can run: 
+and then you can run:
 
 ```bash
 stylelint '**/*.html' '**/*.css' --fix
@@ -185,7 +185,7 @@ or
 
 ```bash
 polymer test --skip-plugin sauce --local chrome -p
-``` 
+```
 
 If you want to run the full suite of SauceLabs browser tests, run:
 
