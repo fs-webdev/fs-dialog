@@ -27,10 +27,10 @@ fs-modal-dialog:not([no-transition]) {
 </style>
 
 <script>
-(function() {
-  var doc = (document._currentScript || document.currentScript).ownerDocument;
+(function () {
+  var doc = (document._currentScript || document.currentScript).ownerDocument; // eslint-disable-line
 
-     /**
+  /**
       * `<fs-modal-dialog>` is a modal dialog centered on the screen that is displayed above other content, masks the content underneath it, and prevents the user from interacting with the content underneath.
       *
       *     <body>
@@ -54,14 +54,13 @@ fs-modal-dialog:not([no-transition]) {
       *
       * @demo demo/index.html
       */
-    class FSModalDialog extends FS.dialog.baseDialogComponent {
-
+  class FSModalDialog extends FS.dialog.baseDialogComponent {
     // only used for docs.
-    static get properties(){
+    static get properties () {
       return {
         /**
          * Whether or not the dialog is opened.
-         * @type {boolean} [opened=false]
+         * @type {Boolean} [opened=false]
          */
         'opened': {
           type: Boolean,
@@ -70,65 +69,65 @@ fs-modal-dialog:not([no-transition]) {
         /**
          * The open modal transition animation for mobile.
          * Default: ''. Valid values: 'from-right', 'from-bottom'.
-         * @type {string} [transition='from-bottom']
+         * @type {String} [transition='from-bottom']
          */
-        'transition':  {
-          type: string,
+        'transition': {
+          type: String,
           value: ''
         },
         /**
          * Whether or not the modal should take up the entire screen below 480px.
          * Default: false.
-         * @type {boolean} [no-fullscreen-mobile=true]
+         * @type {Boolean} [no-fullscreen-mobile=true]
          */
-        'no-fullscreen-mobile':  {
-          type: boolean,
+        'no-fullscreen-mobile': {
+          type: Boolean,
           value: false
         },
         /**
          * Whether or not the modal should take up the entire screen regardless of screen size.
          * Default: false.
-         * @type {boolean} [keep-fullscreen=true]
+         * @type {Boolean} [keep-fullscreen=true]
          */
-        'keep-fullscreen':  {
-          type: boolean,
+        'keep-fullscreen': {
+          type: Boolean,
           value: false
         },
         /**
          * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-dismiss' event and close the dialog on click.
-         * @type {boolean} [data-dialog-dismiss=false]
+         * @type {Boolean} [data-dialog-dismiss=false]
          */
-        'data-dialog-dismiss':  {
+        'data-dialog-dismiss': {
           type: Boolean,
           value: false
         },
         /**
          * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-confirm' event on click.
-         * @type {boolean} [data-dialog-confirm=false]
+         * @type {Boolean} [data-dialog-confirm=false]
          */
-        'data-dialog-confirm':  {
+        'data-dialog-confirm': {
           type: Boolean,
           value: false
         },
         /**
          * Whether or not to disable transition animation.
          * Default: false.
-         * @type {boolean} [no-transition]
+         * @type {Boolean} [no-transition]
          */
-        'no-transition':  {
+        'no-transition': {
           type: Boolean,
           value: false
         },
         /**
          * Whether or not to show the close button x in the upper right corner
          * Default: false.
-         * @type {boolean} [no-close-button]
+         * @type {Boolean} [no-close-button]
          */
-        'no-close-button':  {
+        'no-close-button': {
           type: Boolean,
           value: false
         }
-      }
+      };
     }
 
     /**
@@ -136,14 +135,14 @@ fs-modal-dialog:not([no-transition]) {
      * @param {Object} config - Object containing the following property:
      *                          focusBackElement - The element to return focus back after the dialog closes.
      */
-    open(config) {
+    open (config) {
       super.open(config);
     }
 
     /**
      * Close the dialog.  If focusBackElement exists, focus is returned to that element.
      */
-    close() {
+    close () {
       super.close();
     }
 
@@ -151,7 +150,7 @@ fs-modal-dialog:not([no-transition]) {
      * Initialize the dialog, add events, and accessibility features. Should only change
      * the DOM on attached callback otherwise it breaks Polymer bindings.
      */
-    attachedCallback() {
+    attachedCallback () {
       this.appendStyles(doc, 'style[data-fs-modal-dialog]', this);
 
       // selectors
@@ -185,13 +184,13 @@ fs-modal-dialog:not([no-transition]) {
 
       var keydownHandler = this.keydownHandler.bind(this);
 
-      function openModalFunction() {
+      function openModalFunction () {
         this._a11yOpen();
         maskEl.addEventListener('keydown', keydownHandler);
         if (this.getAttribute('no-transition') !== undefined && this.getAttribute('no-transition') !== null) {
           maskEl.setAttribute('no-transition', '');
         } else {
-          maskEl.removeAttribute('no-transition')
+          maskEl.removeAttribute('no-transition');
         }
         maskEl.setAttribute('opened', '');
         maskEl.style.zIndex = this.style.zIndex;
@@ -199,18 +198,17 @@ fs-modal-dialog:not([no-transition]) {
         window.addEventListener('fs-dialog-close', dialogCloseEH);
       }
 
-      function closeModalFunction() {
+      function closeModalFunction () {
         window.removeEventListener('fs-dialog-open', dialogOpenEH);
         window.removeEventListener('fs-dialog-close', dialogCloseEH);
         this._a11yClose();
         maskEl.removeAttribute('opened');
         maskEl.removeEventListener('keydown', keydownHandler);
       }
-
     }
   }
 
-  function a11yOpen() {
+  function a11yOpen () {
     this.inert = false;
 
     // we need to inert every subtree except for the one that contains this dialog
@@ -222,7 +220,6 @@ fs-modal-dialog:not([no-transition]) {
     var el = this;
 
     do {
-
       // an element that is a child of a shadowroot will have a parentNode but not
       // a parentElement. a shadowroot element has neither but instead has a host
       var parent = el.parentNode || el.host;
@@ -233,8 +230,8 @@ fs-modal-dialog:not([no-transition]) {
         this._uninertedElements.push(parent);
       }
 
-      for (var i = 0, child; child = parent.children[i]; i++) {
-
+      for (var i = 0; i < parent.children.length; i++) {
+        var child = parent.children[i];
         // by only adding inert to elements that have not been inerted, we can
         // preserve a11y through stacking modals
         if (!(child === el || child.hasAttribute('data-no-inert') || child.inert)) {
@@ -273,7 +270,7 @@ fs-modal-dialog:not([no-transition]) {
     // we have the empty inerted elements so that we can reuse a11y close
     // to re-inert the necessary elements after the childDialog gets closed again
     childDialog._inertedElements = [];
-    el = childDialog;
+    var el = childDialog;
     do {
       // an element that is a child of a shadowroot will have a parentNode but not
       // a parentElement. a shadowroot element has neither but instead has a host
@@ -301,7 +298,7 @@ fs-modal-dialog:not([no-transition]) {
     }
   }
 
-  if('customElements' in window){
+  if ('customElements' in window) {
     customElements.define('fs-modal-dialog', FSModalDialog);
   } else {
     document.registerElement('fs-modal-dialog', {prototype: Object.create(FSModalDialog.prototype)});

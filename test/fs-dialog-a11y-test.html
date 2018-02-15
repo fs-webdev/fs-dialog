@@ -67,23 +67,20 @@
     </test-fixture>
 
     <script>
-
-      document.addEventListener('WebComponentsReady', function(){
-
-        describe('fs-modal-dialog', function() {
+      document.addEventListener('WebComponentsReady', function () {
+        describe('fs-modal-dialog', function () {
           var el;
 
-          beforeEach(function() {
+          beforeEach(function () {
             el = fixture('fs-modal-dialog-fixture');
           });
 
-          afterEach(function() {
+          afterEach(function () {
             el.close();
           });
 
-          describe('a11y', function() {
-
-            it('should pass accessibility guidelines', function(done) {
+          describe('a11y', function () {
+            it('should pass accessibility guidelines', function (done) {
               el.open();
 
               axe.run(el, {
@@ -96,51 +93,47 @@
                 if (results.violations.length || results.incomplete.length) {
                   var errMsg = '';
 
-                  results.violations.forEach(function(violation) {
+                  results.violations.forEach(function (violation) {
                     errMsg += `\n\n${violation.help}:`;
 
-                    violation.nodes.forEach(function(node, index) {
-                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    violation.nodes.forEach(function (node, index) {
+                      errMsg += `\n\t${index + 1}: ${node.html}`;
                     });
                   });
 
-                  results.incomplete.forEach(function(incomplete) {
+                  results.incomplete.forEach(function (incomplete) {
                     errMsg += `\n\n${incomplete.help}:`;
 
-                    incomplete.nodes.forEach(function(node, index) {
-                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    incomplete.nodes.forEach(function (node, index) {
+                      errMsg += `\n\t${index + 1}: ${node.html}`;
                     });
                   });
 
-                  var error = new Error(errMsg+'\n');
+                  var error = new Error(errMsg + '\n');
                   error.stack = null;
 
-                  return done(error)
+                  return done(error);
                 }
 
                 done();
               });
-
             });
-
           });
-
         });
 
-        describe('fs-anchored-dialog', function() {
+        describe('fs-anchored-dialog', function () {
           var el;
 
-          beforeEach(function() {
+          beforeEach(function () {
             el = fixture('fs-anchored-dialog-fixture');
           });
 
-          afterEach(function() {
+          afterEach(function () {
             el.close();
           });
 
-          describe('a11y', function() {
-
-            it('should pass accessibility guidelines', function(done) {
+          describe('a11y', function () {
+            it('should pass accessibility guidelines', function (done) {
               el.open();
 
               axe.run(el, {
@@ -153,51 +146,47 @@
                 if (results.violations.length || results.incomplete.length) {
                   var errMsg = '';
 
-                  results.violations.forEach(function(violation) {
+                  results.violations.forEach(function (violation) {
                     errMsg += `\n\n${violation.help}:`;
 
-                    violation.nodes.forEach(function(node, index) {
-                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    violation.nodes.forEach(function (node, index) {
+                      errMsg += `\n\t${index + 1}: ${node.html}`;
                     });
                   });
 
-                  results.incomplete.forEach(function(incomplete) {
+                  results.incomplete.forEach(function (incomplete) {
                     errMsg += `\n\n${incomplete.help}:`;
 
-                    incomplete.nodes.forEach(function(node, index) {
-                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    incomplete.nodes.forEach(function (node, index) {
+                      errMsg += `\n\t${index + 1}: ${node.html}`;
                     });
                   });
 
-                  var error = new Error(errMsg+'\n');
+                  var error = new Error(errMsg + '\n');
                   error.stack = null;
 
-                  return done(error)
+                  return done(error);
                 }
 
                 done();
               });
-
             });
-
           });
-
         });
 
-        describe('fs-modeless-dialog', function() {
+        describe('fs-modeless-dialog', function () {
           var el;
 
-          beforeEach(function() {
+          beforeEach(function () {
             el = fixture('fs-modeless-dialog-fixture');
           });
 
-          afterEach(function() {
+          afterEach(function () {
             el.close();
           });
 
-          describe('a11y', function() {
-
-            it('should pass accessibility guidelines', function(done) {
+          describe('a11y', function () {
+            it('should pass accessibility guidelines', function (done) {
               el.open();
 
               axe.run(el, {
@@ -210,37 +199,33 @@
                 if (results.violations.length || results.incomplete.length) {
                   var errMsg = '';
 
-                  results.violations.forEach(function(violation) {
+                  results.violations.forEach(function (violation) {
                     errMsg += `\n\n${violation.help}:`;
 
-                    violation.nodes.forEach(function(node, index) {
-                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    violation.nodes.forEach(function (node, index) {
+                      errMsg += `\n\t${index + 1}: ${node.html}`;
                     });
                   });
 
-                  results.incomplete.forEach(function(incomplete) {
+                  results.incomplete.forEach(function (incomplete) {
                     errMsg += `\n\n${incomplete.help}:`;
 
-                    incomplete.nodes.forEach(function(node, index) {
-                      errMsg += `\n\t${index+1}: ${node.html}`;
+                    incomplete.nodes.forEach(function (node, index) {
+                      errMsg += `\n\t${index + 1}: ${node.html}`;
                     });
                   });
 
-                  var error = new Error(errMsg+'\n');
+                  var error = new Error(errMsg + '\n');
                   error.stack = null;
 
-                  return done(error)
+                  return done(error);
                 }
 
                 done();
               });
-
             });
-
           });
-
         });
-
       });
     </script>
   </body>

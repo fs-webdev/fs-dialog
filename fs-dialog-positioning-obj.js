@@ -1,17 +1,12 @@
-(function() {
-  var WIDE_ARROW_INSET = 15;
-  var TALL_ARROW_INSET = 50;
-  var WIDE_ARROW_HEIGHT = 16;
-  var WIDE_ARROW_WIDTH = 32;
-  // var INSET = 15;
+(function () {
   var INSET = 0;
-  var INSET2 = INSET*2;
+  var INSET2 = INSET * 2;
 
   /*********************/
   /* PRIVATE FUNCTIONS */
   /*********************/
 
-  function fsCalculatePercentageVisible(rect, containingRect) {
+  function fsCalculatePercentageVisible (rect, containingRect) {
     if (rect.left >= containingRect.left && rect.right <= containingRect.right && rect.top >= containingRect.top && rect.bottom <= containingRect.bottom) {
       // the entire rect is on screen
       return 1;
@@ -64,11 +59,11 @@
     }
   }
 
-  function myWin() {
+  function myWin () {
     return window.karmaWindow || window;
   }
 
-  function body() {
+  function body () {
     return window.karmaBody || document.body;
   }
 
@@ -76,103 +71,101 @@
   /* PUBLIC FUNCITONS */
   /********************/
 
-  function fp2(value) {
-    return Math.round(Number(value || 0)*100)/100;
+  function fp2 (value) {
+    return Math.round(Number(value || 0) * 100) / 100;
   }
 
-  //**********************************
-  // fsRect Object
+  //* *********************************
+  // FSRect Object
   // members: left, top, width, height
   // All values defult to 0
-  function fsRect(left, top, width, height) {
-    this.top    = fp2(top);
+  function FSRect (left, top, width, height) {
+    this.top = fp2(top);
     this.height = fp2(height);
     this.bottom = fp2(this.top + this.height);
 
-    this.left   = fp2(left);
-    this.width  = fp2(width);
-    this.right  = fp2(this.left + this.width);
+    this.left = fp2(left);
+    this.width = fp2(width);
+    this.right = fp2(this.left + this.width);
   }
 
-  function windowTop() {
+  function windowTop () {
     return myWin().pageYOffset || body().scrollTop;
   }
 
-  function windowLeft() {
+  function windowLeft () {
     return myWin().pageXOffset || body().scrollLeft;
   }
 
-  function fsGetWindowRect() {
-    var top = windowTop()+INSET;
-    var left = windowLeft()+INSET;
-    var width = myWin().innerWidth-INSET2;
-    var height = myWin().innerHeight-INSET2;
-    return new fsRect(left, top, width, height);
+  function fsGetWindowRect () {
+    var top = windowTop() + INSET;
+    var left = windowLeft() + INSET;
+    var width = myWin().innerWidth - INSET2;
+    var height = myWin().innerHeight - INSET2;
+    return new FSRect(left, top, width, height);
   }
 
-  // Convert the fsRect from the local coordinates of $local to global coordinates
-  // If 'rect' is null or not defined then use the bounding fsRect of $local
-  function fsLocalToGlobal(localEl, rect) {
+  // Convert the FSRect from the local coordinates of $local to global coordinates
+  // If 'rect' is null or not defined then use the bounding FSRect of $local
+  function fsLocalToGlobal (localEl, rect) {
     var left, top, width, height;
     var globalRect = localEl.getBoundingClientRect();
 
     if (!rect) {
-      left   = globalRect.left;
-      top    = globalRect.top;
-      width  = globalRect.width;
+      left = globalRect.left;
+      top = globalRect.top;
+      width = globalRect.width;
       height = globalRect.height;
-    }
-    else {
+    } else {
       // Convert from local to global coordinates
-      left   = rect.left - globalRect.left;
-      top    = rect.top  - globalRect.top;
-      width  = rect.width;
+      left = rect.left - globalRect.left;
+      top = rect.top - globalRect.top;
+      width = rect.width;
       height = rect.height;
     }
 
     // Adjust for page scroll offsets
     left += windowLeft();
-    top  += windowTop();
+    top += windowTop();
 
     // Create a new rect in global coordinates
-    return new fsRect(left, top, width, height);
+    return new FSRect(left, top, width, height);
   }
 
-  // Convert the fsRect from the global coordinates to local coordinates of $local
-  // If 'rect' is null or not defined then use an empty fsRect
-  function fsGlobalToLocal(localEl, rect) {
+  // Convert the FSRect from the global coordinates to local coordinates of $local
+  // If 'rect' is null or not defined then use an empty FSRect
+  function fsGlobalToLocal (localEl, rect) {
     var left, top, width, height, bodyLeftOffset;
     var globalRect = localEl.getBoundingClientRect();
     // Bug Fix: OFT-69340/TW-47 - Global flyout positioning does not take body offset into account when walkMeEx is enabled
     // bodyLeftOffset = (FS.showEx('walkMeEx') && localEl.isSameNode(body()) && !body().scrollLeft)? body().getBoundingClientRect().left : 0;
-    bodyLeftOffset = (localEl.isSameNode(body()) && !body().scrollLeft)? body().getBoundingClientRect().left : 0;
+    bodyLeftOffset = (localEl.isSameNode(body()) && !body().scrollLeft) ? body().getBoundingClientRect().left : 0;
 
     if (rect) {
-      left   = rect.left;
-      top    = rect.top;
-      width  = rect.width;
+      left = rect.left;
+      top = rect.top;
+      width = rect.width;
       height = rect.height;
-    }
-    else {
-      left   = 0;
-      top    = 0;
-      width  = 0;
+    } else {
+      left = 0;
+      top = 0;
+      width = 0;
       height = 0;
     }
 
     // Convert from global to local coordinates
     left -= (globalRect.left + windowLeft());
     left += bodyLeftOffset;
-    top  -= (globalRect.top + windowTop());
+    top -= (globalRect.top + windowTop());
 
     // Create a new rect in locale coordinates
-    return new fsRect(left, top, width, height);
+    return new FSRect(left, top, width, height);
   }
 
-  // Convert the fsRect from the local coordinates of $localSrc
+  // Convert the FSRect from the local coordinates of $localSrc
   // to the local coordinates of $localDst.
-  // If 'rect' is null or not defined then use the bounding fsRect for $localSrc
-  function fsLocalToLocal(localSrcEl, localDstEl, rect) {
+  // If 'rect' is null or not defined then use the bounding FSRect for $localSrc
+  function fsLocalToLocal (localSrcEl, localDstEl, rect) {
     rect = rect || null;
     rect = fsLocalToGlobal(localSrcEl, rect);
     return fsGlobalToLocal(localDstEl, rect);
@@ -180,7 +173,7 @@
 
   FS.dialog.service.positioningObj = {
     fp2: fp2,
-    fsRect: fsRect,
+    FSRect: FSRect,
     fsCalculatePercentageVisible: fsCalculatePercentageVisible,
     windowTop: windowTop,
     windowLeft: windowLeft,
@@ -189,5 +182,4 @@
     fsGlobalToLocal: fsGlobalToLocal,
     fsLocalToLocal: fsLocalToLocal
   };
-
 })();

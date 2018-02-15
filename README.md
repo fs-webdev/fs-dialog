@@ -12,7 +12,7 @@ A [dialog](https://en.wikipedia.org/wiki/Dialog_box) is:
 >
 > Dialog boxes are classified as "modal" or "modeless", depending on whether they block interaction with the software that initiated the dialog."
 
-For accessibility, dialogs always have a close button in to top right corner.
+For accessibility, dialogs always have a close button in to top right corner, unless explicitly disabled.
 
 The content of a dialog (the element with the class `.fs-dialog--body`) will scroll if it's taller than the dialog or the dialog is taller than the page. The `<header>` or `<footer>` of a dialog will always be visible and won't scroll with the content.
 
@@ -31,6 +31,12 @@ $ bower install --save fs-webdev/fs-dialog
 If you attempt to `frontier element serve` on a clean install, you will get an error, stating that the analysis.json file (used to populate the documentation page) does not exist. You can fix this by either running `frontier element serve -a`, or by auto-loading the demo page via: 
 
 `frontier element serve -d`
+
+The demo page is _fully_ dynamic, allowing excercising of each type of dialog with its various options, updating the associated HTML code snippet and allowing for easy testing of various configurations.
+
+## Online Docs & Demo
+
+The FamilySearch Element Catalog is located at: [https://www.familysearch.org/frontier/elements/](https://www.familysearch.org/frontier/elements/), with access granted to members of the `fs-webdev` GitHub organization. You can browse through each shared element's docs and demo
 
 ## Usage
 
@@ -64,11 +70,13 @@ All classes are optional.
 
 * `fs-dialog__body` - Provides default padding and scrolling content. Modal dialogs will add `role=main` to this element for screen readers.
 
+> NOTE: If you do not include an overflow-capable element (generally a `<section>` or `<div>`, lists do not work) with the `fs-dialog__body` class that wraps your dialog content, your dialog will not take advantage of the built-in inner scrolling functionality
+ 
 ### Elements
 
 All elements are optional.
 
-* `header` - The standard dialog header with default padding and a bottom border.
+* `header` - The standard dialog header with default padding and a bottom border. NOTE: If you are using a modeless dialog, you need to include a header element, or the dialog will not be repositionable.
 * `footer`- The standard dialog footer with default padding, grey background, and a top border.
 
 ### Events
@@ -99,6 +107,49 @@ The `tree-common-build-scripts` folder is a Git submodule, made to house build-r
 git pull --recurse-submodules; git submodule update --remote --recursive
 ```
 
+## Special Plugins
+
+In order for the **`size-limit`** WCT plugin to run, you need to globally install it:
+
+```bash
+npm install -g fs-webdev/size-limit
+```
+
+### Development Standards Enforcement
+
+> FamilySearch components are developed in compliance with ESLint and CSSLint common standards. Standards checking is run as part of an npm-based husky pre-commit hook, and can also be explicitly run via the `npm test` and `npm run standard` commands. 
+
+In order for **`standard`** to run, you generally need to globally install it:
+
+```bash
+npm install -g semistandard
+npm install -g eslint-plugin-html
+npm install -g snazzy
+```
+
+and then you can run: 
+
+```bash
+semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy
+```
+
+for a report of JS standards infractions and to automatically fix the easy infractions _(mostly whitespace, commas, quotes, and semicolons)_. Custom configuration should be added to a `semistandard` section of package.json.
+
+In order for **`stylelint`** to run, you need to globally install it:
+
+```bash
+npm install stylelint
+npm install -g stylelint-config-standard
+```
+
+and then you can run: 
+
+```bash
+stylelint '**/*.html' '**/*.css' --fix
+```
+
+for a report of CSS standards infractions and to automatically fix the easy infractions _(mostly whitespace)_. Custom configuration should be added to a `stylelint` section of package.json.
+
 ## Running Tests
 
 This component is set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester).
@@ -112,13 +163,13 @@ npm install -g t2ym/web-component-tester#6.0.0-wct6-plugin.1
 npm install -g t2ym/web-component-tester-istanbul#0.10.1-wct6.11
 ```
 
-In order for the `size-limit` WCT plugin to run, you need to globally install it:
+To run tests locally, run:
 
 ```bash
-npm install --g fs-webdev/size-limit
+npm test
 ```
 
-To run tests locally, run:
+or
 
 ```bash
 wct --skip-plugin sauce

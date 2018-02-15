@@ -21,8 +21,8 @@
     background: #fff;
     border-radius: 4px;
     border-radius: var(--fs-border-radius, 4px);
-    -webkit-filter: drop-shadow(0 0 7px rgba(0,0,0,0.5));
-    filter: drop-shadow(0 0 7px rgba(0,0,0,0.5));
+    -webkit-filter: drop-shadow(0 0 7px rgba(0, 0, 0, 0.5));
+    filter: drop-shadow(0 0 7px rgba(0, 0, 0, 0.5));
     display: flex; /* [3] */
     flex-direction: column;
     max-height: 100vh;
@@ -30,6 +30,17 @@
     opacity: 0;
     visibility: hidden;
     width: 100%;
+  }
+
+  .fs-dialog__mask {
+    background: rgba(51, 51, 49, 0.8);
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    visibility: hidden;
   }
 
   fs-modeless-dialog:not([opened]),
@@ -67,17 +78,6 @@
     transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
   }
 
-  .fs-dialog__mask {
-    background: rgba(51,51,49,0.8);
-    bottom: 0;
-    left: 0;
-    opacity: 0;
-    position: fixed;
-    right: 0;
-    top: 0;
-    visibility: hidden;
-  }
-
   .fs-dialog__mask:not([no-transition]) {
     transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
   }
@@ -85,8 +85,8 @@
   fs-anchored-dialog header,
   fs-modeless-dialog header,
   fs-modal-dialog header {
-    /*border-bottom: 1px solid #ccc;
-    border-bottom: 1px solid var(--fs-color-grey-border, #ccc);*/
+    /* border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--fs-color-grey-border, #ccc); */
     border-radius: 4px 4px 0 0;
     border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
     flex-shrink: 0;
@@ -110,7 +110,7 @@
     height: 48px;
     height: 4rem;
     line-height: 1;
-    opacity: 0.5;
+    opacity: 1;
     padding: 0;
     position: absolute;
     right: 0;
@@ -122,7 +122,6 @@
     width: 48px;
     width: 4rem;
     color: inherit; /* [5] */
-    opacity: 1;
     z-index: 2;
   }
 
@@ -155,23 +154,30 @@
   fs-modal-dialog footer,
   fs-modeless-dialog footer,
   fs-anchored-dialog footer {
-    /*background: #f4f4f4;
-    background: var(--fs-color-grey-background-light, #f4f4f4);*/
+    /* background: #f4f4f4;
+    background: var(--fs-color-grey-background-light, #f4f4f4); */
     border-radius: 0 0 4px 4px;
     border-radius: 0 0 var(--fs-border-radius, 4px) var(--fs-border-radius, 4px);
-    /*border-top: 1px solid #ccc;
-    border-top: 1px solid var(--fs-color-grey-border, #ccc);*/
+
+    /* border-top: 1px solid #ccc;
+    border-top: 1px solid var(--fs-color-grey-border, #ccc); */
     flex-shrink: 0;
     padding: 10px 15px;
     background-color: #fff;
   }
 
   /** FULLSCREEN ON MOBILE **/
+
   /********* CAVEAT *********/
+
   /** This isn't going to  **/
+
   /** work on all dialogs  **/
+
   /** who have parents who **/
+
   /** are going to contain **/
+
   /** an absolute child    **/
 
   @media screen and (min-width:480px) {
@@ -204,6 +210,7 @@
     fs-anchored-dialog[transition]:not([no-fullscreen-mobile]) {
       transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
     }
+
     fs-anchored-dialog[transition][opened]:not([no-fullscreen-mobile]) {
       transition: visibility 0s, opacity 0s;
     }
@@ -233,56 +240,60 @@
     }
   }
 
-    fs-modal-dialog[keep-fullscreen],
-    fs-anchored-dialog[keep-fullscreen] {
-      border-radius: 0;
-      top: 0 !important;
-      left: 0 !important;
-      bottom: 0 !important;
-      right: 0 !important;
-      transform: translate(0, 0) !important;
-      max-height: 100% !important;
-      height: 100% !important;
-      position: fixed;
-      max-width: 100%;
-      width: 100%;
-    }
-
-    /** Mobile Transitions **/
-    fs-anchored-dialog[transition][keep-fullscreen] {
-      transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-    }
-    fs-anchored-dialog[transition][opened][keep-fullscreen] {
-      transition: visibility 0s, opacity 0s;
-    }
-
-    fs-modal-dialog[transition="from-bottom"][keep-fullscreen],
-    fs-anchored-dialog[transition="from-bottom"][keep-fullscreen] {
-      top: 100% !important;
-      transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-    }
-
-    fs-modal-dialog[transition="from-bottom"][opened][keep-fullscreen],
-    fs-anchored-dialog[transition="from-bottom"][opened][keep-fullscreen] {
-      top: 0 !important;
-      transition: top 0.3s;
-    }
-
-    fs-modal-dialog[transition="from-right"][keep-fullscreen],
-    fs-anchored-dialog[transition="from-right"][keep-fullscreen] {
-      left: 100% !important;
-      transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-    }
-
-    fs-modal-dialog[transition="from-right"][opened][keep-fullscreen],
-    fs-anchored-dialog[transition="from-right"][opened][keep-fullscreen] {
-      left: 0 !important;
-      transition: left 0.3s;
-    }
+  fs-modal-dialog[keep-fullscreen],
+  fs-anchored-dialog[keep-fullscreen] {
+    border-radius: 0;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    transform: translate(0, 0) !important;
+    max-height: 100% !important;
+    height: 100% !important;
+    position: fixed;
+    max-width: 100%;
+    width: 100%;
+  }
 
   /** Mobile Transitions **/
+  fs-anchored-dialog[transition][keep-fullscreen] {
+    transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+  }
+
+  fs-anchored-dialog[transition][opened][keep-fullscreen] {
+    transition: visibility 0s, opacity 0s;
+  }
+
+  fs-modal-dialog[transition="from-bottom"][keep-fullscreen],
+  fs-anchored-dialog[transition="from-bottom"][keep-fullscreen] {
+    top: 100% !important;
+    transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+  }
+
+  fs-modal-dialog[transition="from-bottom"][opened][keep-fullscreen],
+  fs-anchored-dialog[transition="from-bottom"][opened][keep-fullscreen] {
+    top: 0 !important;
+    transition: top 0.3s;
+  }
+
+  fs-modal-dialog[transition="from-right"][keep-fullscreen],
+  fs-anchored-dialog[transition="from-right"][keep-fullscreen] {
+    left: 100% !important;
+    transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+  }
+
+  fs-modal-dialog[transition="from-right"][opened][keep-fullscreen],
+  fs-anchored-dialog[transition="from-right"][opened][keep-fullscreen] {
+    left: 0 !important;
+    transition: left 0.3s;
+  }
+
+  /** Mobile Transitions **/
+
   /** TODO: do we need  transitions when we are not on mobile? **/
- /* fs-modal-dialog[transition] {
+
+  /*
+  fs-modal-dialog[transition] {
     transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
   }
   fs-modal-dialog[transition][opened] {
@@ -311,7 +322,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
     transition: left 0.3s;
-  }*/
+  }
+  */
 </style>
 
 <!--
@@ -346,23 +358,23 @@
 </template>
 
 <script>
-(function(window, document) {
+(function (window, document) {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
   var template = doc.querySelector('#fs-dialog-template');
-  FS._registerTranslations({"de":{"_LRM_PKTAG439":"fs-dialog_1_146 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Schließen"},"en":{"fs.shared.fsDialog.CLOSE":"Close"},"eo":{"fs.shared.fsDialog.CLOSE":"[Çļöšé--- П國カ내]"},"es":{"_LRM_PKTAG33":"fs-dialog_2_101 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Cerrar"},"fr":{"_LRM_PKTAG930":"fs-dialog_1_102 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fermer"},"it":{"_LRM_PKTAG257":"fs-dialog_1_103 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Chiudi"},"ja":{"_LRM_PKTAG68":"fs-dialog_1_104 - FULL-FILE","fs.shared.fsDialog.CLOSE":"閉じる"},"ko":{"_LRM_PKTAG569":"fs-dialog_1_105 - FULL-FILE","fs.shared.fsDialog.CLOSE":"닫기"},"pt":{"_LRM_PKTAG662":"fs-dialog_1_106 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fechar"},"ru":{"_LRM_PKTAG275":"fs-dialog_1_107 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Закрыть"},"zh":{"_LRM_PKTAG645":"fs-dialog_1_108 - FULL-FILE","fs.shared.fsDialog.CLOSE":"關閉"}});
+  FS._registerTranslations({'de': {'_LRM_PKTAG439': 'fs-dialog_1_146 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Schließen'}, 'en': {'fs.shared.fsDialog.CLOSE': 'Close'}, 'eo': {'fs.shared.fsDialog.CLOSE': '[Çļöšé--- П國カ내]'}, 'es': {'_LRM_PKTAG33': 'fs-dialog_2_101 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Cerrar'}, 'fr': {'_LRM_PKTAG930': 'fs-dialog_1_102 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Fermer'}, 'it': {'_LRM_PKTAG257': 'fs-dialog_1_103 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Chiudi'}, 'ja': {'_LRM_PKTAG68': 'fs-dialog_1_104 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '閉じる'}, 'ko': {'_LRM_PKTAG569': 'fs-dialog_1_105 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '닫기'}, 'pt': {'_LRM_PKTAG662': 'fs-dialog_1_106 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Fechar'}, 'ru': {'_LRM_PKTAG275': 'fs-dialog_1_107 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Закрыть'}, 'zh': {'_LRM_PKTAG645': 'fs-dialog_1_108 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '關閉'}});
 
   var zIndex = 1990;
   var zIndexIncrement = 10;
 
   var attrTypeMap = {
-    'dismiss-on-blur' : 'boolean',
-    'no-fullscreen-mobile' : 'boolean',
-    'opened' : 'boolean'
-  }
+    'dismiss-on-blur': 'boolean',
+    'no-fullscreen-mobile': 'boolean',
+    'opened': 'boolean'
+  };
   var attrNameMap = {
-    'dismiss-on-blur' : 'dismissOnBlur',
-    'no-fullscreen-mobile' : 'noFullscreenMobile',
-    'opened' : 'opened'
+    'dismiss-on-blur': 'dismissOnBlur',
+    'no-fullscreen-mobile': 'noFullscreenMobile',
+    'opened': 'opened'
   };
   var attrList = [
     'dismiss-on-blur',
@@ -371,23 +383,22 @@
   ];
 
   class FSDialogBase extends HTMLElement {
-
-    constructor() {
+    constructor () {
       super();
 
       this.keydownHandler = keydownHandler;
     }
-    createdCallback() {
+    createdCallback () {
       this.keydownHandler = keydownHandler;
     }
-    connectedCallback() {
+    connectedCallback () {
       this.attachedCallback();
     }
     /**
      * Initialize the dialog, add events, and accessibility features. Should only change
      * the DOM on attached callback otherwise it breaks Polymer bindings.
      */
-    appendStyles(doc, selector, thisEl) {
+    appendStyles (doc, selector, thisEl) {
       var root = thisEl.getRootNode();
 
       // // In polyfilled browsers there is no shadow DOM so global styles still style
@@ -400,18 +411,17 @@
         var styles = doc.querySelector(selector).cloneNode(true);
         root.appendChild(styles);
       }
-
     }
 
-    attachedCallback(onOpenDialogFunction, onCloseDialogFunction) {
+    attachedCallback (onOpenDialogFunction, onCloseDialogFunction) {
       this.appendStyles(doc, 'style[data-fs-dialog]', this);
 
       // initialize the attributes that were set before the component got upgraded.
       // This may not be needed anymore after webcomponents are native everywhere
       var that = this;
-      attrList.forEach(function(attr) {
+      attrList.forEach(function (attr) {
         that.attributeChangedCallback(attr, null, that.getAttribute(attr));
-      })
+      });
 
       var clone = document.importNode(template.content, true);
 
@@ -419,7 +429,6 @@
       var closeEl = clone.querySelector('.fs-dialog__close');
       var bodyEl = this.querySelector('.fs-dialog__body');
       var headerEl = this.querySelector('header');
-      var footerEl = this.querySelector('footer');
       var resolvePromise, rejectPromise;
 
       // set aria-label on close button for screen readers
@@ -429,31 +438,30 @@
       // (so it's first in the tab order)
       if (headerEl) {
         headerEl.appendChild(closeEl);
-      }
-      else {
+      } else {
         this.insertBefore(closeEl, this.firstChild);
       }
 
       // Add style node to document
-      if(!document.querySelector('#fs-dialog-body-style')) {
+      if (!document.querySelector('#fs-dialog-body-style')) {
         document.querySelector('body').appendChild(doc.querySelector('#fs-dialog-body-style').cloneNode(true));
       }
 
       this.appendChild(clone);
       this.setAttribute('role', 'dialog');
-      a11yEnhancer.dialog(this);
+      a11yEnhancer.dialog(this); // eslint-disable-line
 
       // this._opened = false;
       this._focusoutHandler = focusoutHandler.bind(this);
 
       // open the dialog
-      this.open = function(optionsObj) {
-        var pendingPromise = new Promise(function(resolve, reject) {
+      this.open = function (optionsObj) {
+        var pendingPromise = new Promise(function (resolve, reject) {
           resolvePromise = resolve;
           rejectPromise = reject;
-        }.bind(this));
+        });
 
-        try{
+        try {
           optionsObj = optionsObj || {};
           // optionsObj example:
           // {
@@ -464,7 +472,7 @@
           if (this.opened) return;
 
           // If dialog was just closed by clicking on the attachToElement, don't reopen.
-          if(this.attachedToElementClicked) {
+          if (this.attachedToElementClicked) {
             this.attachedToElementClicked = false;
             return;
           }
@@ -482,7 +490,7 @@
           this.style.zIndex = zIndex;
 
           // call dialog-type specific open logic
-          if(onOpenDialogFunction) onOpenDialogFunction.bind(this)(optionsObj);
+          if (onOpenDialogFunction) onOpenDialogFunction.bind(this)(optionsObj);
 
           // This must happen after the onOpenDialogFunction because with modal dialogs
           // inert will restore the previous state of aria-hidden (true) so we must
@@ -540,7 +548,7 @@
       };
 
       // close the dialog
-      this.close = function(optionsObj) {
+      this.close = function (optionsObj) {
         // Do not close a dialog that is already closed
         if (!this.opened) return;
 
@@ -565,7 +573,7 @@
 
         if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
           // this has a settimeout because of modal dialog's uninert needing to run before we can do the focusback
-          setTimeout(function() {
+          setTimeout(function () {
             this.focusBackElement && this.focusBackElement.focus();
             this.cancelFocusback = false;
             this.focusBackElement = null;
@@ -582,9 +590,9 @@
         FS.dialog.service.removeDialogFromStack(this);
 
         // if there are no dialogs with the same tag name in the stack, remove the associated open class from the document body
-        if(this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG') {
+        if (this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG') {
           var tagName = this.tagName;
-          if(FS.dialog.service.getStack().filter(function(item) { return item.tagName === tagName && !item.noFullscreenMobile; }).length === 0) {
+          if (FS.dialog.service.getStack().filter(function (item) { return item.tagName === tagName && !item.noFullscreenMobile; }).length === 0) {
             document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '');
           }
         }
@@ -596,7 +604,7 @@
         return this.pendingPromise;
       };
 
-      this.closeAndCloseChildren = function() {
+      this.closeAndCloseChildren = function () {
         FS.dialog.service.closeDialogAndAllChildren(this);
       };
 
@@ -612,17 +620,16 @@
       // but that will be a breaking change to our API.
       this.dispatchEvent(new Event('fs-dialog-ready', { bubbles: true }));
       this.fsDialogReady = true;
-
     }
 
-    static get observedAttributes() {
+    static get observedAttributes () {
       return attrList;
     }
     /**
      * Set our attributes to be properties too
      */
-    attributeChangedCallback(attr, oldValue, newValue) {
-      return attrList.some(function(attributeName) {
+    attributeChangedCallback (attr, oldValue, newValue) {
+      return attrList.some(function (attributeName) {
         if (attr === attributeName) {
           if (attrTypeMap[attributeName] === 'boolean') {
             if (newValue !== undefined && newValue !== null) {
@@ -639,16 +646,14 @@
           }
           return true;
         }
-      }.bind(this))
+      }.bind(this));
     }
-
   }
 
   /**
    * Determine when to close the dialog.
    */
-  function dialogClickHandler(e) {
-
+  function dialogClickHandler (e) {
     // handle child elements of elements with these attributes
     var el = e.target;
     while (el !== this) {
@@ -672,10 +677,9 @@
         e.stopPropagation();
       }
 
-      if(el.parentElement){
+      if (el.parentElement) {
         el = el.parentElement;
       } else {
-
         // If `el.parentElement` is `null`, that means the target
         // element or one of it's parents was removed from the dom which
         // will cause the dialog to lose focus and close. This will reset
@@ -686,13 +690,13 @@
     }
   }
 
-  function windowFocusListener(e) {
+  function windowFocusListener (e) {
     FS.dialog.service.windowHasFocus = true;
   }
-  function windowBlurListener(e) {
+  function windowBlurListener (e) {
     FS.dialog.service.windowHasFocus = false;
   }
-  function focusoutHandler(e) {
+  function focusoutHandler (e) {
     var dialog = this;
     var reverseStack;
     window.removeEventListener('focus', dialog._focusoutHandler);
@@ -702,10 +706,10 @@
       // don't close if a node loses focus from dissapearing.
       var targetDisappeared = !e.target.offsetHeight && !e.target.offsetWidth;
       if (targetDisappeared) {
-        setTimeout(function() {
+        setTimeout(function () {
           var root = dialog.getRootNode();
           if (!dialog.contains(root.activeElement)) dialog.focus();
-        }, 0)
+        }, 0);
       } else if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
         if (!FS.dialog.service.windowHasFocus) {
           // listen for when the window does get focus and run this function again
@@ -713,19 +717,18 @@
         } else if (!dialog.contains(e.relatedTarget)) {
           // cascade down stack until we hit a dialog that has the active element or does not have click away
           reverseStack = [].concat(FS.dialog.service.getStack().reverse());
-          reverseStack.some(function(dialog) {
+          reverseStack.some(function (dialog) {
             if (dialog.dismissOnBlur && !dialog.contains(e.relatedTarget)) {
               dialog.cancelFocusback = true;
               dialog.attachedToElementClicked = ((dialog.attachToElement && dialog.attachToElement.contains(e.relatedTarget)) || (dialog.focusBackElement && dialog.focusBackElement.contains(e.relatedTarget)));
               dialog.close();
-              return;
             } else {
               return true;
             }
-          })
+          });
         }
       } else {
-        setTimeout(function(){
+        setTimeout(function () {
           var root = dialog.getRootNode();
           var activeElement = root.activeElement;
           if (!FS.dialog.service.windowHasFocus) {
@@ -734,16 +737,15 @@
           } else if (!dialog.contains(activeElement)) {
             // cascade down stack until we hit a dialog that has the active element or does not have click away
             reverseStack = [].concat(FS.dialog.service.getStack().reverse());
-            reverseStack.some(function(dialog) {
+            reverseStack.some(function (dialog) {
               if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
                 dialog.close();
-                return;
               } else {
                 return true;
               }
-            })
+            });
           }
-        },0)
+        }, 0);
       }
     }
   }
@@ -752,7 +754,7 @@
    * Check for events that should close the dialog.
    * @param {Event} e
    */
-  function keydownHandler(event) {
+  function keydownHandler (event) {
     if (event.which === 27) {
       // 27 is the code for the escape key
       this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true}));
@@ -777,19 +779,17 @@
         focusableChildren[0].focus();
         event.preventDefault();
       }
-
     }
 
     function getFocusableChildren (node) {
       var focusableElementsSelector = ['a[href]:not([tabindex="-1"])', 'area[href]:not([tabindex="-1"])', 'input:not([disabled]):not([tabindex="-1"])', 'select:not([disabled]):not([tabindex="-1"])', 'textarea:not([disabled]):not([tabindex="-1"])', 'button:not([disabled]):not([tabindex="-1"])', 'iframe:not([tabindex="-1"])', 'object:not([tabindex="-1"])', 'embed:not([tabindex="-1"])', '*[tabindex]:not([tabindex="-1"])', '*[contenteditable]:not([tabindex="-1"])', '[focusable-component]'];
 
       // filter out any elements that are not visible
-      var focusableElements = Array.prototype.filter.call(node.querySelectorAll(focusableElementsSelector.join(',')), function(child) {
+      var focusableElements = Array.prototype.filter.call(node.querySelectorAll(focusableElementsSelector.join(',')), function (child) {
         return !!(child.offsetWidth || child.offsetHeight || child.getClientRects().length);
       });
       return focusableElements;
-    };
-
+    }
   }
 
   // keep track of if the window has focus or not
