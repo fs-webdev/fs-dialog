@@ -40,8 +40,7 @@
     "stylelint-config-standard": "^18.0.0"
   },
   "scripts": {
-    "precommit": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
-    "prepush": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix && npm run stashandappend",
+    "precommit": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix && git add .",
     "pretest": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
     "standard": "semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
     "stashandappend": "touch .gitcommithooktempfile && git stash --include-untracked --quiet && git add . && git stash pop --quiet && rm .gitcommithooktempfile",

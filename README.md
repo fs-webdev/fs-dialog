@@ -119,9 +119,9 @@ npm install -g fs-webdev/size-limit
 
 > FamilySearch components are developed in compliance with ESLint and CSSLint common standards. Standards checking is run as part of an npm-based husky pre-push hook, and can also be explicitly run via the `npm test` and `npm run standard` commands. Currently needs an `npm install` before everything will work.
 > 
-> EXPLANATION: The **pre-push** hook will stash uncommitted changes, run standards with autofix enabled, and if there are no errors, append any associated changes made to the current commit, and then pop your uncommitted changes back out of the stash.
+> EXPLANATION: The **pre-push** hook will run standards with autofix enabled, and if there are no errors, append any associated changes made to the current commit. This means that if you have any local uncommitted changes, they will be automatically included in any commit. Prior to committing, revert local changes. TODO: Try to use the stashandappend npm script in concert with a prepush
 
-In order for **`standard`** to run, you need to globally install it:
+In order for **`semistandard`** to run, you need to globally install it:
 
 ```bash
 npm install -g semistandard
