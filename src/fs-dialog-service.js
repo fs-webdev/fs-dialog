@@ -61,7 +61,7 @@
   };
 
   FS.dialog.service.closeAllDialogs = function() {
-    var reverseStack = [].concat(dialogStack.reverse());
+    var reverseStack = [].concat(dialogStack).reverse();
     reverseStack.forEach(function(dialog) {
       dialog.close();
     })

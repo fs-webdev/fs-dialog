@@ -706,35 +706,22 @@
           var root = dialog.getRootNode();
           if (!dialog.contains(root.activeElement)) dialog.focus();
         }, 0)
-      } else if (e.relatedTarget && !e.relatedTarget.classList.contains('fs-dialog__mask')) {
-        if (!FS.dialog.service.windowHasFocus) {
-          // listen for when the window does get focus and run this function again
-          window.addEventListener('focus', dialog._focusoutHandler);
-        } else if (!dialog.contains(e.relatedTarget)) {
-          // cascade down stack until we hit a dialog that has the active element or does not have click away
-          reverseStack = [].concat(FS.dialog.service.getStack().reverse());
-          reverseStack.some(function(dialog) {
-            if (dialog.dismissOnBlur && !dialog.contains(e.relatedTarget)) {
-              dialog.cancelFocusback = true;
-              dialog.attachedToElementClicked = ((dialog.attachToElement && dialog.attachToElement.contains(e.relatedTarget)) || (dialog.focusBackElement && dialog.focusBackElement.contains(e.relatedTarget)));
-              dialog.close();
-              return;
-            } else {
-              return true;
-            }
-          })
-        }
       } else {
+
+
         setTimeout(function(){
           var root = dialog.getRootNode();
-          var activeElement = root.activeElement;
+          var activeElement = root.activeElement || document.activeElement;
           if (!FS.dialog.service.windowHasFocus) {
             // listen for when the window does get focus and run this function again
             window.addEventListener('focus', dialog._focusoutHandler);
           } else if (!dialog.contains(activeElement)) {
             // cascade down stack until we hit a dialog that has the active element or does not have click away
-            reverseStack = [].concat(FS.dialog.service.getStack().reverse());
+            reverseStack = [].concat(FS.dialog.service.getStack()).reverse();
             reverseStack.some(function(dialog) {
+              root = dialog.getRootNode();
+              activeElement = root.activeElement || activeElement;
+              dialog.attachedToElementClicked = ((dialog.attachToElement && dialog.attachToElement.contains(dialog.attachToElement.getRootNode().activeElement)) || (dialog.focusBackElement && dialog.focusBackElement.contains(dialog.focusBackElement.getRootNode().activeElement)));
               if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
                 dialog.close();
                 return;
