@@ -44,14 +44,14 @@
         display: flex;
       }
 
+      p + * {
+        margin-top: 1rem;
+      }
+
       .flex > * {
         flex-basis: 50%;
         flex-grow: 1;
         margin: 10px;
-      }
-
-      .demo-snippet details:not([open]) summary {
-        cursor: help;
       }
 
       summary {
@@ -59,6 +59,10 @@
         margin: 5px auto;
         padding: 10px;
         user-select: none;
+      }
+
+      .demo-snippet details:not([open]) summary {
+        cursor: help;
       }
 
       .demo {
@@ -85,14 +89,12 @@
         margin-bottom: 10px;
         padding: 8px;
       }
+
       fieldset legend {
         font-size: 1.25rem;
         line-height: 1.5rem;
       }
 
-      p + * {
-        margin-top: 1rem;
-      }
       /* end fs-styles override */
 
       fs-modeless-dialog,
@@ -348,11 +350,21 @@
     </div>
 
     <br><br><br>
-    <p><a href="ie.html">Need to test IE?</a></p>
 
     <h3>Other Functions and Attributes</h3>
     <div class="demo-snippet fs-card">
       <div class="demo do-not-codify">
+        <h5>Auto-hiding dialogs from initial load</h5>
+        <p>While the component is loading, you may get flashes of dialogs being visible/unstyled. To avoid this, add these styles to the css early in your page.</p>
+        <pre>
+          fs-modeless-dialog,
+          fs-modal-dialog,
+          fs-anchored-dialog {
+            visibility: hidden;
+            opacity: 0;
+            display: none;
+          }
+        </pre>
         <h5>Open Function Options</h5>
         <p>There are some required parameters to the open function. The function takes one argument which is an options object. The options object always needs a focusBackElement property is required if you want to have the correct element focus when the dialog closes. For anchored dialogs, attachToElement or attachToCoordinates is required.</p>
         <h5>Opt-out of fullscreen on mobile</h5>
@@ -365,17 +377,6 @@
         <p>In order to loop users through the modal and anchored dialogs when they press the tab key, we do a query selector to get all focusable elements. If you put a component in the dialog that needs to be able to get focus, please add the attribute <code>focusable-component</code> to it so that we don't break tab looping.</p>
         <h5>closeAllDialogs</h5>
         <p>To close all modal and anchored dialogs on the page you can call <code>FS.dialog.service.closeAllDialogs()</code> This does not close modeless dialogs.</p>
-        <h5>Auto-hiding dialogs from initial load</h5>
-        <p>While the component is loading, you may get flashes of dialogs being visible/unstyled. To avoid this, add these styles to the css early in your page.</p>
-        <pre>
-          fs-modeless-dialog,
-          fs-modal-dialog,
-          fs-anchored-dialog {
-            visibility: hidden;
-            opacity: 0;
-            display: none;
-          }
-        </pre>
       </div>
     </div>
 
@@ -388,7 +389,7 @@
             <li>All modal dialogs do not have dismiss on blur</li>
             <li>All modal dialogs have close on escape functionality</li>
             <li>All fullscreen dialogs show the close "X" (this is not opt-out on fullscreen view - if you need to opt out on a fullscreen dialog, you'll just need to override the styles manually, which is easy enough because this is a light dom component)</li>
-            <li>All modal dialogs go full-screen at 480px</li>
+            <li>All modal dialogs go full-screen at 480px, unless explicitly overridden.</li>
           </ul></li>
         </ul>
       </details>
@@ -396,7 +397,6 @@
         <summary><strong>TODO List:</strong></summary>
         <ul>
           <li>Document "Gotcha's"</li>
-          <li>Get unit tests written/working</li>
           <li>Add additional configuration options: inert, no-close-on-esc, modal-transition (non-mobile)</li>
           <li>BUG: Dialogs without headers do not show close button in fullscreen mode</li>
         </ul>
@@ -407,9 +407,9 @@
     <fs-modal-dialog id="firstNestedDialog"><header><h4>Nesting Dialog</h4></header><div class="fs-dialog__body">This dialog will lay on top of the previous dialog.</div><footer><button class="fs-button" data-dialog-dismiss>Done</button></footer></fs-anchored-dialog>
 
     <script>
-    (function() {
+    (function () {
       var bodycontent = {
-        short: "<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.</p>",
+        short: '<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.</p>',
         medium: "<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br></p>",
         long: "<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br><br>It looks like an Imperial cruiser. Our passengers must be hotter than I thought. Try and hold them off. Angle the deflector shield while I make the calculations for the jump to light speed. Stay sharp! There are two more coming in, they're going to try to cut us off. Why don't you outrun them? I thought you said this thing was fast. Watch your mouth, kid, or you're going to find yourself floating home. We'll be safe enough once we make the jump to hyperspace. Besides, I know a few maneuvers. We'll lose them! Here's where the fun begins!<br><br>I'm not going anywhere. They're going to execute her. Look, a few minutes ago you said you didn't want to just wait here to be captured. Now all you want to do is stay. Marching into the detention area is not what I had in mind. But they're going to kill her! Better her than me... She's rich. Rich? Yes. Rich, powerful! Listen, if you were to rescue her, the reward would be... What? Well more wealth that you can imagine. I don't know, I can imagine quite a bit! You'll get it! I better! You will...<br><br>I can't see a thing in this helmet. This is not going to work. Why didn't you say so before? I did say so before! Where are you taking this...thing? Prisoner transfer from Block one-one-three-eight. I wasn't notified. I'll have to clear it. Look out! We've got to find out which cell this princess of yours is in. Here it is...cell twenty-one-eight-seven. You go get her. I'll hold them here. Everything is under control. Situation normal. What happened? Uh...had a slight weapons malfunction. But, uh, everything's perfectly all right now. We're fine. We're all fine here, now, thank you. How are you? We're sending a squad up. Uh, uh, negative. We had a reactor leak here now. Give us a few minutes to lock it down. Large leak...very dangerous. Who is this? What's your operating number? Boring conversation anyway. Luke! We're going to have company!<br><br>Aren't you a little short to be a stormtrooper? What? Oh...the uniform. I'm Luke Skywalker. I'm here to rescue you. You're who? I'm here to rescue you. I've got your R2 unit. I'm here with Ben Kenobi. Ben Kenobi is here! Where is he? Come on!<br><br>You're safe! We had feared the worst. When we heard about Alderaan, we were afraid that you were... We don't have time for our sorrows, Commander. The battle station has surely tracked us here. It's the only explanation for the ease of our escape. You must use the information in this R2 unit to plan the attack. It is our only hope. Yes. We are approaching the planet Yavin. The Rebel base is on a moon on the far side. We are preparing to orbit the planet.<br><br>All wings report in. Red Ten standing by. Red Seven standing by. Red Three standing by. Red Six standing by. Red Nine standing by. Red Two standing by. Red Eleven standing by. Red Five standing by. Lock S-foils in attack position. We're passing through their magnetic field. Hold tight! Switch your deflectors on. Double front!<br><br>Close up formation. You'd better let her loose. Almost there! I can't hold them! It's away! It's a hit! Negative. Negative! It didn't go in. It just impacted on the surface. Red Leader, we're right above you. Turn to point... oh-five, we'll cover for you. Stay there... I just lost my starboard engine. Get set to make your attack run.<br><br>Let him go! Stay on the leader! Hurry, Luke, they're coming in much faster this time. I can't hold them! Artoo, try and increase the power! Hurry up, Luke! Wait! I'm on the leader. Hang on, Artoo! Use the Force, Luke. Let go, Luke. The Force is strong with this one! Luke, trust me. His computer's off. Luke, you switched off your targeting computer. What's wrong? Nothing. I'm all right. I've lost Artoo! You may fire when ready. I have you now.</p>"
       };
@@ -427,28 +427,28 @@
       twoNestedButton.innerText = 'Open Dialog';
 
       // Generate details-->pre-->code example code blocks
-      function generateCodeSnippet(generatedCode) {
-        Array.from(document.querySelectorAll('.demo:not(.do-not-codify)')).forEach(function(demo) {
+      function generateCodeSnippet (generatedCode) {
+        Array.from(document.querySelectorAll('.demo:not(.do-not-codify)')).forEach(function (demo) {
           if (demo.parentNode.querySelector('details')) {
             // Keep details open on update if it was already
-            var open = demo.parentNode.querySelector('details').hasAttribute("open");
+            var open = demo.parentNode.querySelector('details').hasAttribute('open');
             demo.parentNode.querySelector('details').remove();
           }
 
           var code = (generatedCode) ? generatedCode.outerHTML : demo.innerHTML;
           code = code
             .trim()
-            .replace(/\=\"\"/g, '')
+            .replace(/\=\"\"/g, '');
           var preEl = document.createElement('pre');
           var codeEl = document.createElement('code');
           preEl.classList.add('language-markup');
           codeEl.classList.add('language-markup');
-          var openOptionsString = JSON.stringify(openOptions)
+          var openOptionsString = JSON.stringify(openOptions);
           while (openOptionsString.indexOf('{}') > -1) openOptionsString = openOptionsString.replace('{}', '[Node]');
 
           var markup = (window.Prism) ? Prism.highlight(code, Prism.languages.html) : code;
-              markup += "<br><br>Open function options:<br>";
-              markup += (window.Prism) ? Prism.highlight(openOptionsString, Prism.languages.js) : '';
+          markup += '<br><br>Open function options:<br>';
+          markup += (window.Prism) ? Prism.highlight(openOptionsString, Prism.languages.js) : '';
           codeEl.innerHTML = markup;
 
           var wrapperEl = document.createElement('details');
@@ -465,23 +465,23 @@
       }
 
       // Generate dynamic dialog code
-      function generateDialog() {
+      function generateDialog () {
         var demoEl = document.querySelector('.dynamic.demo');
         // Clear out previous dialog
-        Array.from(demoEl.children).forEach(function(child) {
+        Array.from(demoEl.children).forEach(function (child) {
           child.remove();
         });
 
         // GET CONFIGURATION OPTIONS OUT OF DOM
         var formData = Array.from(new FormData(document.querySelector('form[dynamic]')).entries());
         var config = {};
-        formData.forEach(function(item) { config[item[0]] = item[1] });
+        formData.forEach(function (item) { config[item[0]] = item[1]; });
 
         // CREATE CORRECT TYPE OF DIALOG
         dynamicDialogEl = document.createElement('fs-' + config.type + '-dialog');
 
         // SET CONTENT
-        var dialogContentString = "";
+        var dialogContentString = '';
         if (config.showHeader) {
           dialogContentString = '<header><h4>Header Text</h4></header>';
         }
@@ -498,12 +498,12 @@
 
         // HIDE IRRELEVANT FORM SECTIONS
         var specificOptionSections = document.querySelectorAll('[class$=-options]');
-        Array.from(specificOptionSections).forEach(function(section) {
+        Array.from(specificOptionSections).forEach(function (section) {
           section.setAttribute('style', 'display: none;');
         });
 
         // SHOW RELEVANT FORM SECTION
-        Array.from(document.querySelectorAll('.' + config.type + '-options')).forEach(function(section) {
+        Array.from(document.querySelectorAll('.' + config.type + '-options')).forEach(function (section) {
           section.removeAttribute('style');
         });
 
@@ -546,7 +546,6 @@
           }
         }
 
-
         // SET NESTING DIALOGS
         if (config.nesting === 'one') {
           dynamicDialogEl.querySelector('footer').appendChild(oneNestedButton);
@@ -556,7 +555,6 @@
           document.querySelector('#secondNestedDialog').querySelector('footer').appendChild(oneNestedButton);
         }
 
-
         generateCodeSnippet(dynamicDialogEl);
         // Append dynamic dialog to DOM
         demoEl.appendChild(dynamicDialogEl);
@@ -564,36 +562,36 @@
         return dynamicDialogEl;
       }
 
-      function setUpListeners() {
+      function setUpListeners () {
         var dynamicDialogButton = document.querySelector('.demo-snippet button');
-        dynamicDialogButton.addEventListener('click', function() {
+        dynamicDialogButton.addEventListener('click', function () {
           dynamicDialogEl.open(openOptions);
         });
 
         var dynamicDemoInputs = document.querySelectorAll('input, select');
-        Array.from(dynamicDemoInputs).forEach(function(input) {
-          input.addEventListener('change', function(evt){
+        Array.from(dynamicDemoInputs).forEach(function (input) {
+          input.addEventListener('change', function (evt) {
             generateDialog();
           });
         });
 
-        oneNestedButton.addEventListener('click', function() {
+        oneNestedButton.addEventListener('click', function () {
           document.querySelector('#firstNestedDialog').open({focusBackElement: this, attachToElement: this});
         });
-        twoNestedButton.addEventListener('click', function() {
+        twoNestedButton.addEventListener('click', function () {
           document.querySelector('#secondNestedDialog').open({focusBackElement: this, attachToElement: this});
         });
 
-        document.querySelector('form').addEventListener('submit', function(evt) {
+        document.querySelector('form').addEventListener('submit', function (evt) {
           evt.preventDefault();
         });
 
-        document.querySelector('form').addEventListener('reset', function(evt) {
-          setTimeout(function() {
+        document.querySelector('form').addEventListener('reset', function (evt) {
+          setTimeout(function () {
             generateDialog();
           });
         });
-        document.querySelector('form[dynamic]').addEventListener('keypress', function(evt){
+        document.querySelector('form[dynamic]').addEventListener('keypress', function (evt) {
           if (evt.code === 'Enter' || evt.keyCode === 13) {
             openOptions.focusBackElement = evt.target || openOptions.focusBackElement;
             dynamicDialogEl.open(openOptions);
@@ -603,9 +601,9 @@
 
       // Init
       setUpListeners();
-      setTimeout(function(){
+      setTimeout(function () {
         generateDialog();
-      }, 0)
+      }, 0);
     })();
     </script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/prism.js'></script>

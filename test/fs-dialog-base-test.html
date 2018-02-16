@@ -19,23 +19,23 @@
   </head>
   <body>
     <script>
-    document.addEventListener('WebComponentsReady', function(){
-      describe('fsDialogBase', function() {
+    document.addEventListener('WebComponentsReady', function () {
+      describe('fsDialogBase', function () {
         var fsDialogBase;
-        if('customElements' in window){
+        if ('customElements' in window) {
           fsDialogBase = FS.dialog.baseDialogComponent;
         } else {
           fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
         }
 
-        describe('functions', function() {
-          it('createdCallback should add the keydownHandler', function() {
+        describe('functions', function () {
+          it('createdCallback should add the keydownHandler', function () {
             fsDialogBase.prototype.createdCallback();
 
             expect(fsDialogBase.prototype.keydownHandler, 'keydownHandler is not defined as a function').to.be.a('function');
           });
 
-          it('connectedCallback should call attachedCallback', function() {
+          it('connectedCallback should call attachedCallback', function () {
             var attachedCallbackStub = sinon.stub(fsDialogBase.prototype, 'attachedCallback');
 
             fsDialogBase.prototype.connectedCallback();
@@ -45,8 +45,8 @@
             attachedCallbackStub.restore();
           });
 
-          describe('appendStyles', function() {
-            it('should call getRootNode', function() {
+          describe('appendStyles', function () {
+            it('should call getRootNode', function () {
               var thisEl = document.createElement('div');
               var selector = 'style[data-fs-dialog]';
 
@@ -64,8 +64,8 @@
             // TODO: There could be tests for the call to cloneNode() & appendChild(), but we need to figure out the setup to get past root.toString()
           });
 
-          describe('attachedCallback', function() {
-            it('should call appendStyles', function() {
+          describe('attachedCallback', function () {
+            it('should call appendStyles', function () {
               var appendStylesStub = sinon.stub(fsDialogBase.prototype, 'appendStyles');
 
               try { // This does not have the complete setup to successfully finish attachedCallback() because it fails with the this.querySelector() call.
@@ -80,8 +80,8 @@
             // TODO: There could several other tests, but we need to figure out the setup to get past this.querySelector().
           });
 
-          describe('attributeChangedCallback', function() {
-            it('attributeChangedCallback should return false', function() {
+          describe('attributeChangedCallback', function () {
+            it('attributeChangedCallback should return false', function () {
               var attr = 'test-attribute';
               var attrOldValue = 'oldValue';
               var attrNewValue = 'newValue';
@@ -89,7 +89,7 @@
               expect(fsDialogBase.prototype.attributeChangedCallback(attr, attrOldValue, attrNewValue), 'attributeChangedCallback did not return false').to.be.false;
             });
 
-            it('attributeChangedCallback should return true', function() {
+            it('attributeChangedCallback should return true', function () {
               var attr = 'dismiss-on-blur';
               var attrOldValue = 'oldValue';
               var attrNewValue = 'newValue';
@@ -164,34 +164,26 @@
     //     el.remove();
     //   });
 
+    // describe('attached', function() {
 
+    //   it('should add a close button with an aria-label', function() {
+    //     expect(closeEl).to.exist;
+    //     expect(closeEl.hasAttribute('aria-label')).to.be.true;
+    //   });
 
+    //   it('should move the close button to be in the header', function() {
+    //     expect(closeEl.parentNode).to.equal(headerEl);
+    //   });
 
+    //   it('should move the close button to be the first child of the dialog if there is no header', function() {
+    //     el = fixture('fs-dialog-fixture-empty');
+    //     updateSelectors();
 
-      // describe('attached', function() {
+    //     expect(closeEl.parentNode).to.equal(el);
+    //     expect(el.firstChild).to.equal(closeEl);
+    //   });
 
-      //   it('should add a close button with an aria-label', function() {
-      //     expect(closeEl).to.exist;
-      //     expect(closeEl.hasAttribute('aria-label')).to.be.true;
-      //   });
-
-      //   it('should move the close button to be in the header', function() {
-      //     expect(closeEl.parentNode).to.equal(headerEl);
-      //   });
-
-      //   it('should move the close button to be the first child of the dialog if there is no header', function() {
-      //     el = fixture('fs-dialog-fixture-empty');
-      //     updateSelectors();
-
-      //     expect(closeEl.parentNode).to.equal(el);
-      //     expect(el.firstChild).to.equal(closeEl);
-      //   });
-
-      // });
-
-
-
-
+    // });
 
     //   describe('functions', function() {
 
@@ -250,98 +242,86 @@
 
     //   });
 
+    // describe('attributes', function() {
 
+    //   it('"opened" should open the dialog', function() {
+    //     el.setAttribute('opened', '');
 
+    //     expect(el.opened).to.be.true;
+    //   });
 
+    //   it('"opened=false" should close the dialog', function() {
+    //     el.opened = true;
+    //     el.opened = false;
 
-      // describe('attributes', function() {
+    //     expect(el.opened).to.be.false;
+    //   });
 
-      //   it('"opened" should open the dialog', function() {
-      //     el.setAttribute('opened', '');
+    //   it('clicking on an element with "data-dialog-dismiss" should close the dialog', function() {
+    //     el.open();
+    //     el.querySelector('button').click();
 
-      //     expect(el.opened).to.be.true;
-      //   });
+    //     el.querySelector('[data-dialog-dismiss]').click();
+    //   });
 
-      //   it('"opened=false" should close the dialog', function() {
-      //     el.opened = true;
-      //     el.opened = false;
+    //   it('clicking on an element with "data-dialog-dismiss" should dispatch a "fs-dialog-dismiss" event', function(done) {
+    //     // timeout after 1 second if the event is not triggered
+    //     this.timeout(1000);
 
-      //     expect(el.opened).to.be.false;
-      //   });
+    //     el.addEventListener('fs-dialog-dismiss', function(e) {
+    //       expect(e.target).to.equal(el);
 
-      //   it('clicking on an element with "data-dialog-dismiss" should close the dialog', function() {
-      //     el.open();
-      //     el.querySelector('button').click();
+    //       done();
+    //     });
 
-      //     el.querySelector('[data-dialog-dismiss]').click();
-      //   });
+    //     el.open();
+    //     el.querySelector('[data-dialog-dismiss]').click();
+    //   });
 
-      //   it('clicking on an element with "data-dialog-dismiss" should dispatch a "fs-dialog-dismiss" event', function(done) {
-      //     // timeout after 1 second if the event is not triggered
-      //     this.timeout(1000);
+    //   it('clicking on an element with "data-dialog-confirm" should not close the dialog', function() {
+    //     el.open();
+    //     el.querySelector('[data-dialog-confirm]').click();
 
-      //     el.addEventListener('fs-dialog-dismiss', function(e) {
-      //       expect(e.target).to.equal(el);
+    //     expect(el.hasAttribute('opened')).to.be.true;
+    //   });
 
-      //       done();
-      //     });
+    //   it('clicking on an element with "data-dialog-confirm" should dispatch a "fs-dialog-confirm" event', function(done) {
+    //     // timeout after 1 second if the event is not triggered
+    //     this.timeout(1000);
 
-      //     el.open();
-      //     el.querySelector('[data-dialog-dismiss]').click();
-      //   });
+    //     el.addEventListener('fs-dialog-confirm', function(e) {
+    //       expect(e.target).to.equal(el);
 
-      //   it('clicking on an element with "data-dialog-confirm" should not close the dialog', function() {
-      //     el.open();
-      //     el.querySelector('[data-dialog-confirm]').click();
+    //       done();
+    //     });
 
-      //     expect(el.hasAttribute('opened')).to.be.true;
-      //   });
+    //     el.open();
+    //     el.querySelector('[data-dialog-confirm]').click();
+    //   });
 
-      //   it('clicking on an element with "data-dialog-confirm" should dispatch a "fs-dialog-confirm" event', function(done) {
-      //     // timeout after 1 second if the event is not triggered
-      //     this.timeout(1000);
+    // });
 
-      //     el.addEventListener('fs-dialog-confirm', function(e) {
-      //       expect(e.target).to.equal(el);
+    // describe('properties', function() {
 
-      //       done();
-      //     });
+    //   it('should have an "opened" attribute', function() {
+    //     expect(el.opened).to.exist;
+    //     expect(el.opened).to.be.false;
+    //   });
 
-      //     el.open();
-      //     el.querySelector('[data-dialog-confirm]').click();
-      //   });
+    //   it('"opened=true" should open the dialog', function() {
+    //     el.opened = true;
 
-      // });
+    //     expect(el.hasAttribute('opened')).to.be.true;
+    //   });
 
+    //   it('"opened=false" should close the dialog', function() {
+    //     el.opened = true;
+    //     el.opened = false;
 
+    //     expect(el.hasAttribute('opened')).to.be.false;
+    //   });
 
-
-
-      // describe('properties', function() {
-
-      //   it('should have an "opened" attribute', function() {
-      //     expect(el.opened).to.exist;
-      //     expect(el.opened).to.be.false;
-      //   });
-
-      //   it('"opened=true" should open the dialog', function() {
-      //     el.opened = true;
-
-      //     expect(el.hasAttribute('opened')).to.be.true;
-      //   });
-
-      //   it('"opened=false" should close the dialog', function() {
-      //     el.opened = true;
-      //     el.opened = false;
-
-      //     expect(el.hasAttribute('opened')).to.be.false;
-      //   });
-
-      // });
-
-
-
-
+    // });
 
     // });
     </script>

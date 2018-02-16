@@ -50,12 +50,12 @@
       </template>
     </test-fixture>
     <script>
-      function simulateEvent(type, config) {
+      function simulateEvent (type, config) {
         var evt;
 
         try {
           evt = new Event(type);
-        } catch(e) {
+        } catch (e) {
           evt = document.createEvent('Event');
           evt.initEvent(type, true, false);
         }
@@ -68,39 +68,36 @@
         return evt;
       }
 
-      document.addEventListener('WebComponentsReady', function(){
+      document.addEventListener('WebComponentsReady', function () {
         var el, headerEl;
 
-        describe('<fs-modeless-dialog>', function() {
-          beforeEach(function() {
+        describe('<fs-modeless-dialog>', function () {
+          beforeEach(function () {
             el = fixture('fs-modeless-dialog-fixture');
             headerEl = el.querySelector('header');
           });
-          afterEach(function() {
+          afterEach(function () {
             el.close();
           });
 
-          describe('setup', function(){
-            it('should have a type="modeless" attribute', function() {
+          describe('setup', function () {
+            it('should have a type="modeless" attribute', function () {
               expect(el.getAttribute('type'), 'does not have type="modeless" attribute').to.equal('modeless');
             });
           });
 
-          describe('after opening', function() {
-
-            it('should be centered', function() {
+          describe('after opening', function () {
+            it('should be centered', function () {
               el.open({focusBackElement: document.querySelector('#open-modeless-button')});
               var x = (window.innerWidth / 2) - (el.offsetWidth / 2);
               var y = (window.innerHeight / 2) - (el.offsetHeight / 2);
               var transform = 'translateX(' + x + 'px) translateY(' + y + 'px)';
-              expect(el.style.transform, "is not centered").to.equal(transform);
+              expect(el.style.transform, 'is not centered').to.equal(transform);
             });
-
           });
 
-          describe('drag', function() {
-
-            it('should allow dragging with "mousedown"', function() {
+          describe('drag', function () {
+            it('should allow dragging with "mousedown"', function () {
               el.open();
 
               var event = simulateEvent('mousedown', {button: 0, clientX: 10, clientY: 10});
@@ -109,7 +106,7 @@
               expect(el._drag).to.exist;
             });
 
-            it('should not drag with anything but the left mouse button', function() {
+            it('should not drag with anything but the left mouse button', function () {
               el.open();
 
               var event = simulateEvent('mousedown', {button: 1, clientX: 10, clientY: 10});
@@ -118,7 +115,7 @@
               expect(el._drag).to.not.exist;
             });
 
-            it('should not allow drag if there is no header', function() {
+            it('should not allow drag if there is no header', function () {
               var el = fixture('fs-modeless-dialog-no-header-fixture');
               el.open();
 
@@ -128,7 +125,7 @@
               expect(el._drag).to.not.exist;
             });
 
-            it('should update the transform when dragged', function() {
+            it('should update the transform when dragged', function () {
               var xPos, yPos;
               el.open();
 
@@ -142,7 +139,7 @@
               expect(el._drag.yPos).to.not.equal(yPos);
             });
 
-            it('should not move the dialog outside the window', function() {
+            it('should not move the dialog outside the window', function () {
               el.open();
 
               var event = simulateEvent('mousedown', {button: 0, clientX: 0, clientY: 0});
@@ -161,7 +158,7 @@
               expect(el._drag.yPos).to.equal(el._drag.maxY);
             });
 
-            it('should stop drag on mouseup', function() {
+            it('should stop drag on mouseup', function () {
               el.open();
 
               var event = simulateEvent('mousedown', {button: 0, clientX: 10, clientY: 10});
@@ -172,9 +169,7 @@
 
               expect(el._drag).to.not.exist;
             });
-
           });
-
         });
       });
     </script>

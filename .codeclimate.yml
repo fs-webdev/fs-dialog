@@ -1,16 +1,51 @@
----
-engines:
-  csslint:
-    enabled: true
-  duplication:
+version: "2"
+checks:
+  argument-count:
     enabled: true
     config:
-      languages:
-        javascript:
-          mass_threshold: 100
+      threshold: 4
+  complex-logic:
+    enabled: true
+    config:
+      threshold: 4
+  file-lines:
+    enabled: true
+    config:
+      threshold: 750
+  method-complexity:
+    enabled: true
+    config:
+      threshold: 6
+  method-count:
+    enabled: true
+    config:
+      threshold: 20
+  method-lines:
+    enabled: true
+    config:
+      threshold: 50
+  nested-control-flow:
+    enabled: true
+    config:
+      threshold: 6
+  return-statements:
+    enabled: true
+    config:
+      threshold: 4
+  similar-code:
+    enabled: true
+    config:
+      threshold: 100
+  identical-code:
+    enabled: true
+    config:
+      threshold: 100
+plugins:
+  csslint:
+    enabled: true
   eslint:
     enabled: true
-    channel: "eslint-3"
+    channel: "eslint-4"
     config:
       extensions:
         - .html
@@ -45,18 +80,13 @@ engines:
     enabled: true
   shellcheck:
     enabled: true
-ratings:
-  paths:
-  - "**.html"
-  - "**.css"
-  - "**.js"
-exclude_paths:
-- ".*"
-- bower_components/
-- build/
-- dist/
-- src/
-- "**/*-polyfill.js"
-- node_modules/
-- "**/reports/**/*"
-- "**/test/**/*"
+exclude_patterns:
+  - ".*"
+  - bower_components/
+  - build/
+  - dist/
+  - src/
+  - "**/*-polyfill.js"
+  - node_modules/
+  - "**/reports/**/*"
+  - "**/test/**/*"

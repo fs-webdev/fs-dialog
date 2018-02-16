@@ -17,8 +17,8 @@
     <script>
       var positioningObj = FS.dialog.service.positioningObj;
 
-      describe('fs-dialog-positioning-object', function() {
-        beforeEach(function() {
+      describe('fs-dialog-positioning-object', function () {
+        beforeEach(function () {
           window.karmaWindow = {
             pageYOffset: 0,
             pageXOffset: 0,
@@ -35,10 +35,10 @@
 
         // These tests were ported directly from the ng-shared-components implementation
         // Originally created by Mike Collins
-        describe('fsLocalToGlobal()', function() {
-          it('should convert to global - no scroll', function() {
+        describe('fsLocalToGlobal()', function () {
+          it('should convert to global - no scroll', function () {
             var load = {
-              getBoundingClientRect: function() {
+              getBoundingClientRect: function () {
                 return {
                   left: 100,
                   top: 90,
@@ -55,11 +55,11 @@
             expect(rect.height).to.equal(150);
           });
 
-          it('should convert to global - with scroll', function() {
+          it('should convert to global - with scroll', function () {
             window.karmaWindow.pageYOffset = 30;
             window.karmaWindow.pageXOffset = 33;
             var load = {
-              getBoundingClientRect: function() {
+              getBoundingClientRect: function () {
                 return {
                   left: 100,
                   top: 90,
@@ -77,11 +77,11 @@
           });
         });
 
-        describe('fsGlobalToLocal()', function() {
-          it('should convert 0 to local - no scroll', function() {
+        describe('fsGlobalToLocal()', function () {
+          it('should convert 0 to local - no scroll', function () {
             var load = {
-              isSameNode: function() {return false},
-              getBoundingClientRect: function() {
+              isSameNode: function () { return false; },
+              getBoundingClientRect: function () {
                 return {
                   left: 100,
                   top: 90,
@@ -97,12 +97,12 @@
             expect(rect.height).to.equal(0);
           });
 
-          it('should convert 0 to global - with scroll', function() {
+          it('should convert 0 to global - with scroll', function () {
             window.karmaWindow.pageYOffset = 30;
             window.karmaWindow.pageXOffset = 33;
             var load = {
-              isSameNode: function() {return false},
-              getBoundingClientRect: function() {
+              isSameNode: function () { return false; },
+              getBoundingClientRect: function () {
                 return {
                   left: 100,
                   top: 90,
@@ -119,10 +119,10 @@
             expect(rect.height).to.equal(0);
           });
 
-          it('should convert rect to local - no scroll', function() {
+          it('should convert rect to local - no scroll', function () {
             var load = {
-              isSameNode: function() {return false},
-              getBoundingClientRect: function() {
+              isSameNode: function () { return false; },
+              getBoundingClientRect: function () {
                 return {
                   left: 100,
                   top: 90,
@@ -131,7 +131,7 @@
                 };
               }
             };
-            var srcRect = new positioningObj.fsRect(35, 54, 40, 30);
+            var srcRect = new positioningObj.FSRect(35, 54, 40, 30);
             var rect = positioningObj.fsGlobalToLocal(load, srcRect);
             expect(rect.left).to.equal(-65);
             expect(rect.top).to.equal(-36);
@@ -139,12 +139,12 @@
             expect(rect.height).to.equal(30);
           });
 
-          it('should convert 0 to global - with scroll', function() {
+          it('should convert 0 to global - with scroll', function () {
             window.karmaWindow.pageYOffset = 30;
             window.karmaWindow.pageXOffset = 33;
             var load = {
-              isSameNode: function() {return false},
-              getBoundingClientRect: function() {
+              isSameNode: function () { return false; },
+              getBoundingClientRect: function () {
                 return {
                   left: 100,
                   top: 90,
@@ -154,7 +154,7 @@
               }
             };
 
-            var srcRect = new positioningObj.fsRect(123, 28, 55, 99);
+            var srcRect = new positioningObj.FSRect(123, 28, 55, 99);
             var rect = positioningObj.fsGlobalToLocal(load, srcRect);
             expect(rect.left).to.equal(-10);
             expect(rect.top).to.equal(-92);
@@ -163,11 +163,11 @@
           });
         });
 
-        describe('fsLocalToLocal()', function() {
-          it('should convert local to local - no scroll', function() {
+        describe('fsLocalToLocal()', function () {
+          it('should convert local to local - no scroll', function () {
             var srcEl = {
-              isSameNode: function() {return false},
-              getBoundingClientRect: function() {
+              isSameNode: function () { return false; },
+              getBoundingClientRect: function () {
                 return {
                   left: 100,
                   top: 90,
@@ -178,8 +178,8 @@
             };
 
             var dstEl = {
-              isSameNode: function() {return false},
-              getBoundingClientRect: function() {
+              isSameNode: function () { return false; },
+              getBoundingClientRect: function () {
                 return {
                   left: 10,
                   top: 400,
@@ -196,12 +196,12 @@
             expect(rect.height).to.equal(34);
           });
 
-          it('should convert local to local - with scroll', function() {
+          it('should convert local to local - with scroll', function () {
             window.karmaWindow.pageYOffset = 30;
             window.karmaWindow.pageXOffset = 33;
             var srcEl = {
-              isSameNode: function() {return false},
-              getBoundingClientRect: function() {
+              isSameNode: function () { return false; },
+              getBoundingClientRect: function () {
                 return {
                   left: 100,
                   top: 90,
@@ -212,8 +212,8 @@
             };
 
             var dstEl = {
-              isSameNode: function() {return false},
-              getBoundingClientRect: function() {
+              isSameNode: function () { return false; },
+              getBoundingClientRect: function () {
                 return {
                   left: 10,
                   top: 400,
@@ -231,7 +231,6 @@
           });
         });
       });
-
     </script>
 
   </body>

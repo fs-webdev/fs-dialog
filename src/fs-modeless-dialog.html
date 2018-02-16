@@ -13,7 +13,7 @@
     left: 0;
     position: fixed;
     top: 0;
-    transform: translateX(0px) translateY(0px);
+    transform: translateX(0) translateY(0);
     touch-action: pinch-zoom; /* [1] */
   }
 
@@ -33,10 +33,10 @@
 </style>
 
 <script>
-(function() {
+(function () {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
 
-   /**
+  /**
     * `<fs-modeless-dialog>` is a modeless dialog centered on the screen and displayed above other content. It can be dragged around the screen by dragging the header of the dialog. The user can click on content below the
     *
     *     <body>
@@ -60,9 +60,8 @@
     * @demo demo/index.html
     */
   class FSModelessDialog extends FS.dialog.baseDialogComponent {
-
     // only used for docs.
-    static get properties(){
+    static get properties () {
       return {
         /**
          * Whether or not the dialog is opened.
@@ -77,7 +76,7 @@
          * Default: false.
          * @type {boolean} [no-transition=false]
          */
-        'no-transition':  {
+        'no-transition': {
           type: Boolean,
           value: false
         },
@@ -85,7 +84,7 @@
          * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-dismiss' event and close the dialog on click.
          * @type {boolean} [data-dialog-dismiss=false]
          */
-        'data-dialog-dismiss':  {
+        'data-dialog-dismiss': {
           type: Boolean,
           value: false
         },
@@ -93,11 +92,11 @@
          * If you add this attribute to any clickable element within the dialog, it will fire the 'fs-dialog-confirm' event on click.
          * @type {boolean} [data-dialog-confirm=false]
          */
-        'data-dialog-confirm':  {
+        'data-dialog-confirm': {
           type: Boolean,
           value: false
         }
-      }
+      };
     }
 
     /**
@@ -105,14 +104,14 @@
      * @param {Object} config - Object containing the following property:
      *                          focusBackElement - The element to return focus back after the dialog closes.
      */
-    open(config) {
+    open (config) {
       super.open(config);
     }
 
     /**
      * Close the dialog.  If focusBackElement exists, focus is returned to that element.
      */
-    close() {
+    close () {
       super.close();
     }
 
@@ -120,9 +119,9 @@
      * Initialize the dialog, add events, and accessibility features. Should only change
      * the DOM on attached callback otherwise it breaks Polymer bindings.
      */
-    attachedCallback() {
+    attachedCallback () {
       // set the type="modeless" for the a11y enhancer
-      this.setAttribute('type', 'modeless')
+      this.setAttribute('type', 'modeless');
       this.doNotUseInStack = true;
 
       this.appendStyles(doc, 'style[data-fs-modeless-dialog]', this);
@@ -147,10 +146,10 @@
       window.addEventListener('resize', this._resizeThrottler, false);
 
       var resizeTimeout;
-      function resizeThrottler() {
+      function resizeThrottler () {
         // ignore resize events as long as an resizeHandler execution is in the queue
-        if ( !resizeTimeout ) {
-          resizeTimeout = setTimeout(function() {
+        if (!resizeTimeout) {
+          resizeTimeout = setTimeout(function () {
             resizeTimeout = null;
             this._resizeHandler();
             // The resizeHandler will execute at a rate of 15fps
@@ -158,16 +157,15 @@
         }
       }
 
-      function resizeHandler() {
+      function resizeHandler () {
         this.style.transform = '';
-        if(this.opened) {
+        if (this.opened) {
           this._centerDialog();
         }
       }
 
       // modeless specific logic to do on open
-      function openModelessFunction() {
-
+      function openModelessFunction () {
         this._centerDialog();
 
         // add events to modeless dialog for dragging
@@ -181,33 +179,31 @@
       }
 
       // modeless specific logic to do on close
-      function closeModelessFunction() {
+      function closeModelessFunction () {
         // clean up events to modeless dialog for dragging
         headerEl.removeEventListener('mousedown', this._startDragHandler);
         headerEl.removeEventListener('touchstart', this._startDragHandler);
         window.removeEventListener('mouseup', this._endDragHandler);
         window.removeEventListener('touchend', this._endDragHandler);
       }
-
     }
 
     /**
      * Calls detachedCallback
      */
-    disconnectedCallback(){
+    disconnectedCallback () {
       this.detachedCallback();
     }
-
 
     /**
      * Remove listeners that were added during attachedCallback.
      */
-    detachedCallback() {
+    detachedCallback () {
       window.removeEventListener('resize', this._resizeThrottler);
     }
   }
 
-  function centerDialog() {
+  function centerDialog () {
     // calc center of screen for initial modeless dialog transform property
     if (!this.style.transform) {
       var x = (window.innerWidth / 2) - (this.offsetWidth / 2);
@@ -221,8 +217,7 @@
    * @see http://jsfiddle.net/Lk2hLt
    * @see http://interactjs.io/
    */
-  function startDragHandler(e) {
-
+  function startDragHandler (e) {
     // prevent default will be ignored by any browser that supports the CSS
     // touch-action property, but will continue to work in browsers that don't
     // support it for proper progressive enhancement
@@ -258,7 +253,7 @@
   /**
    * Update the x/y position of the dialog while dragging.
    */
-  function dragHandler(e) {
+  function dragHandler (e) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -281,15 +276,13 @@
     // bind x/y to window
     if (x < 0) {
       x = 0;
-    }
-    else if (x > this._drag.maxX) {
-      x = this._drag.maxX
+    } else if (x > this._drag.maxX) {
+      x = this._drag.maxX;
     }
 
     if (y < 0) {
       y = 0;
-    }
-    else if (y > this._drag.maxY) {
+    } else if (y > this._drag.maxY) {
       y = this._drag.maxY;
     }
 
@@ -305,7 +298,7 @@
   /**
    * Clean up events and properties when drag is finished.
    */
-  function endDragHandler(e) {
+  function endDragHandler (e) {
     document.body.classList.remove('fs-dialog--dragging');
     this._drag = null;
 
@@ -313,7 +306,7 @@
     window.removeEventListener('touchmove', this._dragHandler, true);
   }
 
-  if('customElements' in window){
+  if ('customElements' in window) {
     customElements.define('fs-modeless-dialog', FSModelessDialog);
   } else {
     document.registerElement('fs-modeless-dialog', {prototype: Object.create(FSModelessDialog.prototype)});

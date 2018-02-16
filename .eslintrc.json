@@ -4,10 +4,13 @@
     "eslint-plugin-jsdoc"
   ],
   "env": {
-    "browser": true,
-    "jquery": true
+    "browser": true
   },
-
+  "extends": [
+    "eslint-config-prettier",
+    "eslint-config-secure",
+    "eslint-config-standard-jsx"
+  ],
   // http://eslint.org/docs/rules/
   "rules": {
     //
@@ -116,8 +119,8 @@
     "no-shadow": 2, // disallow declaration of variables already declared in the outer scope
     "no-shadow-restricted-names": 1, // disallow shadowing of names such as arguments
     "no-undef": 1, // disallow use of undeclared variables unless mentioned in a /*global */ block
-    "no-undef-init": 2, // disallow use of undefined when initializing variables
-    "no-undefined": 2, // disallow use of undefined variable (off by default)
+    "no-undef-init": 1, // disallow use of undefined when initializing variables
+    "no-undefined": 1, // disallow use of undefined variable (off by default)
     "no-unused-vars": 0, // disallow declaration of variables that are not used in the code
     "no-use-before-define": 1, // disallow use of variables before they are defined
 
@@ -204,32 +207,5 @@
     "max-statements": [1, 36], // specify the maximum number of statement allowed in a function (off by default)
     "no-bitwise": 0, // disallow use of bitwise operators (off by default)
     "no-plusplus": 0 // disallow use of unary operators, ++ and -- (off by default)
-  },
-
-  "parserOptions": {
-    "ecmaFeatures": {
-      "arrowFunctions": true,
-      "binaryLiterals": true,
-      "blockBindings": true,
-      "classes": true,
-      "defaultParams": true,
-      "destructuring": true,
-      "forOf": true,
-      "generators": true,
-      "modules": true,
-      "objectLiteralComputedProperties": true,
-      "objectLiteralDuplicateProperties": true,
-      "objectLiteralShorthandMethods": true,
-      "objectLiteralShorthandProperties": true,
-      "octalLiterals": true,
-      "regexUFlag": true,
-      "regexYFlag": true,
-      "spread": true,
-      "superInFunctions": true,
-      "templateStrings": true,
-      "unicodeCodePointEscapes": true,
-      "globalReturn": true,
-      "jsx": true
-    }
   }
 }

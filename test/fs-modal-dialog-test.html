@@ -46,67 +46,67 @@
       </template>
     </test-fixture>
     <script>
-      document.addEventListener('WebComponentsReady', function(){
+      document.addEventListener('WebComponentsReady', function () {
         var modalFixture;
 
-        describe('<fs-modal-dialog>', function(){
-          beforeEach(function() {
+        describe('<fs-modal-dialog>', function () {
+          beforeEach(function () {
             modalFixture = fixture('fs-modal-dialog-fixture');
           });
-          afterEach(function() {
+          afterEach(function () {
             modalFixture.close();
           });
 
-          describe('setup', function(){
-            it('should have a previous sibling element with a class of fs-dialog__mask', function(){
-              expect(modalFixture.previousSibling.classList.contains('fs-dialog__mask'), "mask was not the previous sibling element of the dialog").to.be.true;
+          describe('setup', function () {
+            it('should have a previous sibling element with a class of fs-dialog__mask', function () {
+              expect(modalFixture.previousSibling.classList.contains('fs-dialog__mask'), 'mask was not the previous sibling element of the dialog').to.be.true;
             });
-            it('should have a role of main on the body element', function(){
+            it('should have a role of main on the body element', function () {
               var bodyEl = modalFixture.querySelector('.fs-dialog__body');
               expect(bodyEl.hasAttribute('role') && bodyEl.attributes.role.value === 'main', "body did not have a 'main' role").to.be.true;
             });
-            it('should have tabindex of -1', function(){
-              expect(modalFixture.hasAttribute('tabindex') && modalFixture.attributes.tabindex.value === '-1', "did not have tabindex of -1").to.be.true;
+            it('should have tabindex of -1', function () {
+              expect(modalFixture.hasAttribute('tabindex') && modalFixture.attributes.tabindex.value === '-1', 'did not have tabindex of -1').to.be.true;
             });
-            it('should not have a data-no-inert attribute', function(){
-              expect(modalFixture.hasAttribute('data-no-inert'), "had a data-no-inert attribute").to.be.false;
+            it('should not have a data-no-inert attribute', function () {
+              expect(modalFixture.hasAttribute('data-no-inert'), 'had a data-no-inert attribute').to.be.false;
             });
           });
 
-          describe('after opening', function(){
-            it('mask should not have a no-transition attribute', function(){
+          describe('after opening', function () {
+            it('mask should not have a no-transition attribute', function () {
               modalFixture.previousSibling.setAttribute('no-transition', 'true');
               modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
-              expect(modalFixture.previousSibling.hasAttribute('no-transition'), "had a no-transition attribute").to.be.false;
+              expect(modalFixture.previousSibling.hasAttribute('no-transition'), 'had a no-transition attribute').to.be.false;
             });
-            it('mask should have an opened attribute', function(){
+            it('mask should have an opened attribute', function () {
               modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
-              expect(modalFixture.previousSibling.hasAttribute('opened'), "mask did not have opened attribute").to.be.true;
+              expect(modalFixture.previousSibling.hasAttribute('opened'), 'mask did not have opened attribute').to.be.true;
             });
-            describe('a11y', function() {
-              it('parent element should not have inert property', function() {
+            describe('a11y', function () {
+              it('parent element should not have inert property', function () {
                 modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
-                expect(modalFixture.parentNode.inert, "had aria-hidden attribute").to.be.falsy;
+                expect(modalFixture.parentNode.inert, 'had aria-hidden attribute').to.be.falsy;
               });
-              it('other elements whose ancestor is not the dialog parent or does not have data-no-inert attribute should have inert property', function() {
+              it('other elements whose ancestor is not the dialog parent or does not have data-no-inert attribute should have inert property', function () {
                 modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
-                expect(document.querySelector('#open-modal-button').inert, "did not have inert property").to.be.true;
+                expect(document.querySelector('#open-modal-button').inert, 'did not have inert property').to.be.true;
               });
             });
           });
 
-          describe('after closing', function() {
-            it('mask should not have an opened attribute', function(){
+          describe('after closing', function () {
+            it('mask should not have an opened attribute', function () {
               modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
               modalFixture.close();
-              expect(modalFixture.previousSibling.hasAttribute('opened'), "had a no-transition attribute").to.be.false;
+              expect(modalFixture.previousSibling.hasAttribute('opened'), 'had a no-transition attribute').to.be.false;
             });
-            describe('a11y', function() {
-              it('other elements whose ancestor is not the dialog parent should not have inert property', function(done) {
+            describe('a11y', function () {
+              it('other elements whose ancestor is not the dialog parent should not have inert property', function (done) {
                 modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
                 modalFixture.close();
-                setTimeout(function() {
-                  expect(document.querySelector('#open-modal-button').inert, "had inert property").to.be.false;
+                setTimeout(function () {
+                  expect(document.querySelector('#open-modal-button').inert, 'had inert property').to.be.false;
                   done();
                 }, 110);
               });
