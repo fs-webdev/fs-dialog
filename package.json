@@ -41,9 +41,10 @@
   },
   "scripts": {
     "precommit": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
-    "prepush": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix && git stash -q && git add . && git stash pop",
+    "prepush": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix && npm run stashandappend",
     "pretest": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
     "standard": "semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
+    "stashandappend": "touch .gitcommithooktempfile && git stash --include-untracked --quiet && git add . && git stash pop && rm .gitcommithooktempfile",
     "test": "wct --skip-plugin sauce"
   },
   "babel": {
