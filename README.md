@@ -138,7 +138,7 @@ for a report of JS standards infractions and to automatically fix the easy infra
 In order for **`stylelint`** to run, you need to globally install it:
 
 ```bash
-npm install stylelint
+npm install -g stylelint
 npm install -g stylelint-config-standard
 ```
 

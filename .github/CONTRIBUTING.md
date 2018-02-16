@@ -10,13 +10,13 @@ Bug reports are primarily handled through [JIRA](https://almtools.ldschurch.org/
 
 ### Contributing Pull Requests
 
-- Follow ESLint best practices. Enforced by Code Climate and `semistandard`.
+- Follow ESLint/CSSLint best practices. Enforced by Code Climate, `semistandard`, and `stylelint`.
 - Increment bower.json version (used to automatically tag a new release).
 - **Include tests that test the range of behavior that changes with your PR.** If your PR fixes a bug, make sure your tests capture that bug. If your PR adds new behavior, make sure that behavior is fully tested. Every PR must include associated tests (unit, component, acceptance) as appropriate.
 - Update any associated documentation affected by your change.
 - Submit your PR, making sure it references any relevant issues (JIRAs, V1 Stories, etc.)
 - Ensure your pull request description accurately describes the changes you are proposing.
-- If your PR fixes a bug, make sure the issue includes clear steps to reproduce the bug so the fix can be easily tested.
+- If your PR fixes a bug, make sure the issue includes clear steps to reproduce the bug so the fix can be easily tested. It is helpful to add a comment containing the JIRA number for non-obvious fixes.
 
 ### Merging Pull Requests
 
