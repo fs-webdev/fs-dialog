@@ -86,7 +86,7 @@ exclude_patterns:
   - build/
   - dist/
   - src/
-- "**/*-polyfill.js"
+  - "**/*-polyfill.js"
   - node_modules/
   - "**/reports/**/*"
   - "**/test/**/*"
