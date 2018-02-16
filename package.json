@@ -40,7 +40,7 @@
     "stylelint-config-standard": "^18.0.0"
   },
   "scripts": {
-    "precommit": "semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix && git add .",
+    "prepush": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix && git stash && git add . && git stash pop",
     "pretest": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
     "standard": "semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
     "test": "wct --skip-plugin sauce"
@@ -53,10 +53,20 @@
   "semistandard": {
     "about": "https://github.com/Flet/semistandard#javascript-semi-standard-style",
     "globals": [
+      "after",
+      "afterEach",
+      "axe",
+      "before",
+      "beforeEach",
       "customElements",
+      "describe",
       "Event",
+      "expect",
+      "fixture",
       "FS",
-      "HTMLElement"
+      "HTMLElement",
+      "it",
+      "sinon"
     ],
     "ignore": [
       "**/*min.*",
