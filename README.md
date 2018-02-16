@@ -117,9 +117,11 @@ npm install -g fs-webdev/size-limit
 
 ### Development Standards Enforcement
 
-> FamilySearch components are developed in compliance with ESLint and CSSLint common standards. Standards checking is run as part of an npm-based husky pre-commit hook, and can also be explicitly run via the `npm test` and `npm run standard` commands.
+> FamilySearch components are developed in compliance with ESLint and CSSLint common standards. Standards checking is run as part of an npm-based husky pre-push hook, and can also be explicitly run via the `npm test` and `npm run standard` commands. Currently needs an `npm install` before everything will work.
+> 
+> EXPLANATION: The **pre-push** hook will stash uncommitted changes, run standards with autofix enabled, and if there are no errors, append any associated changes made to the current commit, and then pop your uncommitted changes back out of the stash.
 
-In order for **`standard`** to run, you generally need to globally install it:
+In order for **`standard`** to run, you need to globally install it:
 
 ```bash
 npm install -g semistandard
@@ -133,7 +135,7 @@ and then you can run:
 semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy
 ```
 
-for a report of JS standards infractions and to automatically fix the easy infractions _(mostly whitespace, commas, quotes, and semicolons)_. Custom configuration should be added to a `semistandard` section of package.json.
+for a report of JS standards infractions and to automatically fix the easy infractions _(mostly whitespace, commas, quotes, and semicolons)_. Customiations should be added to a `semistandard` section of package.json.
 
 In order for **`stylelint`** to run, you need to globally install it:
 
@@ -148,7 +150,9 @@ and then you can run:
 stylelint '**/*.html' '**/*.css' --fix
 ```
 
-for a report of CSS standards infractions and to automatically fix the easy infractions _(mostly whitespace)_. Custom configuration should be added to a `stylelint` section of package.json.
+for a report of CSS standards infractions and to automatically fix the easy infractions _(mostly whitespace)_. Customizations should be added to a `stylelint` section of package.json.
+
+> NOTE: You can run `standard` functionally on a repo with the module just globally installed, but `stylelint 8.4.0` currently needs a local npm install in the target repository, otherwise it can't find its dependencies correctly.
 
 ## Running Tests
 
@@ -168,6 +172,8 @@ To run tests locally, run:
 ```bash
 npm test
 ```
+
+which will run the standards checks through `semistandard` and `stylelint`, and then the unit tests via `wct`.
 
 or
 
