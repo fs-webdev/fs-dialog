@@ -361,7 +361,7 @@
 (function (window, document) {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
   var template = doc.querySelector('#fs-dialog-template');
-  FS._registerTranslations({'de': {'_LRM_PKTAG439': 'fs-dialog_1_146 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Schließen'}, 'en': {'fs.shared.fsDialog.CLOSE': 'Close'}, 'eo': {'fs.shared.fsDialog.CLOSE': '[Çļöšé--- П國カ내]'}, 'es': {'_LRM_PKTAG33': 'fs-dialog_2_101 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Cerrar'}, 'fr': {'_LRM_PKTAG930': 'fs-dialog_1_102 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Fermer'}, 'it': {'_LRM_PKTAG257': 'fs-dialog_1_103 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Chiudi'}, 'ja': {'_LRM_PKTAG68': 'fs-dialog_1_104 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '閉じる'}, 'ko': {'_LRM_PKTAG569': 'fs-dialog_1_105 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '닫기'}, 'pt': {'_LRM_PKTAG662': 'fs-dialog_1_106 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Fechar'}, 'ru': {'_LRM_PKTAG275': 'fs-dialog_1_107 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Закрыть'}, 'zh': {'_LRM_PKTAG645': 'fs-dialog_1_108 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '關閉'}});
+  FS._registerTranslations({"de":{"_LRM_PKTAG439":"fs-dialog_1_146 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Schließen"},"en":{"fs.shared.fsDialog.CLOSE":"Close"},"eo":{"fs.shared.fsDialog.CLOSE":"[Çļöšé--- П國カ내]"},"es":{"_LRM_PKTAG33":"fs-dialog_2_101 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Cerrar"},"fr":{"_LRM_PKTAG930":"fs-dialog_1_102 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fermer"},"it":{"_LRM_PKTAG257":"fs-dialog_1_103 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Chiudi"},"ja":{"_LRM_PKTAG68":"fs-dialog_1_104 - FULL-FILE","fs.shared.fsDialog.CLOSE":"閉じる"},"ko":{"_LRM_PKTAG569":"fs-dialog_1_105 - FULL-FILE","fs.shared.fsDialog.CLOSE":"닫기"},"pt":{"_LRM_PKTAG662":"fs-dialog_1_106 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fechar"},"ru":{"_LRM_PKTAG275":"fs-dialog_1_107 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Закрыть"},"zh":{"_LRM_PKTAG645":"fs-dialog_1_108 - FULL-FILE","fs.shared.fsDialog.CLOSE":"關閉"}});
 
   var zIndex = 1990;
   var zIndexIncrement = 10;
@@ -538,7 +538,7 @@
           }
 
           // fire an event for the outside world to hear
-          this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true}));
+          this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true, composed: true}));
         } catch (err) {
           rejectPromise(err);
         }
@@ -598,7 +598,7 @@
         }
 
         // fire an event for the outside world to hear
-        this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true}));
+        this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true, composed: true}));
 
         resolvePromise();
         return this.pendingPromise;
@@ -618,7 +618,7 @@
       // event will fire after our element is all set up and ready to use.
       // we can remove this when all browsers support custom elements natively,
       // but that will be a breaking change to our API.
-      this.dispatchEvent(new Event('fs-dialog-ready', { bubbles: true }));
+      this.dispatchEvent(new Event('fs-dialog-ready', { bubbles: true, composed: true }));
       this.fsDialogReady = true;
     }
 
@@ -661,7 +661,7 @@
       // make this event fire with the escape key
       // consider making this a custom event
       if (el.hasAttribute('data-dialog-dismiss')) {
-        this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true}));
+        this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true, composed: true}));
 
         // stop the event from propagating to parent fs-dialogs
         e.stopPropagation();
@@ -671,7 +671,7 @@
       // confirming the dialog does not close it. allow the user to determine
       // what to do with the modal
       if (el.hasAttribute('data-dialog-confirm')) {
-        this.dispatchEvent(new Event('fs-dialog-confirm', {bubbles: true}));
+        this.dispatchEvent(new Event('fs-dialog-confirm', {bubbles: true, composed: true}));
 
         // stop the event from propagating to parent fs-dialogs
         e.stopPropagation();
@@ -743,7 +743,7 @@
   function keydownHandler (event) {
     if (event.which === 27) {
       // 27 is the code for the escape key
-      this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true}));
+      this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true, composed: true}));
       this.close();
     } else if (this.tagName !== 'FS-MODELESS-DIALOG' && event.which === 9) {
       // catches tab key
