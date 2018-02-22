@@ -43,6 +43,7 @@
         "**/fs-dialog/*.*"
       ],
       "exclude": [
+        "**/*polyfill*",
         "**/bin/*",
         "**/bower_components/**/*",
         "**/demo/*",
@@ -54,7 +55,8 @@
         "global": {
           "statements": 0,
           "branches": 0,
-          "functions": 0
+          "functions": 0,
+          "lines": 50
         }
       }
     },
