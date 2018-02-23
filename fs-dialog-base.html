@@ -704,7 +704,8 @@
     // TODO: look into using the related target instead of activeElement if possible
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
       // don't close if a node loses focus from dissapearing.
-      var targetDisappeared = !e.target.offsetHeight && !e.target.offsetWidth;
+      var target = e.composedPath()[0];
+      var targetDisappeared = !target.offsetHeight && !target.offsetWidth;
       if (targetDisappeared) {
         setTimeout(function () {
           var root = dialog.getRootNode();
