@@ -1,7 +1,7 @@
 {
   "name": "fs-dialog",
   "description": "An accessible standard dialog for FamilySearch.",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "main": ["src/fs-anchored-dialog.html","src/fs-modal-dialog.html","src/fs-modeless-dialog.html"],
   "author": {
     "name": "FamilySearch",
