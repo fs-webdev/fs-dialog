@@ -142,8 +142,8 @@
     height: 11px;
   }
 
-  fs-modal-dialog[no-close-button][no-fullscreen-mobile] .fs-dialog__close,
-  fs-anchored-dialog[no-close-button][no-fullscreen-mobile] .fs-dialog__close {
+  fs-modal-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close,
+  fs-anchored-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close {
     display: none;
   }
 
@@ -236,9 +236,9 @@
 
   @media screen and (max-width:480px),
     (max-height:480px) {
-    fs-modal-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close,
-    fs-anchored-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close {
-      display: none;
+    fs-modal-dialog[no-close-button]:not([no-fullscreen-mobile]) .fs-dialog__close,
+    fs-anchored-dialog[no-close-button]:not([no-fullscreen-mobile]) .fs-dialog__close {
+      display: block;
     }
 
     fs-modal-dialog:not([no-fullscreen-mobile]),
