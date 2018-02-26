@@ -1,11 +1,12 @@
 .DS_Store
 .env
 .vscode/*
-bower_components
+/reports
+analysis.json
 bower-debug.log
+bower_components
 buildAssets
+coverage
 node_modules
 npm-debug.log
-coverage
 wct.log
-analysis.json
