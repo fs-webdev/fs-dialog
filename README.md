@@ -118,7 +118,7 @@ npm install -g fs-webdev/size-limit
 ### Development Standards Enforcement
 
 > FamilySearch components are developed in compliance with ESLint and CSSLint common standards. Standards checking is run as part of an npm-based husky pre-push hook, and can also be explicitly run via the **`npm test`**, **`npm run standard`**, and **`npm run-standard-fix`** commands. Currently needs an **`npm install`** before everything will work.
-> 
+>
 > EXPLANATION: The **pre-push** hook will run standards with autofix enabled, and if there are no errors, append any associated changes made to the current commit. This means that if you have any local uncommitted changes, they will be automatically included in any commit. Prior to committing, revert local changes. TODO: Try to use the stashandappend npm script in concert with a prepush
 
 In order for **`semistandard`** to run, you need to globally install it:
@@ -129,7 +129,7 @@ npm install -g eslint-plugin-html
 npm install -g snazzy
 ```
 
-and then you can run:
+which will enable the node scripts to run:
 
 ```bash
 semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy
@@ -144,7 +144,7 @@ npm install -g stylelint
 npm install -g stylelint-config-standard
 ```
 
-and then you can run:
+which will enable the node scripts to run:
 
 ```bash
 stylelint '**/*.html' '**/*.css' --fix
