@@ -29,7 +29,9 @@
     max-width: 545px;
     opacity: 0;
     visibility: hidden;
-    width: 100%;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
   }
 
   .fs-dialog__mask {
@@ -140,6 +142,11 @@
     height: 11px;
   }
 
+  fs-modal-dialog[no-close-button][no-fullscreen-mobile] .fs-dialog__close,
+  fs-anchored-dialog[no-close-button][no-fullscreen-mobile] .fs-dialog__close {
+    display: none;
+  }
+
   fs-anchored-dialog .fs-dialog__body,
   fs-modeless-dialog .fs-dialog__body,
   fs-modal-dialog .fs-dialog__body {
@@ -170,92 +177,29 @@
 
   /********* CAVEAT *********/
 
-  /** This isn't going to  **/
-
-  /** work on all dialogs  **/
-
-  /** who have parents who **/
-
-  /** are going to contain **/
-
-  /** an absolute child    **/
-
-  @media screen and (min-width:480px) {
-    fs-modal-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close,
-    fs-anchored-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close {
-      display: none;
-    }
-  }
-
-  fs-modal-dialog[no-close-button][no-fullscreen-mobile] .fs-dialog__close,
-  fs-anchored-dialog[no-close-button][no-fullscreen-mobile] .fs-dialog__close {
-    display: none;
-  }
-
-  @media screen and (max-width:480px) {
-    fs-modal-dialog:not([no-fullscreen-mobile]),
-    fs-anchored-dialog:not([no-fullscreen-mobile]) {
-      border-radius: 0;
-      top: 0 !important;
-      left: 0 !important;
-      bottom: 0 !important;
-      right: 0 !important;
-      transform: translate(0, 0) !important;
-      max-height: 100% !important;
-      height: 100% !important;
-      position: fixed;
-    }
-
-    /** Mobile Transitions **/
-    fs-anchored-dialog[transition]:not([no-fullscreen-mobile]) {
-      transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-    }
-
-    fs-anchored-dialog[transition][opened]:not([no-fullscreen-mobile]) {
-      transition: visibility 0s, opacity 0s;
-    }
-
-    fs-modal-dialog[transition="from-bottom"]:not([no-fullscreen-mobile]),
-    fs-anchored-dialog[transition="from-bottom"]:not([no-fullscreen-mobile]) {
-      top: 100% !important;
-      transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-    }
-
-    fs-modal-dialog[transition="from-bottom"][opened]:not([no-fullscreen-mobile]),
-    fs-anchored-dialog[transition="from-bottom"][opened]:not([no-fullscreen-mobile]) {
-      top: 0 !important;
-      transition: top 0.3s;
-    }
-
-    fs-modal-dialog[transition="from-right"]:not([no-fullscreen-mobile]),
-    fs-anchored-dialog[transition="from-right"]:not([no-fullscreen-mobile]) {
-      left: 100% !important;
-      transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-    }
-
-    fs-modal-dialog[transition="from-right"][opened]:not([no-fullscreen-mobile]),
-    fs-anchored-dialog[transition="from-right"][opened]:not([no-fullscreen-mobile]) {
-      left: 0 !important;
-      transition: left 0.3s;
-    }
-  }
+  /** This isn't going to
+    work on all dialogs
+    who have parents who
+    are going to contain
+    an absolute child **/
 
   fs-modal-dialog[keep-fullscreen],
   fs-anchored-dialog[keep-fullscreen] {
     border-radius: 0;
-    top: 0 !important;
-    left: 0 !important;
     bottom: 0 !important;
-    right: 0 !important;
-    transform: translate(0, 0) !important;
-    max-height: 100% !important;
     height: 100% !important;
-    position: fixed;
+    left: 0 !important;
+    max-height: 100% !important;
     max-width: 100%;
+    position: fixed;
+    right: 0 !important;
+    top: 0 !important;
+    transform: translate(0, 0) !important;
     width: 100%;
   }
 
-  /** Mobile Transitions **/
+  /** Begin Mobile Transitions **/
+
   fs-anchored-dialog[transition][keep-fullscreen] {
     transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
   }
@@ -288,42 +232,66 @@
     transition: left 0.3s;
   }
 
-  /** Mobile Transitions **/
+  /** End Mobile Transitions **/
 
-  /** TODO: do we need  transitions when we are not on mobile? **/
+  @media screen and (max-width:480px),
+    (max-height:480px) {
+    fs-modal-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close,
+    fs-anchored-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close {
+      display: none;
+    }
 
-  /*
-  fs-modal-dialog[transition] {
-    transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-  }
-  fs-modal-dialog[transition][opened] {
-    transition: visibility 0s, opacity 0s;
-  }
+    fs-modal-dialog:not([no-fullscreen-mobile]),
+    fs-anchored-dialog:not([no-fullscreen-mobile]) {
+      border-radius: 0;
+      bottom: 0 !important;
+      height: 100% !important;
+      left: 0 !important;
+      max-height: 100% !important;
+      max-width: 100%;
+      position: fixed;
+      right: 0 !important;
+      top: 0 !important;
+      transform: translate(0, 0) !important;
+      width: 100%;
+    }
 
-  fs-modal-dialog[transition="from-bottom"] {
-    top: 100%;
-    transform: translateX(-50%);
-    transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-  }
+    /** Begin Mobile Transitions **/
 
-  fs-modal-dialog[transition="from-bottom"][opened] {
-    top: 50%;
-    transform: translate(-50%, -50%);
-    transition: top 0.3s;
-  }
+    fs-anchored-dialog[transition]:not([no-fullscreen-mobile]) {
+      transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+    }
 
-  fs-modal-dialog[transition="from-right"] {
-    left: 100%;
-    transform: translateY(-50%);
-    transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-  }
+    fs-anchored-dialog[transition][opened]:not([no-fullscreen-mobile]) {
+      transition: visibility 0s, opacity 0s;
+    }
 
-  fs-modal-dialog[transition="from-right"][opened] {
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: left 0.3s;
+    fs-modal-dialog[transition="from-bottom"]:not([no-fullscreen-mobile]),
+    fs-anchored-dialog[transition="from-bottom"]:not([no-fullscreen-mobile]) {
+      top: 100% !important;
+      transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+    }
+
+    fs-modal-dialog[transition="from-bottom"][opened]:not([no-fullscreen-mobile]),
+    fs-anchored-dialog[transition="from-bottom"][opened]:not([no-fullscreen-mobile]) {
+      top: 0 !important;
+      transition: top 0.3s;
+    }
+
+    fs-modal-dialog[transition="from-right"]:not([no-fullscreen-mobile]),
+    fs-anchored-dialog[transition="from-right"]:not([no-fullscreen-mobile]) {
+      left: 100% !important;
+      transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+    }
+
+    fs-modal-dialog[transition="from-right"][opened]:not([no-fullscreen-mobile]),
+    fs-anchored-dialog[transition="from-right"][opened]:not([no-fullscreen-mobile]) {
+      left: 0 !important;
+      transition: left 0.3s;
+    }
+
+    /** End Mobile Transitions **/
   }
-  */
 </style>
 
 <!--
@@ -337,7 +305,8 @@
       overflow: hidden !important;
     }
 
-    @media screen and (max-width:480px) {
+    @media screen and (max-width:480px),
+      (max-height:480px) {
       body.fs-anchored-dialog-open {
         overflow: hidden !important;
       }

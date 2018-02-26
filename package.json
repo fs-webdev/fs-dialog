@@ -1,6 +1,6 @@
 {
   "name": "fs-dialog",
-  "version": "3.0.8",
+  "version": "4.0.0",
   "description": "An accessible standard dialog for FamilySearch.",
   "directories": {
     "test": "test"
@@ -42,7 +42,8 @@
   "scripts": {
     "precommit": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix && git add .",
     "pretest": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
-    "standard": "semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
+    "standard": "semistandard --verbose '**/*.html' '**/*.js' | snazzy && stylelint '**/*.html' '**/*.css'",
+    "standard-fix": "semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
     "stashandappend": "touch .gitcommithooktempfile && git stash --include-untracked --quiet && git add . && git stash pop --quiet && rm .gitcommithooktempfile",
     "test": "wct --skip-plugin sauce"
   },
