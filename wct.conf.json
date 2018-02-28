@@ -53,16 +53,17 @@
       ],
       "thresholds": {
         "global": {
-          "statements": 0,
-          "branches": 0,
-          "functions": 0,
+          "statements": 50,
+          "branches": 50,
+          "functions": 50,
           "lines": 50
         }
       }
     },
     "size-limit": {
       "path": "fs-dialog-all.html",
-      "limit": "32 KB"
+      "limitNoPolymer": "32 KB",
+      "limitNoExternals": "32 KB"
     }
   }
 }
