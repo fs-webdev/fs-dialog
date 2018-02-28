@@ -107,6 +107,10 @@ The `tree-common-build-scripts` folder is a Git submodule, made to house build-r
 git pull --recurse-submodules; git submodule update --remote --recursive
 ```
 
+## Automatic Releases
+
+Releases are automatically be created after successful builds of `master` when bower/package.json versions change by manually calling the [Frontier Github Automator](https://github.com/fs-webdev/github-automator) via the shared [create_release.js](https://github.com/fs-webdev/tree-common-build-scripts/blob/master/bin/create_release.js) node script.
+
 ## Special Plugins
 
 In order for the **`size-limit`** WCT plugin to run, you need to globally install it:

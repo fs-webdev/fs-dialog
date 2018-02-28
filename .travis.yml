@@ -7,7 +7,7 @@ before_install:
   # https://github.com/travis-ci/travis-ci/issues/4099
   - 'git submodule update --init --remote --recursive'
 
-  - tree-common-build-scripts/bin/before_script.sh
+  - tree-common-build-scripts/bin/before_install.sh
   # pipe bower install output through tee to create a log to parse for errors and preserve exit code
   - 'bower install --force-latest 2>&1 | tee bower-debug.log; ( exit ${PIPESTATUS[0]} )'
 # Branch whitelist
@@ -43,7 +43,7 @@ script:
   # pipe wct output through tee to create a log to parse for errors and preserve exit code
   - 'xvfb-run wct --skip-plugin local 2>&1 | tee wct.log; ( exit ${PIPESTATUS[0]} )'
 after_success:
-  - tree-common-build-scripts/bin/tag_build.sh
+  - node tree-common-build-scripts/bin/create_release.js
   - 'codeclimate-test-reporter < reports/coverage/lcov.info'
 after_failure:
   - tree-common-build-scripts/bin/report_failure_details.sh
