@@ -667,6 +667,7 @@
   }
   function focusoutHandler (e) {
     var dialog = this;
+    var dialogContainedRelatedTarget;
     var reverseStack;
     window.removeEventListener('focus', dialog._focusoutHandler);
     // use setTimout so that we get the correct document.activeElement
@@ -681,6 +682,8 @@
           if (!dialog.contains(root.activeElement)) dialog.focus();
         }, 0);
       } else {
+        // don't close if a node doesn't get focus because it dissapeared
+        if (e.relatedTarget && dialog.contains(e.relatedTarget)) dialogContainedRelatedTarget = true;
         setTimeout(function () {
           var root = dialog.getRootNode();
           var activeElement = root.activeElement || document.activeElement;
@@ -690,11 +693,17 @@
           } else if (!dialog.contains(activeElement)) {
             // cascade down stack until we hit a dialog that has the active element or does not have click away
             reverseStack = [].concat(FS.dialog.service.getStack()).reverse();
+            var originalDialog = dialog;
             reverseStack.some(function (dialog) {
               root = dialog.getRootNode();
               activeElement = root.activeElement || activeElement;
               dialog.attachedToElementClicked = ((dialog.attachToElement && dialog.attachToElement.contains(dialog.attachToElement.getRootNode().activeElement)) || (dialog.focusBackElement && dialog.focusBackElement.contains(dialog.focusBackElement.getRootNode().activeElement)));
               if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
+                // don't close if a node doesn't get focus because it dissapeared
+                if (dialogContainedRelatedTarget && dialog === originalDialog) {
+                  dialog.focus();
+                  return true;
+                }
                 dialog.close();
               } else {
                 return true;
