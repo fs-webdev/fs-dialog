@@ -693,13 +693,14 @@
           } else if (!dialog.contains(activeElement)) {
             // cascade down stack until we hit a dialog that has the active element or does not have click away
             reverseStack = [].concat(FS.dialog.service.getStack()).reverse();
+            var originalDialog = dialog;
             reverseStack.some(function (dialog) {
               root = dialog.getRootNode();
               activeElement = root.activeElement || activeElement;
               dialog.attachedToElementClicked = ((dialog.attachToElement && dialog.attachToElement.contains(dialog.attachToElement.getRootNode().activeElement)) || (dialog.focusBackElement && dialog.focusBackElement.contains(dialog.focusBackElement.getRootNode().activeElement)));
               if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
                 // don't close if a node doesn't get focus because it dissapeared
-                if (dialogContainedRelatedTarget) {
+                if (dialogContainedRelatedTarget && dialog === originalDialog) {
                   dialog.focus();
                   return true;
                 }
