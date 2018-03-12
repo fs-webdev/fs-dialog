@@ -521,6 +521,8 @@
         // Do not close a dialog that is already closed
         if (!this.opened) return;
 
+        this.attachedToElementClicked = false;
+
         // remove event listeners
         // consider reducing event listeners by putting them in the service
         if (this.dismissOnBlur) {
