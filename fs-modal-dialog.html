@@ -287,14 +287,14 @@ fs-modal-dialog:not([no-transition]) {
   }
 
   function dialogOpenEH (event) {
-    if (event && event.target && (event.target.tagName === 'FS-ANCHORED-DIALOG' || event.target.tagName === 'FS-MODELESS-DIALOG')) {
-      uninertChildDialog(event.target);
+    if (event && event.composedPath && event.composedPath().length && (event.composedPath()[0].tagName === 'FS-ANCHORED-DIALOG' || event.composedPath()[0].tagName === 'FS-MODELESS-DIALOG')) {
+      uninertChildDialog(event.composedPath()[0]);
     }
   }
 
   function dialogCloseEH (event) {
-    if (event && event.target && (event.target.tagName === 'FS-ANCHORED-DIALOG' || event.target.tagName === 'FS-MODELESS-DIALOG')) {
-      a11yClose.bind(event.target)();
+    if (event && event.composedPath && event.composedPath().length && (event.composedPath()[0].tagName === 'FS-ANCHORED-DIALOG' || event.composedPath()[0].tagName === 'FS-MODELESS-DIALOG')) {
+      a11yClose.bind(event.composedPath()[0])();
     }
   }
 
