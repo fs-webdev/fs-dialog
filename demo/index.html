@@ -351,7 +351,7 @@
 
     <br><br><br>
 
-    <h3>Other Functions and Attributes</h3>
+    <h3>Other Functions, Attributes, and Gotcha's</h3>
     <div class="demo-snippet fs-card">
       <div class="demo do-not-codify">
         <h5>Auto-hiding dialogs from initial load</h5>
@@ -363,6 +363,24 @@
             visibility: hidden;
             opacity: 0;
             display: none;
+          }
+        </pre>
+        <h5>Registering Global Dialogs</h5>
+        <p>You may "register" your dialog as a global dialog, which means it will be appended to the `document.body` so people don't have to include it in their shadow root. This comes in handy when a dialog may be consumed by a parent that is absolutely positioned. For example, if a dialog will be opening another dialog, the second dialog's dom must be located outside of the first dialog, otherwise it will only take up space inside of the first dialog. After you have registered a dialog, you will have a global pointer to it on `FS.dialog.[dialogName]`.</p>
+        <pre>
+          // Register your dialog in your web-component.html file
+          &lt;script&gt;
+            // register the dialog
+            FS.dialog.register('fs-person-card');
+
+            Polymer({
+              is: 'fs-person-card',
+            ...
+          &lt;/script&gt;
+
+          // Use the dialog in another component
+          _openPersonCard: function(options) {
+            FS.dialog.fsPersonCard.openCard(options)
           }
         </pre>
         <h5>Open Function Options</h5>
