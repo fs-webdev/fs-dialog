@@ -265,8 +265,11 @@ fs-modal-dialog:not([no-transition]) {
   }
 
   function uninertChildDialog (childDialog) {
-    childDialog.inert = false;
-    childDialog._uninertedElements = [childDialog];
+    childDialog._uninertedElements = [];
+    if (childDialog.inert) {
+      childDialog.inert = false;
+      childDialog._uninertedElements.push(childDialog);
+    }
     // we have the empty inerted elements so that we can reuse a11y close
     // to re-inert the necessary elements after the childDialog gets closed again
     childDialog._inertedElements = [];
