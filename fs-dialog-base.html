@@ -425,10 +425,7 @@
 
       // open the dialog
       this.open = function (optionsObj) {
-        var pendingPromise = new Promise(function (resolve, reject) {
-          resolvePromise = resolve;
-          rejectPromise = reject;
-        });
+        var pendingPromise;
 
         try {
           optionsObj = optionsObj || {};
@@ -438,13 +435,18 @@
           // }
 
           // Do not open a dialog that is already opened
-          if (this.opened) return;
+          if (this.opened) return this.pendingPromise;
 
           // If dialog was just closed by clicking on the attachToElement, don't reopen.
           if (this.attachedToElementClicked) {
             this.attachedToElementClicked = false;
-            return;
+            return this.pendingPromise;
           }
+
+          pendingPromise = new Promise(function (resolve, reject) {
+            resolvePromise = resolve;
+            rejectPromise = reject;
+          });
 
           // add dialog to the stack unless it is a modeless dialog
           if (!this.doNotUseInStack) {
@@ -513,13 +515,14 @@
         }
 
         // return a promise that will resolve when the dialog is closed.
+        this.pendingPromise = pendingPromise;
         return pendingPromise;
       };
 
       // close the dialog
       this.close = function (optionsObj) {
         // Do not close a dialog that is already closed
-        if (!this.opened) return;
+        if (!this.opened) return this.pendingPromise;
 
         this.attachedToElementClicked = false;
 
