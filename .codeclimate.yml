@@ -40,6 +40,10 @@ checks:
     enabled: true
     config:
       threshold: 100
+prepare:
+  fetch:
+  - url: "https://raw.githubusercontent.com/standard/eslint-config-standard/master/eslintrc.json"
+    path: ".eslint-config-standard.json"
 plugins:
   csslint:
     enabled: true
@@ -78,6 +82,33 @@ plugins:
             Bad merge detected by one or more of the following strings of the form: "<<<<<<< Updated upstream", "=======", ">>>>>>> Stashed changes". In all likelihood, this will result in syntax errors when attempting to run your application.
   markdownlint:
     enabled: true
+    checks:
+      MD008:
+        enabled: false
+      MD013:
+        enabled: false
+      MD014:
+        enabled: false
+      MD015:
+        enabled: false
+      MD016:
+        enabled: false
+      MD017:
+        enabled: false
+      MD023:
+        enabled: false
+      MD024:
+        enabled: false
+      MD026:
+        enabled: false
+      MD029:
+        enabled: false
+      MD033:
+        enabled: false
+      MD034:
+        enabled: false
+      MD036:
+        enabled: false
   shellcheck:
     enabled: true
 exclude_patterns:

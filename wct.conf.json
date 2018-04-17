@@ -19,10 +19,6 @@
           "platform":     "OS X 10.12"
         },
         {
-          "browserName":  "chrome",
-          "platform":     "linux"
-        },
-        {
           "browserName":  "microsoftedge",
           "platform":     "Windows 10"
         },
@@ -36,11 +32,12 @@
         }
       ]
     },
-    "istanbul": {
+    "istanbub": {
       "dir": "./reports/coverage",
       "reporters": ["text", "text-summary", "lcov"],
       "include": [
-        "**/fs-dialog/*.*"
+        "**/*.html",
+        "**/*.js"
       ],
       "exclude": [
         "**/*polyfill*",
@@ -48,22 +45,23 @@
         "**/bower_components/**/*",
         "**/demo/*",
         "**/locales/*",
+        "**/node_modules/**/*",
         "**/reports/*",
         "**/test/*"
       ],
       "thresholds": {
         "global": {
-          "statements": 50,
-          "branches": 50,
-          "functions": 50,
-          "lines": 50
+          "statements": 80,
+          "branches": 65,
+          "functions": 70,
+          "lines": 80
         }
       }
     },
     "size-limit": {
       "path": "fs-dialog-all.html",
-      "limitNoPolymer": "32 KB",
-      "limitNoExternals": "32 KB"
+      "limitNoPolymer": "25 KB",
+      "limitNoExternals": "15 KB"
     }
   }
 }

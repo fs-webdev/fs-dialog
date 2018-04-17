@@ -1,32 +1,26 @@
-git:
-  # http://docs.travis-ci.com/user/customizing-the-build/#Git-Submodules
-  submodules: false
-before_install:
-  # Create .netrc for private repo install
-  - 'echo -e "machine github.com\n  login $CI_USER_TOKEN" >> ~/.netrc'
-  # https://github.com/travis-ci/travis-ci/issues/4099
-  - 'git submodule update --init --remote --recursive'
-
-  - tree-common-build-scripts/bin/before_install.sh
-  # pipe bower install output through tee to create a log to parse for errors and preserve exit code
-  - 'bower install --force-latest 2>&1 | tee bower-debug.log; ( exit ${PIPESTATUS[0]} )'
+addons:
+  sauce_connect: true
 # Branch whitelist
 branches:
   only:
     - master
+# Caching of bower_components & node_modules disabled, due to an increase in delayed breakages
+cache:
+  directories: null
 dist: trusty
+env:
+  global:
+    # Map existing Code Climate env var to new key
+    - CC_TEST_REPORTER_ID=$CODECLIMATE_REPO_TOKEN
 language: node_js
 node_js:
   - '8'
-cache:
-  directories: null
-  # - bower_components # disabled, due to an increase in delayed breakages
-
 notifications:
   email:
     on_success: never
     on_failure: change
   slack:
+    # Custom template used because SUCCESS/FAILURE is all the way at the end by default
     template:
       - '%{result}: %{repository} <%{build_url}|#%{build_number}>  (<%{compare_url}|%{commit}>)'
       - "\tin %{duration} for %{author}'s commit:"
@@ -37,13 +31,23 @@ notifications:
     on_success: always
     on_failure: change
     on_start: never
-addons:
-  sauce_connect: true
+
+before_install:
+  # Create .netrc for private repo install
+  - 'echo -e "machine github.com\n  login $CI_USER_TOKEN" >> ~/.netrc'
+  - npm install -g bower
+install:
+  # pipe bower install output through tee to create a log to parse for errors and preserve exit code
+  - 'bower install --force-latest 2>&1 | tee bower-debug.log; ( exit ${PIPESTATUS[0]} )'
+  - npm install
+before_script:
+  - node_modules/fs-common-build-scripts/bin/before_script.sh
 script:
-  # pipe wct output through tee to create a log to parse for errors and preserve exit code
-  - 'xvfb-run wct --skip-plugin local 2>&1 | tee wct.log; ( exit ${PIPESTATUS[0]} )'
+  # pipe standard & wct output through tee to create a log to parse for errors and preserve exit code
+  - 'npm run standard && npx wct --skip-plugin local 2>&1 | tee wct.log; ( exit ${PIPESTATUS[0]} )'
 after_success:
-  - node tree-common-build-scripts/bin/create_release.js
-  - 'codeclimate-test-reporter < reports/coverage/lcov.info'
+  - node node_modules/fs-common-build-scripts/bin/create_release.js
 after_failure:
-  - tree-common-build-scripts/bin/report_failure_details.sh
+  - node_modules/fs-common-build-scripts/bin/report_failure_details.sh
+after_script:
+  - node_modules/fs-common-build-scripts/bin/after_script.sh

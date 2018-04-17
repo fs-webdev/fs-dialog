@@ -15,7 +15,7 @@ Bug reports are primarily handled through [JIRA](https://almtools.ldschurch.org/
 - **Include tests that test the range of behavior that changes with your PR.** If your PR fixes a bug, make sure your tests capture that bug. If your PR adds new behavior, make sure that behavior is fully tested. Every PR must include associated tests (unit, component, acceptance) as appropriate.
 - Update any associated documentation affected by your change.
 - Submit your PR, making sure it references any relevant issues (JIRAs, V1 Stories, etc.)
-- Ensure your pull request description accurately describes the changes you are proposing.
+- Ensure your pull request description accurately describes the changes you are proposing. See [short reason](https://twitter.com/dzaporozhets/status/870268536404533249) and [long reason](https://medium.com/square-corner-blog/how-square-writes-commit-messages-8e92fcbf77c9).
 - If your PR fixes a bug, make sure the issue includes clear steps to reproduce the bug so the fix can be easily tested. It is helpful to add a comment containing the JIRA number for non-obvious fixes.
 
 ### Merging Pull Requests
