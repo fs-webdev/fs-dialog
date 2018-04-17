@@ -1,4 +1,8 @@
-A few sentences describing the overall goals of the pull request's commits. Reference any issues/JIRAs/dependent PR's. Should **never** be empty. Review: [CONTRIBUTING.md](/.github/CONTRIBUTING.md)
+A few sentences describing the overall goals of the pull request's commits. Reference any issues/JIRAs/dependent PR's. Should **never** be empty. A commit subject line should always be able to complete the following sentence: 
+
+> If applied, this commit will **_your present-tense subject line here_**.
+
+Review: [CONTRIBUTING.md](../tree/master/.github/CONTRIBUTING.md)
 
 ## Changes
 - Summarize
@@ -9,4 +13,4 @@ A few sentences describing the overall goals of the pull request's commits. Refe
 - [ ] Tests
 - [ ] Update demo
 - [ ] Update documentation & README
-- [ ] Increment bower.json version
+- [ ] Increment version in bower.json & package.json.

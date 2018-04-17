@@ -1,6 +1,6 @@
 {
   "name": "fs-dialog",
-  "version": "4.0.8",
+  "version": "4.1.0",
   "description": "An accessible standard dialog for FamilySearch.",
   "directories": {
     "test": "test"
@@ -24,7 +24,6 @@
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "css-slam": "^2.0.2",
-    "eslint-plugin-html": "^4.0.2",
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
@@ -32,51 +31,58 @@
     "gulp-if": "^2.0.2",
     "gulp-replace": "^0.6.1",
     "gulp-uglify": "^3.0.0",
-    "husky": "^0.14.3",
     "polymer-build": "^2.1.1",
-    "semistandard": "^12.0.0",
-    "snazzy": "^7.0.0",
-    "stylelint": "^8.4.0",
-    "stylelint-config-standard": "^18.0.0"
+    "fs-common-build-scripts": "github:fs-webdev/fs-common-build-scripts"
   },
   "scripts": {
-    "precommit": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix && git add . && node tree-common-build-scripts/bin/check_version_match.js",
+    "postinstall": "bower install",
+    "precommit": "gulp && node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && node_modules/fs-common-build-scripts/bin/pre_commit_commands.sh",
+    "preinstall": "git config --global url.https://github.com/.insteadOf git://github.com/",
     "pretest": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
     "standard": "semistandard --verbose '**/*.html' '**/*.js' | snazzy && stylelint '**/*.html' '**/*.css'",
     "standard-fix": "semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
-    "stashandappend": "touch .gitcommithooktempfile && git stash --include-untracked --quiet && git add . && git stash pop --quiet && rm .gitcommithooktempfile",
-    "test": "wct --skip-plugin sauce"
-  },
-  "babel": {
-    "presets": [
-      "env"
-    ]
+    "test": "wct --skip-plugin sauce",
+    "test-p": "wct --skip-plugin sauce -p"
   },
   "semistandard": {
     "about": "https://github.com/Flet/semistandard#javascript-semi-standard-style",
     "globals": [
+      "__actions__",
+      "__services__",
+      "__state__",
       "after",
       "afterEach",
       "axe",
       "before",
       "beforeEach",
       "customElements",
+      "CustomEvent",
       "describe",
       "Event",
       "expect",
       "fixture",
       "FS",
+      "FsBehaviors",
+      "Headers",
       "HTMLElement",
+      "indexedDB",
       "it",
-      "sinon"
+      "location",
+      "Polymer",
+      "ResettablePropertiesBehavior",
+      "sessionStorage",
+      "sinon",
+      "WCI18n"
     ],
     "ignore": [
+      "**/*bower_components*/**",
       "**/*min.*",
+      "**/*node_modules*/**",
       "**/*polyfill*",
-      "demo/",
-      "/reports/",
-      "/test/",
-      "/vendor/",
+      "**/demo/**",
+      "**/reports/**",
+      "**/test/**",
+      "**/vendor/**",
       "analysis.json",
       "gulpfile.js"
     ],
@@ -85,16 +91,23 @@
   "stylelint": {
     "about": "https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md#possible-errors",
     "extends": "stylelint-config-standard",
+    "ignoreFiles": [
+      "**/bower_components/**.*",
+      "**/node_modules/**.*",
+      "**/reports/**.*",
+      "**/test/**.*"
+    ],
     "rules": {
       "indentation": 2,
       "media-feature-colon-space-after": null,
       "selector-type-no-unknown": null,
       "unit-whitelist": [
+        "%",
+        "deg",
         "em",
         "px",
         "rem",
         "s",
-        "%",
         "vh",
         "vw"
       ]

@@ -20,24 +20,6 @@ Modal dialogs darken the background and prevent user interaction of all other el
 
 Modeless dialogs do not darken the screen and do not prevent interaction of all other elements. They also start in the center of the screen but can be moved. They will not close if clicked outside nor with the <cmd>esc</cmd>.
 
-## Installation
-
-```
-$ bower install --save fs-webdev/fs-dialog
-```
-
-## Demo
-
-If you attempt to `frontier element serve` on a clean install, you will get an error, stating that the analysis.json file (used to populate the documentation page) does not exist. You can fix this by either running `frontier element serve -a`, or by auto-loading the demo page via:
-
-`frontier element serve -d`
-
-The demo page is _fully_ dynamic, allowing excercising of each type of dialog with its various options, updating the associated HTML code snippet and allowing for easy testing of various configurations.
-
-## Online Docs & Demo
-
-The FamilySearch Element Catalog is located at: [https://www.familysearch.org/frontier/elements/](https://www.familysearch.org/frontier/elements/), with access granted to members of the `fs-webdev` GitHub organization. You can browse through each shared element's docs and demo
-
 ## Usage
 
 ```html
@@ -99,77 +81,47 @@ All events bubble and are fired on the dialog that triggered the event.
 * `data-dialog-dismiss` - Fire the `fs-dialog-dismiss` event when pressed and close the dialog. Use this attribute to automatically close the dialog. The close X has this attribute.
 * `data-dialog-confirm` - Fire the `fs-dialog-confirm` event when pressed and do not close the dialog. Use this attribute to preform asynchronous actions when the event is fired. You will have to tell the dialog when to close.
 
-## Submodules for Common Files
+## Running the Component
 
-The `tree-common-build-scripts` folder is a Git submodule, made to house build-related code common across multiple repositories. In order to update, run:
+<details>
 
-```bash
-git pull --recurse-submodules; git submodule update --remote --recursive
-```
+1. (Once) Install or update the [Polymer CLI](https://www.npmjs.com/package/polymer-cli): ```npm i -g polymer-cli```
+1. (Once) Install the [frontier-cli](https://github.com/fs-webdev/frontier-cli): ```npm i -g https://github.com/fs-webdev/frontier-cli```
+1. Run `npm install` to get dependencies needed to set up the unit testing framework, useful commit hooks, and standards tools (`bower install` is also run as a post-install step).
+1. Or (if you want to live dangerously) just run `bower install` to load all of the component's primary dependencies.
+1. Run `polymer analyze > analysis.json` to initialize the docs page.
 
-## Automatic Releases
-
-Releases are automatically be created after successful builds of `master` when bower/package.json versions change by manually calling the [Frontier Github Automator](https://github.com/fs-webdev/github-automator) via the shared [create_release.js](https://github.com/fs-webdev/tree-common-build-scripts/blob/master/bin/create_release.js) node script.
-
-## Special Plugins
-
-In order for the **`size-limit`** WCT plugin to run, you need to globally install it:
+This component's auto-generated documentation is viewable by running:
 
 ```bash
-npm install -g fs-webdev/size-limit
+frontier element serve
 ```
 
-### Development Standards Enforcement
-
-> FamilySearch components are developed in compliance with ESLint and CSSLint common standards. Standards checking is run as part of an npm-based husky pre-push hook, and can also be explicitly run via the **`npm test`**, **`npm run standard`**, and **`npm run-standard-fix`** commands. Currently needs an **`npm install`** before everything will work.
->
-> EXPLANATION: The **pre-push** hook will run standards with autofix enabled, and if there are no errors, append any associated changes made to the current commit. This means that if you have any local uncommitted changes, they will be automatically included in any commit. Prior to committing, revert local changes. TODO: Try to use the stashandappend npm script in concert with a prepush
-
-In order for **`semistandard`** to run, you need to globally install it:
+> NOTE: If you attempt to `frontier element serve` on a clean install, you will get an error, stating that the analysis.json file (used to populate the documentation page) does not exist. You can fix this by either running `frontier element serve -a`, or by auto-loading the demo page via:
 
 ```bash
-npm install -g semistandard
-npm install -g eslint-plugin-html
-npm install -g snazzy
+frontier element serve -d
 ```
 
-which will enable the node scripts to run:
+This component's demo page is viewable by running the above command.
 
-```bash
-semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy
-```
+</details>
 
-for a report of JS standards infractions and to automatically fix the easy infractions _(mostly whitespace, commas, quotes, and semicolons)_. Customizations should be added to a `semistandard` section of package.json.
+## Online Docs & Demo
 
-In order for **`stylelint`** to run, you need to globally install it:
+The FamilySearch Element Catalog is located at: [https://www.familysearch.org/frontier/catalog/](https://www.familysearch.org/frontier/catalog/), with access granted to members of the `fs-webdev` GitHub organization. [How to create a shared component of your own](https://www.familysearch.org/frontier/ui-components/creating-a-new-web-component/).
 
-```bash
-npm install -g stylelint
-npm install -g stylelint-config-standard
-```
+## Build, Commit, Test, and Standards Tools
 
-which will enable the node scripts to run:
+For detail about automatic releases, test plugins, pre-commit hooks, and standards enforcement, see: [fs-common-build-scripts](https://github.com/fs-webdev/fs-common-build-scripts#)
 
-```bash
-stylelint '**/*.html' '**/*.css' --fix
-```
-
-for a report of CSS standards infractions and to automatically fix the easy infractions _(mostly whitespace)_. Customizations should be added to a `stylelint` section of package.json.
-
-> NOTE: You can run `standard` functionally on a repo with the module just globally installed, but `stylelint 8.4.0` currently needs a local npm install in the target repository, otherwise it can't find its dependencies correctly.
+> IMPORTANT NOTE: When running package dependency commands (i.e. `wct`, `standard`), you need to prefix the command with [`npx`](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b).
 
 ## Running Tests
 
+<details>
+
 This component is set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester).
-
-In order to run the `wct` command, you need to globally install web-component-tester:
-
-> NOTE OF WARNING: This component is using a [patcharound](https://github.com/thedeeno/web-component-tester-istanbul/issues/38#issuecomment-287544522) in order to incorporate code coverage reporting. In order to be able to run unit tests locally, (as of 2017-05-18) you must install the *patched* versions of web-component-tester and web-component-tester-istanbul. (You may need to uninstall other versions, first)
-
-```bash
-npm install -g t2ym/web-component-tester#6.0.0-wct6-plugin.1
-npm install -g t2ym/web-component-tester-istanbul#0.10.1-wct6.11
-```
 
 To run tests locally, run:
 
@@ -179,18 +131,14 @@ npm test
 
 which will run the standards checks through `semistandard` and `stylelint`, and then the unit tests via `wct`.
 
-> NOTE: Do not run the `npm test` command on Travis CI, unless you want to run semistandard & stylelint, which would require them to be globally installed, first.
-
-or
-
 ```bash
-wct --skip-plugin sauce
+npx wct --skip-plugin sauce
 ```
 
 If you need to debug locally (keeping the browser open), run:
 
 ```bash
-wct --skip-plugin sauce -p
+npx wct --skip-plugin sauce -p
 ```
 
 or
@@ -202,5 +150,9 @@ polymer test --skip-plugin sauce --local chrome -p
 If you want to run the full suite of SauceLabs browser tests, run:
 
 ```bash
-wct test/index.html --configFile wct.conf.json  --sauce-username {USERNAME} --sauce-access-key {ACCESS_KEY}
+npx wct test/index.html --configFile wct.conf.json  --sauce-username {USERNAME} --sauce-access-key {ACCESS_KEY}
 ```
+
+> NOTE: You can export `SAUCE_USERNAME` and `SAUCE_ACCESS_KEY` in your `.bash_profile` to be able to simply run `npx wct` without needing additional options.
+
+</details>
