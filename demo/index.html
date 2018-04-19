@@ -20,7 +20,9 @@
       }
 
       .demo-snippet {
+        clear: both;
         margin-bottom: 40px;
+        margin-top: 10px;
       }
 
       .fs-card {
@@ -69,6 +71,10 @@
         display: hidden;
       }
 
+      .test {
+        float: right;
+      }
+
       pre[class*="language-"] {
         margin: 0;
         padding: 20px;
@@ -108,7 +114,9 @@
     </style>
   </head>
   <body>
-
+    <a href="../test/index.html" target="_blank" title="As long as your /test directory has an index.html base test, this link should work">
+      <button class="fs-button fs-button--recommended test" role="button">Run Tests</button>
+    </a>
     <h2>Demo: fs-dialog</h2>
     <div class="demo-snippet fs-card">
       <form action="#" dynamic>
