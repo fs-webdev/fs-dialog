@@ -43,15 +43,16 @@
   <body>
     <script>
     var fsDialogBase;
-    if ('customElements' in window) {
-      fsDialogBase = FS.dialog.baseDialogComponent;
-      customElements.define('fs-dialog-base', fsDialogBase);
-    } else {
-      fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
-      document.registerElement('fs-dialog-base', {prototype: Object.create(FS.dialog.baseDialogComponent.prototype)});
-    }
 
     document.addEventListener('WebComponentsReady', function () {
+      if ('customElements' in window) {
+        fsDialogBase = FS.dialog.baseDialogComponent;
+        customElements.define('fs-dialog-base', fsDialogBase);
+      } else {
+        fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
+        document.registerElement('fs-dialog-base', {prototype: Object.create(FS.dialog.baseDialogComponent.prototype)});
+      }
+
       describe('fsDialogBase', function () {
         var el, closeEl, bodyEl, headerEl, footerEl, maskEl;
 
