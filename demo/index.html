@@ -515,7 +515,7 @@
         }
         dialogContentString += '<div class="fs-dialog__body">' + bodycontent[config['content-size']] + '</div>';
         if (config.showFooter) {
-          dialogContentString += '<footer><button class="fs-button" data-dialog-dismiss>Done</button></footer>';
+          dialogContentString += '<footer><button class="fs-button" data-dialog-dismiss>Done</button><button class="fs-button fs-button--destructive" onclick="disappear(this)">I Disappear</button></footer>';
         }
         dynamicDialogEl.innerHTML = dialogContentString;
 
@@ -633,6 +633,9 @@
         generateDialog();
       }, 0);
     })();
+    function disappear(button) {
+      button.parentElement.removeChild(button)
+    }
     </script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/prism.js'></script>
 
