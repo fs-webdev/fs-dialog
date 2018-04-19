@@ -78,9 +78,9 @@
               modalFixture.open();
               expect(modalFixture.previousSibling.hasAttribute('no-transition'), 'mask did not have a no-transition attribute').to.be.true;
             });
-            it('mask should inherit the no-transition attribute', function () {
+            it('mask should inherit the keep-fullscreen attribute', function () {
               modalFixture.open();
-              expect(modalFixture.previousSibling.hasAttribute('no-transition'), 'mask did not have a no-transition attribute').to.be.true;
+              expect(modalFixture.previousSibling.hasAttribute('keep-fullscreen'), 'mask did not have a keep-fullscreen attribute').to.be.true;
             });
             it('mask should inherit the opened attribute', function () {
               modalFixture.open();
