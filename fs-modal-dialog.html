@@ -187,6 +187,11 @@ fs-modal-dialog:not([no-transition]) {
       function openModalFunction () {
         this._a11yOpen();
         maskEl.addEventListener('keydown', keydownHandler);
+        if (this.getAttribute('keep-fullscreen') !== undefined && this.getAttribute('keep-fullscreen') !== null) {
+          maskEl.setAttribute('keep-fullscreen', '');
+        } else {
+          maskEl.removeAttribute('keep-fullscreen');
+        }
         if (this.getAttribute('no-transition') !== undefined && this.getAttribute('no-transition') !== null) {
           maskEl.setAttribute('no-transition', '');
         } else {
