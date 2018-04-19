@@ -18,7 +18,7 @@
     <button id="open-modal-button"></button>
     <test-fixture id="fs-modal-dialog-fixture">
       <template>
-        <fs-modal-dialog>
+        <fs-modal-dialog no-transition keep-fullscreen>
           <header>
             Header Text
           </header>
@@ -74,22 +74,25 @@
           });
 
           describe('after opening', function () {
-            it('mask should not have a no-transition attribute', function () {
-              modalFixture.previousSibling.setAttribute('no-transition', 'true');
-              modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
-              expect(modalFixture.previousSibling.hasAttribute('no-transition'), 'had a no-transition attribute').to.be.false;
+            it('mask should inherit no-transition attribute', function () {
+              modalFixture.open();
+              expect(modalFixture.previousSibling.hasAttribute('no-transition'), 'mask did not have a no-transition attribute').to.be.true;
             });
-            it('mask should have an opened attribute', function () {
-              modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
-              expect(modalFixture.previousSibling.hasAttribute('opened'), 'mask did not have opened attribute').to.be.true;
+            it('mask should inherit the no-transition attribute', function () {
+              modalFixture.open();
+              expect(modalFixture.previousSibling.hasAttribute('no-transition'), 'mask did not have a no-transition attribute').to.be.true;
+            });
+            it('mask should inherit the opened attribute', function () {
+              modalFixture.open();
+              expect(modalFixture.previousSibling.hasAttribute('opened'), 'mask did not have an opened attribute').to.be.true;
             });
             describe('a11y', function () {
               it('parent element should not have inert property', function () {
-                modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
+                modalFixture.open();
                 expect(modalFixture.parentNode.inert, 'had aria-hidden attribute').to.be.falsy;
               });
               it('other elements whose ancestor is not the dialog parent or does not have data-no-inert attribute should have inert property', function () {
-                modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
+                modalFixture.open();
                 expect(document.querySelector('#open-modal-button').inert, 'did not have inert property').to.be.true;
               });
             });
@@ -97,13 +100,13 @@
 
           describe('after closing', function () {
             it('mask should not have an opened attribute', function () {
-              modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
+              modalFixture.open();
               modalFixture.close();
               expect(modalFixture.previousSibling.hasAttribute('opened'), 'had a no-transition attribute').to.be.false;
             });
             describe('a11y', function () {
               it('other elements whose ancestor is not the dialog parent should not have inert property', function (done) {
-                modalFixture.open({focusBackElement: document.querySelector('#open-modal-button')});
+                modalFixture.open();
                 modalFixture.close();
                 setTimeout(function () {
                   expect(document.querySelector('#open-modal-button').inert, 'had inert property').to.be.false;

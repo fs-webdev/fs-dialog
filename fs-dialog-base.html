@@ -80,6 +80,11 @@
     transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
   }
 
+  .fs-dialog__mask[keep-fullscreen] {
+    display: none;
+    transition: none;
+  }
+
   .fs-dialog__mask:not([no-transition]) {
     transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
   }
@@ -254,6 +259,11 @@
       top: 0 !important;
       transform: translate(0, 0) !important;
       width: 100%;
+    }
+
+    .fs-dialog__mask {
+      display: none;
+      transition: none;
     }
 
     /** Begin Mobile Transitions **/
