@@ -425,6 +425,30 @@
 
       // open the dialog
       this.open = function (optionsObj) {
+        if (this.doTimoutPromise) {
+          // this is to help with touch devices and toggle.
+          // Previous to this part of the function being written,
+          // touch devices had a problem where when losing focus
+          // due to clicking on the attachToElement the open function
+          // was firing before the close function (since with focusout
+          // the close function is happening inside a timeout). We
+          // had to do some insantiy here do make a timeout happen
+          // because this function needs to return a promise and
+          // as soon as you do anything inside a setTimout, everything
+          // inside of it is lost.
+          this.doTimoutPromise = false;
+          let resolveTimeoutPromise;
+          var timeoutPromise = new Promise(function (resolve, reject) {
+            resolveTimeoutPromise = resolve;
+          }).then(() => {
+            return this.open(optionsObj);
+          });
+          setTimeout(() => {
+            resolveTimeoutPromise();
+          }, 0);
+          return timeoutPromise;
+        }
+        this.doTimoutPromise = true;
         var pendingPromise;
 
         try {
@@ -523,8 +547,6 @@
       this.close = function (optionsObj) {
         // Do not close a dialog that is already closed
         if (!this.opened) return this.pendingPromise;
-
-        this.attachedToElementClicked = false;
 
         // remove event listeners
         // consider reducing event listeners by putting them in the service
@@ -627,9 +649,9 @@
   /**
    * Determine when to close the dialog.
    */
-  function dialogClickHandler (e) {
+  function dialogClickHandler (event) {
     // handle child elements of elements with these attributes
-    var el = e.target;
+    var el = event.target;
     while (el !== this) {
       // add a value to the event
       // make this event fire with the escape key
@@ -638,7 +660,7 @@
         this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true, composed: true}));
 
         // stop the event from propagating to parent fs-dialogs
-        e.stopPropagation();
+        event.stopPropagation();
         this.close();
       }
 
@@ -648,7 +670,7 @@
         this.dispatchEvent(new Event('fs-dialog-confirm', {bubbles: true, composed: true}));
 
         // stop the event from propagating to parent fs-dialogs
-        e.stopPropagation();
+        event.stopPropagation();
       }
 
       if (el.parentElement) {
@@ -664,13 +686,13 @@
     }
   }
 
-  function windowFocusListener (e) {
+  function windowFocusListener (event) {
     FS.dialog.service.windowHasFocus = true;
   }
-  function windowBlurListener (e) {
+  function windowBlurListener (event) {
     FS.dialog.service.windowHasFocus = false;
   }
-  function focusoutHandler (e) {
+  function focusoutHandler (event) {
     var dialog = this;
     var dialogContainedRelatedTarget;
     var reverseStack;
@@ -679,7 +701,7 @@
     // TODO: look into using the related target instead of activeElement if possible
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
       // don't close if a node loses focus from dissapearing.
-      var target = e.composedPath()[0];
+      var target = event.composedPath()[0];
       var targetDisappeared = !target.offsetHeight && !target.offsetWidth;
       if (targetDisappeared) {
         setTimeout(function () {
@@ -688,7 +710,7 @@
         }, 0);
       } else {
         // don't close if a node doesn't get focus because it dissapeared
-        if (e.relatedTarget && dialog.contains(e.relatedTarget)) dialogContainedRelatedTarget = true;
+        if (event.relatedTarget && dialog.contains(event.relatedTarget)) dialogContainedRelatedTarget = true;
         setTimeout(function () {
           var root = dialog.getRootNode();
           var activeElement = root.activeElement || document.activeElement;
@@ -702,8 +724,11 @@
             reverseStack.some(function (dialog) {
               root = dialog.getRootNode();
               activeElement = root.activeElement || activeElement;
+              // This does not work in firefox 59 as of 2018-04-19 (april 2018) because the
+              // active element is always the document.body at this point for some reason
               dialog.attachedToElementClicked = ((dialog.attachToElement && dialog.attachToElement.contains(dialog.attachToElement.getRootNode().activeElement)) || (dialog.focusBackElement && dialog.focusBackElement.contains(dialog.focusBackElement.getRootNode().activeElement)));
               if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
+                dialog.cancelFocusback = true;
                 // don't close if a node doesn't get focus because it dissapeared
                 if (dialogContainedRelatedTarget && dialog === originalDialog) {
                   dialog.focus();
