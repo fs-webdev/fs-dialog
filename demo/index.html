@@ -9,8 +9,6 @@
 
     <title>fs-dialog demo</title>
 
-    <script src="formdata-polyfill.js"></script>
-    <script src="array-from-polyfill.js"></script>
     <script src="../../es6-promise/es6-promise.auto.js"></script>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
@@ -39,6 +37,10 @@
       }
 
       [dynamic] select {
+        width: inherit;
+      }
+
+      [dynamic] .fs-field-group {
         width: inherit;
       }
 
@@ -316,12 +318,22 @@
               <section>
                 <label for="maxHeight" title="Specify a max-height for the dialog to force inner content to scroll">max-height</label>
                 <div class="fs-field-group">
-                  <input class="fs-field-group__input" name="maxheight" id="maxHeight" type="text"  maxlength="20" placeholder="example: 400px">
+                  <input class="fs-field-group__input" name="maxheight" id="maxHeight" type="text"  maxlength="20" placeholder="example: 300px">
                   <div class="fs-field-group__attachment">
                     <input type="checkbox" id="max-height" name="usemaxheight">
                     <label for="max-height"></label>
                   </div>
                 </div>
+                <br>
+                <label for="maxWidth" title="Specify a max-width for the dialog to force inner content to">max-width</label>
+                <div class="fs-field-group">
+                  <input class="fs-field-group__input" name="maxwidth" id="maxWidth" type="text"  maxlength="20" placeholder="example: 300px">
+                  <div class="fs-field-group__attachment">
+                    <input type="checkbox" id="max-width" name="usemaxwidth">
+                    <label for="max-width"></label>
+                  </div>
+                </div>
+                <br>
 
                 <label title="How many additional nested dialogs to generate">Nesting
                   <ul>
@@ -401,6 +413,11 @@
         <p>To close a dialog and all the dialogs above it in the stack, you can call <code>&lt;dialog-element&gt;.closeAndCloseChildren()</code> This will automatically use the same direction of transition for all dialogs (whatever the dialog element that you use to call the function has).</p>
         <h5>focusable-component</h5>
         <p>In order to loop users through the modal and anchored dialogs when they press the tab key, we do a query selector to get all focusable elements. If you put a component in the dialog that needs to be able to get focus, please add the attribute <code>focusable-component</code> to it so that we don't break tab looping.</p>
+        <p>Also, if you remove the last tabbable element from the dialog, it will break tab looping, as well.
+        </p>
+        <p>In addition, if you are going to remove an element you should reassign focus to another element in the dialog so that keyboard users do not lose context.
+
+        </p>
         <h5>closeAllDialogs</h5>
         <p>To close all modal and anchored dialogs on the page you can call <code>FS.dialog.service.closeAllDialogs()</code> This does not close modeless dialogs.</p>
       </div>
@@ -422,11 +439,7 @@
       <details>
         <summary><strong>TODO List:</strong></summary>
         <ul>
-          <li>Document "Gotcha's"</li>
           <li>Add additional configuration options: inert, no-close-on-esc, modal-transition (non-mobile)</li>
-          <li>BUG: Dialogs without headers do not show close button in fullscreen mode.</li>
-          <li>BUG: fs-anchored-dialogs with keep-fullscreen set do not inert the rest of the page.</li>
-          <li>BUG: Header should reserve space for close button to avoid text collision.</li>
         </ul>
       </details>
     </div>
@@ -435,6 +448,7 @@
     <fs-modal-dialog id="firstNestedDialog"><header><h4>Nesting Dialog</h4></header><div class="fs-dialog__body">This dialog will lay on top of the previous dialog.</div><footer><button class="fs-button" data-dialog-dismiss>Done</button></footer></fs-anchored-dialog>
 
     <script>
+    var disappearingButton;
     (function () {
       var bodycontent = {
         short: '<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.</p>',
@@ -511,17 +525,20 @@
         // SET CONTENT
         var dialogContentString = '';
         if (config.showHeader) {
-          dialogContentString = '<header><h4>Header Text</h4></header>';
+          dialogContentString = '<header><h4>Header Text To Rule Them All And In The Darkness Bind Them</h4></header>';
         }
         dialogContentString += '<div class="fs-dialog__body">' + bodycontent[config['content-size']] + '</div>';
         if (config.showFooter) {
-          dialogContentString += '<footer><button class="fs-button" data-dialog-dismiss>Done</button><button class="fs-button fs-button--destructive" onclick="disappear(this)">I Disappear</button></footer>';
+          dialogContentString += '<footer><button class="fs-button" data-dialog-dismiss>Done</button><button class="fs-button fs-button--destructive demo-button" onclick="disappear(this)">I Disappear</button></footer>';
         }
         dynamicDialogEl.innerHTML = dialogContentString;
 
-        // SET max-height
+        // SET max-height/max-width
         if (config.usemaxheight && config.maxheight) {
           dynamicDialogEl.style.maxHeight = config.maxheight;
+        }
+        if (config.usemaxwidth && config.maxwidth) {
+          dynamicDialogEl.style.maxWidth = config.maxwidth;
         }
 
         // HIDE IRRELEVANT FORM SECTIONS
@@ -593,7 +610,14 @@
       function setUpListeners () {
         var dynamicDialogButton = document.querySelector('.demo-snippet button');
         dynamicDialogButton.addEventListener('click', function () {
-          dynamicDialogEl.open(openOptions);
+          dynamicDialogEl.open(openOptions)
+          .then(function() {
+            setTimeout(function() {
+              if (disappearingButton) {
+                disappearingButton.style.visibility = "visible";
+              }
+            }, 300);
+          });
         });
 
         var dynamicDemoInputs = document.querySelectorAll('input, select');
@@ -633,8 +657,11 @@
         generateDialog();
       }, 0);
     })();
+
     function disappear(button) {
-      button.parentElement.removeChild(button)
+      disappearingButton = button;
+      disappearingButton.parentNode.focus();
+      disappearingButton.style.visibility = "hidden";
     }
     </script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/prism.js'></script>

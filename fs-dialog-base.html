@@ -97,9 +97,15 @@
     border-radius: 4px 4px 0 0;
     border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
     flex-shrink: 0;
-    padding: 15px 15px 10px;
+    padding: 15px 4rem 10px 15px;
     background-color: #fff;
     position: relative;
+  }
+
+  fs-anchored-dialog[no-close-button] header,
+  fs-modeless-dialog[no-close-button] header,
+  fs-modal-dialog[no-close-button] header {
+    padding-right: 15px;
   }
 
   /* [4] */
@@ -241,6 +247,12 @@
 
   @media screen and (max-width:480px),
     (max-height:480px) {
+    fs-anchored-dialog[no-close-button] header,
+    fs-modeless-dialog[no-close-button] header,
+    fs-modal-dialog[no-close-button] header {
+      padding-right: 4rem;
+    }
+
     fs-modal-dialog[no-close-button]:not([no-fullscreen-mobile]) .fs-dialog__close,
     fs-anchored-dialog[no-close-button]:not([no-fullscreen-mobile]) .fs-dialog__close {
       display: block;
@@ -311,7 +323,8 @@
   the fs-anchored-dialog-open class will be added to the body element.
 -->
 <style id="fs-dialog-body-style">
-    body.fs-modal-dialog-open {
+    body.fs-modal-dialog-open,
+    body.fs-dialog-keep-fullscreen {
       overflow: hidden !important;
     }
 
@@ -340,23 +353,26 @@
 (function (window, document) {
   var doc = (document._currentScript || document.currentScript).ownerDocument;
   var template = doc.querySelector('#fs-dialog-template');
-  FS._registerTranslations({'de': {'_LRM_PKTAG439': 'fs-dialog_1_146 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Schließen'}, 'en': {'fs.shared.fsDialog.CLOSE': 'Close'}, 'eo': {'fs.shared.fsDialog.CLOSE': '[Çļöšé--- П國カ내]'}, 'es': {'_LRM_PKTAG33': 'fs-dialog_2_101 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Cerrar'}, 'fr': {'_LRM_PKTAG930': 'fs-dialog_1_102 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Fermer'}, 'it': {'_LRM_PKTAG257': 'fs-dialog_1_103 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Chiudi'}, 'ja': {'_LRM_PKTAG68': 'fs-dialog_1_104 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '閉じる'}, 'ko': {'_LRM_PKTAG569': 'fs-dialog_1_105 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '닫기'}, 'pt': {'_LRM_PKTAG662': 'fs-dialog_1_106 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Fechar'}, 'ru': {'_LRM_PKTAG275': 'fs-dialog_1_107 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Закрыть'}, 'zh': {'_LRM_PKTAG645': 'fs-dialog_1_108 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '關閉'}});
+  FS._registerTranslations({"de":{"_LRM_PKTAG439":"fs-dialog_1_146 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Schließen"},"en":{"fs.shared.fsDialog.CLOSE":"Close"},"eo":{"fs.shared.fsDialog.CLOSE":"[Çļöšé--- П國カ내]"},"es":{"_LRM_PKTAG33":"fs-dialog_2_101 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Cerrar"},"fr":{"_LRM_PKTAG930":"fs-dialog_1_102 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fermer"},"it":{"_LRM_PKTAG257":"fs-dialog_1_103 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Chiudi"},"ja":{"_LRM_PKTAG68":"fs-dialog_1_104 - FULL-FILE","fs.shared.fsDialog.CLOSE":"閉じる"},"ko":{"_LRM_PKTAG569":"fs-dialog_1_105 - FULL-FILE","fs.shared.fsDialog.CLOSE":"닫기"},"pt":{"_LRM_PKTAG662":"fs-dialog_1_106 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Fechar"},"ru":{"_LRM_PKTAG275":"fs-dialog_1_107 - FULL-FILE","fs.shared.fsDialog.CLOSE":"Закрыть"},"zh":{"_LRM_PKTAG645":"fs-dialog_1_108 - FULL-FILE","fs.shared.fsDialog.CLOSE":"關閉"}});
 
   var zIndex = 1990;
   var zIndexIncrement = 10;
 
   var attrTypeMap = {
     'dismiss-on-blur': 'boolean',
+    'keep-fullscreen': 'boolean',
     'no-fullscreen-mobile': 'boolean',
     'opened': 'boolean'
   };
   var attrNameMap = {
     'dismiss-on-blur': 'dismissOnBlur',
+    'keep-fullscreen': 'keepFullscreen',
     'no-fullscreen-mobile': 'noFullscreenMobile',
     'opened': 'opened'
   };
   var attrList = [
     'dismiss-on-blur',
+    'keep-fullscreen',
     'no-fullscreen-mobile',
     'opened'
   ];
@@ -521,6 +537,7 @@
           // don't add the class for anchored-dialogs that have opted out
           if (className && this.tagName === 'FS-ANCHORED-DIALOG' && this.noFullscreenMobile) className = '';
           if (className) document.body.classList.add(className);
+          if (this.keepFullscreen) document.body.classList.add('fs-dialog-keep-fullscreen');
 
           // setup event listeners
           this.addEventListener('click', dialogClickHandler);
@@ -596,8 +613,11 @@
         FS.dialog.service.removeDialogFromStack(this);
 
         // if there are no dialogs with the same tag name in the stack, remove the associated open class from the document body
-        if (this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG') {
+        if (this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG' || this.keepFullscreen) {
           var tagName = this.tagName;
+          if (FS.dialog.service.getStack().filter(function (item) { return item.keepFullscreen; }).length === 0) {
+            document.body.classList.remove('fs-dialog-keep-fullscreen');
+          }
           if (FS.dialog.service.getStack().filter(function (item) { return item.tagName === tagName && !item.noFullscreenMobile; }).length === 0) {
             document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '');
           }
@@ -712,7 +732,7 @@
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
       // don't close if a node loses focus from dissapearing.
       var target = event.composedPath()[0];
-      var targetDisappeared = !target.offsetHeight && !target.offsetWidth;
+      var targetDisappeared = (!target.offsetHeight && !target.offsetWidth) || target.style.visibility === 'hidden';
       if (targetDisappeared) {
         setTimeout(function () {
           var root = dialog.getRootNode();
