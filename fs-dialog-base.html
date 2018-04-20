@@ -97,9 +97,15 @@
     border-radius: 4px 4px 0 0;
     border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
     flex-shrink: 0;
-    padding: 15px 15px 10px;
+    padding: 15px 4rem 10px 15px;
     background-color: #fff;
     position: relative;
+  }
+
+  fs-anchored-dialog[no-close-button] header,
+  fs-modeless-dialog[no-close-button] header,
+  fs-modal-dialog[no-close-button] header {
+    padding-right: 15px;
   }
 
   /* [4] */
@@ -241,6 +247,12 @@
 
   @media screen and (max-width:480px),
     (max-height:480px) {
+    fs-anchored-dialog[no-close-button] header,
+    fs-modeless-dialog[no-close-button] header,
+    fs-modal-dialog[no-close-button] header {
+      padding-right: 4rem;
+    }
+
     fs-modal-dialog[no-close-button]:not([no-fullscreen-mobile]) .fs-dialog__close,
     fs-anchored-dialog[no-close-button]:not([no-fullscreen-mobile]) .fs-dialog__close {
       display: block;
@@ -311,7 +323,8 @@
   the fs-anchored-dialog-open class will be added to the body element.
 -->
 <style id="fs-dialog-body-style">
-    body.fs-modal-dialog-open {
+    body.fs-modal-dialog-open,
+    body.fs-dialog-keep-fullscreen {
       overflow: hidden !important;
     }
 
@@ -347,16 +360,19 @@
 
   var attrTypeMap = {
     'dismiss-on-blur': 'boolean',
+    'keep-fullscreen': 'boolean',
     'no-fullscreen-mobile': 'boolean',
     'opened': 'boolean'
   };
   var attrNameMap = {
     'dismiss-on-blur': 'dismissOnBlur',
+    'keep-fullscreen': 'keepFullscreen',
     'no-fullscreen-mobile': 'noFullscreenMobile',
     'opened': 'opened'
   };
   var attrList = [
     'dismiss-on-blur',
+    'keep-fullscreen',
     'no-fullscreen-mobile',
     'opened'
   ];
@@ -521,6 +537,7 @@
           // don't add the class for anchored-dialogs that have opted out
           if (className && this.tagName === 'FS-ANCHORED-DIALOG' && this.noFullscreenMobile) className = '';
           if (className) document.body.classList.add(className);
+          if (this.keepFullscreen) document.body.classList.add('fs-dialog-keep-fullscreen');
 
           // setup event listeners
           this.addEventListener('click', dialogClickHandler);
@@ -596,8 +613,11 @@
         FS.dialog.service.removeDialogFromStack(this);
 
         // if there are no dialogs with the same tag name in the stack, remove the associated open class from the document body
-        if (this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG') {
+        if (this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG' || this.keepFullscreen) {
           var tagName = this.tagName;
+          if (FS.dialog.service.getStack().filter(function (item) { return item.keepFullscreen; }).length === 0) {
+            document.body.classList.remove('fs-dialog-keep-fullscreen');
+          }
           if (FS.dialog.service.getStack().filter(function (item) { return item.tagName === tagName && !item.noFullscreenMobile; }).length === 0) {
             document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '');
           }
@@ -712,7 +732,7 @@
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
       // don't close if a node loses focus from dissapearing.
       var target = event.composedPath()[0];
-      var targetDisappeared = !target.offsetHeight && !target.offsetWidth;
+      var targetDisappeared = (!target.offsetHeight && !target.offsetWidth) || target.style.visibility === 'hidden';
       if (targetDisappeared) {
         setTimeout(function () {
           var root = dialog.getRootNode();
