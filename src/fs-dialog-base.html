@@ -742,6 +742,8 @@
         // don't close if a node doesn't get focus because it dissapeared
         if (event.relatedTarget && dialog.contains(event.relatedTarget)) dialogContainedRelatedTarget = true;
         setTimeout(function () {
+          // Don't do anything if somehow the dialog was already closed
+          if (!dialog.opened) return;
           var root = dialog.getRootNode();
           var activeElement = root.activeElement || document.activeElement;
           if (!FS.dialog.service.windowHasFocus) {
