@@ -22,6 +22,22 @@ Modeless dialogs do not darken the screen and do not prevent interaction of all 
 
 ## Usage
 
+### Import
+
+Import `fs-dialog`:
+
+```html
+<link rel="import" href="/components/fs-dialog/fs-dialog-all.html">
+```
+
+or just the mode of `fs-dialog` that you need:
+
+```html
+<link rel="import" href="../fs-dialog/fs-modal-dialog.html">
+```
+
+and then set up your dialog content as desired (`fs-dialog` is light DOM, so you can style as you wish), using `<header>`, `.fs-dialog__body`, and/or `<footer>` elements:
+
 ```html
 <fs-dialog>
   <header>
@@ -35,6 +51,12 @@ Modeless dialogs do not darken the screen and do not prevent interaction of all 
   </footer>
 </fs-dialog>
 ```
+
+___
+
+> NOTE: Some teams have reported issues stemming from multiple components importing different portions of `fs-dialog`, which results in an error (`Class extends value undefined is not a constructor or null`), and broken `fs-dialog` functionality. If you run into this, simply import `fs-dialog-all` in each component.
+
+___
 
 ### Attributes
 

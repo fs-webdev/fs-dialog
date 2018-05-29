@@ -385,6 +385,8 @@
             display: none;
           }
         </pre>
+        <h5>Consuming Multiple Pieces of fs-dialog error</h5>
+        <p>Some teams have reported issues stemming from multiple components importing different portions of <em>fs-dialog</em>, which results in an error (<em>Class extends value undefined is not a constructor or null</em>), and broken <em>fs-dialog</em> functionality. If you run into this, simply import <em>fs-dialog-all</em> in each component.</p>
         <h5>Registering Global Dialogs</h5>
         <p>You may "register" your dialog as a global dialog, which means it will be appended to the `document.body` so people don't have to include it in their shadow root. This comes in handy when a dialog may be consumed by a parent that is absolutely positioned. For example, if a dialog will be opening another dialog, the second dialog's dom must be located outside of the first dialog, otherwise it will only take up space inside of the first dialog. After you have registered a dialog, you will have a global pointer to it on `FS.dialog.[dialogName]`.</p>
         <pre>
