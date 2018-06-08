@@ -59,7 +59,7 @@ fs-modal-dialog:not([no-transition]) {
     static get properties () {
       return {
         /**
-         * Whether or not the dialog is opened.
+         * Whether or not the dialog is opened. Do not set or unset this yourself.  Instead, use the open and close functions.
          * @type {Boolean} [opened=false]
          */
         'opened': {
