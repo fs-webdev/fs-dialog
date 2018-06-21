@@ -1,24 +1,23 @@
 {
-  "name": "fs-dialog",
-  "version": "4.1.5",
   "description": "An accessible standard dialog for FamilySearch.",
-  "directories": {
-    "test": "test"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fs-webdev/fs-dialog.git"
+  },
+  "homepage": "https://github.com/fs-webdev/fs-dialog#readme",
+  "name": "fs-dialog",
+  "version": "4.1.5",
+  "directories": {
+    "test": "test"
   },
   "author": {
     "name": "FamilySearch",
     "url": "https://familysearch.org/"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
-  "private": false,
   "bugs": {
     "url": "https://github.com/fs-webdev/fs-dialog/issues"
   },
-  "homepage": "https://github.com/fs-webdev/fs-dialog#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -32,11 +31,14 @@
     "gulp-replace": "^0.6.1",
     "gulp-uglify": "^3.0.0",
     "polymer-build": "^2.1.1",
-    "fs-common-build-scripts": "github:fs-webdev/fs-common-build-scripts"
+    "fs-common-build-scripts": "github:fs-webdev/fs-common-build-scripts",
+    "@polymer/iron-component-page": "^3.0.0-pre.18",
+    "wct-browser-legacy": "^0.0.1-pre.11",
+    "@webcomponents/webcomponentsjs": "^2.0.0"
   },
   "scripts": {
     "postinstall": "bower install",
-    "precommit": "gulp && node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && node_modules/fs-common-build-scripts/bin/pre_commit_commands.sh",
+    "precommit": "node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && node_modules/fs-common-build-scripts/bin/pre_commit_commands.sh",
     "preinstall": "git config --global url.https://github.com/.insteadOf git://github.com/",
     "pretest": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
     "standard": "semistandard --verbose '**/*.html' '**/*.js' | snazzy && stylelint '**/*.html' '**/*.css'",
@@ -112,5 +114,21 @@
         "vw"
       ]
     }
+  },
+  "resolutions": {
+    "inherits": "2.0.3",
+    "samsam": "1.1.3",
+    "supports-color": "3.1.2",
+    "type-detect": "1.0.0",
+    "@webcomponents/webcomponentsjs": "2.0.0-beta.2"
+  },
+  "dependencies": {
+    "@polymer/lit-element": "^0.5.2",
+    "a11y-enhancer": "github:straker/a11y-enhancer",
+    "es6-promise": "^4.0.0",
+    "fs-globals": "github:fs-webdev/fs-globals#es-module",
+    "fs-styles": "github:fs-webdev/fs-styles#es-module",
+    "wc-i18n": "github:fs-webdev/wc-i18n#es-module",
+    "wicg-inert": "github:straker/inert"
   }
 }

@@ -3,14 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
-    <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/themes/prism.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/themes/prism-okaidia.min.css">
 
     <title>fs-dialog demo</title>
 
-    <script src="../../es6-promise/es6-promise.auto.js"></script>
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script type="module" src="../../fs-styles/fs-styles-global.js"></script>
+    <script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
     <style>
       .buttons-centered {
@@ -449,229 +448,230 @@
     <fs-anchored-dialog id="secondNestedDialog"><header><h4>Nesting Dialog</h4></header><div class="fs-dialog__body">This dialog will lay on top of the previous dialog. It also will open another dialog.</div><footer><button class="fs-button" data-dialog-dismiss>Done</button></footer></fs-anchored-dialog>
     <fs-modal-dialog id="firstNestedDialog"><header><h4>Nesting Dialog</h4></header><div class="fs-dialog__body">This dialog will lay on top of the previous dialog.</div><footer><button class="fs-button" data-dialog-dismiss>Done</button></footer></fs-anchored-dialog>
 
-    <script>
-    var disappearingButton;
-    (function () {
-      var bodycontent = {
-        short: '<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.</p>',
-        medium: "<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br></p>",
-        long: "<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br><br>It looks like an Imperial cruiser. Our passengers must be hotter than I thought. Try and hold them off. Angle the deflector shield while I make the calculations for the jump to light speed. Stay sharp! There are two more coming in, they're going to try to cut us off. Why don't you outrun them? I thought you said this thing was fast. Watch your mouth, kid, or you're going to find yourself floating home. We'll be safe enough once we make the jump to hyperspace. Besides, I know a few maneuvers. We'll lose them! Here's where the fun begins!<br><br>I'm not going anywhere. They're going to execute her. Look, a few minutes ago you said you didn't want to just wait here to be captured. Now all you want to do is stay. Marching into the detention area is not what I had in mind. But they're going to kill her! Better her than me... She's rich. Rich? Yes. Rich, powerful! Listen, if you were to rescue her, the reward would be... What? Well more wealth that you can imagine. I don't know, I can imagine quite a bit! You'll get it! I better! You will...<br><br>I can't see a thing in this helmet. This is not going to work. Why didn't you say so before? I did say so before! Where are you taking this...thing? Prisoner transfer from Block one-one-three-eight. I wasn't notified. I'll have to clear it. Look out! We've got to find out which cell this princess of yours is in. Here it is...cell twenty-one-eight-seven. You go get her. I'll hold them here. Everything is under control. Situation normal. What happened? Uh...had a slight weapons malfunction. But, uh, everything's perfectly all right now. We're fine. We're all fine here, now, thank you. How are you? We're sending a squad up. Uh, uh, negative. We had a reactor leak here now. Give us a few minutes to lock it down. Large leak...very dangerous. Who is this? What's your operating number? Boring conversation anyway. Luke! We're going to have company!<br><br>Aren't you a little short to be a stormtrooper? What? Oh...the uniform. I'm Luke Skywalker. I'm here to rescue you. You're who? I'm here to rescue you. I've got your R2 unit. I'm here with Ben Kenobi. Ben Kenobi is here! Where is he? Come on!<br><br>You're safe! We had feared the worst. When we heard about Alderaan, we were afraid that you were... We don't have time for our sorrows, Commander. The battle station has surely tracked us here. It's the only explanation for the ease of our escape. You must use the information in this R2 unit to plan the attack. It is our only hope. Yes. We are approaching the planet Yavin. The Rebel base is on a moon on the far side. We are preparing to orbit the planet.<br><br>All wings report in. Red Ten standing by. Red Seven standing by. Red Three standing by. Red Six standing by. Red Nine standing by. Red Two standing by. Red Eleven standing by. Red Five standing by. Lock S-foils in attack position. We're passing through their magnetic field. Hold tight! Switch your deflectors on. Double front!<br><br>Close up formation. You'd better let her loose. Almost there! I can't hold them! It's away! It's a hit! Negative. Negative! It didn't go in. It just impacted on the surface. Red Leader, we're right above you. Turn to point... oh-five, we'll cover for you. Stay there... I just lost my starboard engine. Get set to make your attack run.<br><br>Let him go! Stay on the leader! Hurry, Luke, they're coming in much faster this time. I can't hold them! Artoo, try and increase the power! Hurry up, Luke! Wait! I'm on the leader. Hang on, Artoo! Use the Force, Luke. Let go, Luke. The Force is strong with this one! Luke, trust me. His computer's off. Luke, you switched off your targeting computer. What's wrong? Nothing. I'm all right. I've lost Artoo! You may fire when ready. I have you now.</p>"
-      };
-      var dynamicDialogEl;
-      var openOptions = {};
-      var oneNestedButton = document.createElement('button');
-      var twoNestedButton = document.createElement('button');
-      oneNestedButton.classList.add('demo-button');
-      twoNestedButton.classList.add('demo-button');
-      oneNestedButton.classList.add('fs-button--recommended');
-      twoNestedButton.classList.add('fs-button--recommended');
-      oneNestedButton.classList.add('fs-button');
-      twoNestedButton.classList.add('fs-button');
-      oneNestedButton.innerText = 'Open Dialog';
-      twoNestedButton.innerText = 'Open Dialog';
+    <script type="module">
+import '../fs-modeless-dialog.js';
+import '../fs-modal-dialog.js';
+import '../fs-anchored-dialog.js';
+var disappearingButton;
+var bodycontent = {
+  short: '<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.</p>',
+  medium: "<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br></p>",
+  long: "<p>And, now Your Highness, we will discuss the location of your hidden Rebel base.<br><br>Someone was in the pod. The tracks go off in this direction. Look, sir -- droids.<br><br>Sir, if you'll not be needing me, I'll close down for awhile. Sure, go ahead. What is it? Your fathers lightsaber. This is the weapon of a Jedi Knight. Not as clumsy or as random as a blaster. An elegant weapon for a more civilized time. For over a thousand generations the Jedi Knights were the guardians of peace and justice in the Old Republic. Before the dark times, before the Empire. How did my father die? A young Jedi named Darth Vader, who was a pupil of mine until he turned to evil, helped the Empire hunt down and destroy the Jedi Knights. He betrayed and murdered your father. Now the Jedi are all but extinct. Vader was seduced by the dark side of the Force. The Force?<br><br>Let me see your identification. You don't need to see his identification. We don't need to see his identification. These are not the droids your looking for. These are not the droids we're looking for. He can go about his business. You can go about your business. Move along. Move along. Move along.<br><br>It looks like an Imperial cruiser. Our passengers must be hotter than I thought. Try and hold them off. Angle the deflector shield while I make the calculations for the jump to light speed. Stay sharp! There are two more coming in, they're going to try to cut us off. Why don't you outrun them? I thought you said this thing was fast. Watch your mouth, kid, or you're going to find yourself floating home. We'll be safe enough once we make the jump to hyperspace. Besides, I know a few maneuvers. We'll lose them! Here's where the fun begins!<br><br>I'm not going anywhere. They're going to execute her. Look, a few minutes ago you said you didn't want to just wait here to be captured. Now all you want to do is stay. Marching into the detention area is not what I had in mind. But they're going to kill her! Better her than me... She's rich. Rich? Yes. Rich, powerful! Listen, if you were to rescue her, the reward would be... What? Well more wealth that you can imagine. I don't know, I can imagine quite a bit! You'll get it! I better! You will...<br><br>I can't see a thing in this helmet. This is not going to work. Why didn't you say so before? I did say so before! Where are you taking this...thing? Prisoner transfer from Block one-one-three-eight. I wasn't notified. I'll have to clear it. Look out! We've got to find out which cell this princess of yours is in. Here it is...cell twenty-one-eight-seven. You go get her. I'll hold them here. Everything is under control. Situation normal. What happened? Uh...had a slight weapons malfunction. But, uh, everything's perfectly all right now. We're fine. We're all fine here, now, thank you. How are you? We're sending a squad up. Uh, uh, negative. We had a reactor leak here now. Give us a few minutes to lock it down. Large leak...very dangerous. Who is this? What's your operating number? Boring conversation anyway. Luke! We're going to have company!<br><br>Aren't you a little short to be a stormtrooper? What? Oh...the uniform. I'm Luke Skywalker. I'm here to rescue you. You're who? I'm here to rescue you. I've got your R2 unit. I'm here with Ben Kenobi. Ben Kenobi is here! Where is he? Come on!<br><br>You're safe! We had feared the worst. When we heard about Alderaan, we were afraid that you were... We don't have time for our sorrows, Commander. The battle station has surely tracked us here. It's the only explanation for the ease of our escape. You must use the information in this R2 unit to plan the attack. It is our only hope. Yes. We are approaching the planet Yavin. The Rebel base is on a moon on the far side. We are preparing to orbit the planet.<br><br>All wings report in. Red Ten standing by. Red Seven standing by. Red Three standing by. Red Six standing by. Red Nine standing by. Red Two standing by. Red Eleven standing by. Red Five standing by. Lock S-foils in attack position. We're passing through their magnetic field. Hold tight! Switch your deflectors on. Double front!<br><br>Close up formation. You'd better let her loose. Almost there! I can't hold them! It's away! It's a hit! Negative. Negative! It didn't go in. It just impacted on the surface. Red Leader, we're right above you. Turn to point... oh-five, we'll cover for you. Stay there... I just lost my starboard engine. Get set to make your attack run.<br><br>Let him go! Stay on the leader! Hurry, Luke, they're coming in much faster this time. I can't hold them! Artoo, try and increase the power! Hurry up, Luke! Wait! I'm on the leader. Hang on, Artoo! Use the Force, Luke. Let go, Luke. The Force is strong with this one! Luke, trust me. His computer's off. Luke, you switched off your targeting computer. What's wrong? Nothing. I'm all right. I've lost Artoo! You may fire when ready. I have you now.</p>"
+};
+var dynamicDialogEl;
+var openOptions = {};
+var oneNestedButton = document.createElement('button');
+var twoNestedButton = document.createElement('button');
+oneNestedButton.classList.add('demo-button');
+twoNestedButton.classList.add('demo-button');
+oneNestedButton.classList.add('fs-button--recommended');
+twoNestedButton.classList.add('fs-button--recommended');
+oneNestedButton.classList.add('fs-button');
+twoNestedButton.classList.add('fs-button');
+oneNestedButton.innerText = 'Open Dialog';
+twoNestedButton.innerText = 'Open Dialog';
 
-      // Generate details-->pre-->code example code blocks
-      function generateCodeSnippet (generatedCode) {
-        Array.from(document.querySelectorAll('.demo:not(.do-not-codify)')).forEach(function (demo) {
-          if (demo.parentNode.querySelector('details')) {
-            // Keep details open on update if it was already
-            var open = demo.parentNode.querySelector('details').hasAttribute('open');
-            demo.parentNode.querySelector('details').remove();
-          }
-
-          var code = (generatedCode) ? generatedCode.outerHTML : demo.innerHTML;
-          code = code
-            .trim()
-            .replace(/\=\"\"/g, '');
-          var preEl = document.createElement('pre');
-          var codeEl = document.createElement('code');
-          preEl.classList.add('language-markup');
-          codeEl.classList.add('language-markup');
-          var openOptionsString = JSON.stringify(openOptions);
-          while (openOptionsString.indexOf('{}') > -1) openOptionsString = openOptionsString.replace('{}', '[Node]');
-
-          var markup = (window.Prism) ? Prism.highlight(code, Prism.languages.html) : code;
-          markup += '<br><br>Open function options:<br>';
-          markup += (window.Prism) ? Prism.highlight(openOptionsString, Prism.languages.js) : '';
-          codeEl.innerHTML = markup;
-
-          var wrapperEl = document.createElement('details');
-          if (open) { wrapperEl.setAttribute('open', ''); }
-          var summaryEl = document.createElement('summary');
-          summaryEl.innerHTML = 'Markup';
-          summaryEl.setAttribute('title', 'Show/hide associated markup');
-
-          demo.parentNode.insertBefore(wrapperEl, demo);
-          preEl.appendChild(codeEl);
-          wrapperEl.appendChild(summaryEl);
-          wrapperEl.appendChild(preEl);
-        });
-      }
-
-      // Generate dynamic dialog code
-      function generateDialog () {
-        var demoEl = document.querySelector('.dynamic.demo');
-        // Clear out previous dialog
-        Array.from(demoEl.children).forEach(function (child) {
-          child.remove();
-        });
-
-        // GET CONFIGURATION OPTIONS OUT OF DOM
-        var formData = Array.from(new FormData(document.querySelector('form[dynamic]')).entries());
-        var config = {};
-        formData.forEach(function (item) { config[item[0]] = item[1]; });
-
-        // CREATE CORRECT TYPE OF DIALOG
-        dynamicDialogEl = document.createElement('fs-' + config.type + '-dialog');
-
-        // SET CONTENT
-        var dialogContentString = '';
-        if (config.showHeader) {
-          dialogContentString = '<header><h4>Header Text To Rule Them All And In The Darkness Bind Them</h4></header>';
-        }
-        dialogContentString += '<div class="fs-dialog__body">' + bodycontent[config['content-size']] + '</div>';
-        if (config.showFooter) {
-          dialogContentString += '<footer><button class="fs-button" data-dialog-dismiss>Done</button><button class="fs-button fs-button--destructive demo-button" onclick="disappear(this)">I Disappear</button></footer>';
-        }
-        dynamicDialogEl.innerHTML = dialogContentString;
-
-        // SET max-height/max-width
-        if (config.usemaxheight && config.maxheight) {
-          dynamicDialogEl.style.maxHeight = config.maxheight;
-        }
-        if (config.usemaxwidth && config.maxwidth) {
-          dynamicDialogEl.style.maxWidth = config.maxwidth;
-        }
-
-        // HIDE IRRELEVANT FORM SECTIONS
-        var specificOptionSections = document.querySelectorAll('[class$=-options]');
-        Array.from(specificOptionSections).forEach(function (section) {
-          section.setAttribute('style', 'display: none;');
-        });
-
-        // SHOW RELEVANT FORM SECTION
-        Array.from(document.querySelectorAll('.' + config.type + '-options')).forEach(function (section) {
-          section.removeAttribute('style');
-        });
-
-        // SET SHARED ATTRIBUTES
-        if (config.noTransition) dynamicDialogEl.setAttribute('no-transition', '');
-
-        if (config.type !== 'modeless') {
-          if (!config.noTransition && config.transition) dynamicDialogEl.setAttribute('transition', config.transition);
-          if (config.noFullscreenMobile) dynamicDialogEl.setAttribute('no-fullscreen-mobile', '');
-          if (config.keepFullscreen) dynamicDialogEl.setAttribute('keep-fullscreen', '');
-          if (config.noCloseButton) dynamicDialogEl.setAttribute('no-close-button', '');
-        }
-
-        // SET ANCHORED ATTRIBUTES
-        if (config.type === 'anchored') {
-          if (config.persistent) dynamicDialogEl.setAttribute('persistent', '');
-          if (config.noPointer) {
-            dynamicDialogEl.setAttribute('no-pointer', '');
-            if (config.attachDirection) dynamicDialogEl.setAttribute('attach-direction', config.attachDirection);
-            if (config.alignment) dynamicDialogEl.setAttribute('alignment', config.alignment);
-          } else {
-            if (config.forcedPointerDirection) dynamicDialogEl.setAttribute('forced-pointer-direction', config.forcedPointerDirection);
-            if (!config.forcedPointerDirection && config.preferredPointerDirection) dynamicDialogEl.setAttribute('preferred-pointer-direction', config.preferredPointerDirection);
-          }
-        }
-
-        // SET MODAL ATTRIBUTES
-        if (config.type === 'modal') {
-          if (config.dismissOnBlur) dynamicDialogEl.setAttribute('dismiss-on-blur', '');
-        }
-
-        // SET OPEN FUNCTION OPTIONS
-        openOptions = {};
-        openOptions.focusBackElement = document.querySelector('.demo-snippet button');
-        if (config.type === 'anchored') {
-          if (config.xCoordinate && config.yCoordinate) {
-            openOptions.attachToCoordinates = {x: config.xCoordinate, y: config.yCoordinate};
-          } else {
-            openOptions.attachToElement = document.querySelector('.demo-snippet button');
-          }
-        }
-
-        // SET NESTING DIALOGS
-        if (config.nesting === 'one') {
-          dynamicDialogEl.querySelector('footer').appendChild(oneNestedButton);
-        }
-        if (config.nesting === 'two') {
-          dynamicDialogEl.querySelector('footer').appendChild(twoNestedButton);
-          document.querySelector('#secondNestedDialog').querySelector('footer').appendChild(oneNestedButton);
-        }
-
-        generateCodeSnippet(dynamicDialogEl);
-        // Append dynamic dialog to DOM
-        demoEl.appendChild(dynamicDialogEl);
-
-        return dynamicDialogEl;
-      }
-
-      function setUpListeners () {
-        var dynamicDialogButton = document.querySelector('.demo-snippet button');
-        dynamicDialogButton.addEventListener('click', function () {
-          dynamicDialogEl.open(openOptions)
-          .then(function() {
-            setTimeout(function() {
-              if (disappearingButton) {
-                disappearingButton.style.visibility = "visible";
-              }
-            }, 300);
-          });
-        });
-
-        var dynamicDemoInputs = document.querySelectorAll('input, select');
-        Array.from(dynamicDemoInputs).forEach(function (input) {
-          input.addEventListener('change', function (evt) {
-            generateDialog();
-          });
-        });
-
-        oneNestedButton.addEventListener('click', function () {
-          document.querySelector('#firstNestedDialog').open({focusBackElement: this, attachToElement: this});
-        });
-        twoNestedButton.addEventListener('click', function () {
-          document.querySelector('#secondNestedDialog').open({focusBackElement: this, attachToElement: this});
-        });
-
-        document.querySelector('form').addEventListener('submit', function (evt) {
-          evt.preventDefault();
-        });
-
-        document.querySelector('form').addEventListener('reset', function (evt) {
-          setTimeout(function () {
-            generateDialog();
-          });
-        });
-        document.querySelector('form[dynamic]').addEventListener('keypress', function (evt) {
-          if (evt.code === 'Enter' || evt.keyCode === 13) {
-            openOptions.focusBackElement = evt.target || openOptions.focusBackElement;
-            dynamicDialogEl.open(openOptions);
-          }
-        });
-      }
-
-      // Init
-      setUpListeners();
-      setTimeout(function () {
-        generateDialog();
-      }, 0);
-    })();
-
-    function disappear(button) {
-      disappearingButton = button;
-      disappearingButton.parentNode.focus();
-      disappearingButton.style.visibility = "hidden";
+// Generate details-->pre-->code example code blocks
+function generateCodeSnippet (generatedCode) {
+  Array.from(document.querySelectorAll('.demo:not(.do-not-codify)')).forEach(function (demo) {
+    if (demo.parentNode.querySelector('details')) {
+      // Keep details open on update if it was already
+      var open = demo.parentNode.querySelector('details').hasAttribute('open');
+      demo.parentNode.querySelector('details').remove();
     }
-    </script>
+
+    var code = (generatedCode) ? generatedCode.outerHTML : demo.innerHTML;
+    code = code
+      .trim()
+      .replace(/\=\"\"/g, '');
+    var preEl = document.createElement('pre');
+    var codeEl = document.createElement('code');
+    preEl.classList.add('language-markup');
+    codeEl.classList.add('language-markup');
+    var openOptionsString = JSON.stringify(openOptions);
+    while (openOptionsString.indexOf('{}') > -1) openOptionsString = openOptionsString.replace('{}', '[Node]');
+
+    var markup = (window.Prism) ? Prism.highlight(code, Prism.languages.html) : code;
+    markup += '<br><br>Open function options:<br>';
+    markup += (window.Prism) ? Prism.highlight(openOptionsString, Prism.languages.js) : '';
+    codeEl.innerHTML = markup;
+
+    var wrapperEl = document.createElement('details');
+    if (open) { wrapperEl.setAttribute('open', ''); }
+    var summaryEl = document.createElement('summary');
+    summaryEl.innerHTML = 'Markup';
+    summaryEl.setAttribute('title', 'Show/hide associated markup');
+
+    demo.parentNode.insertBefore(wrapperEl, demo);
+    preEl.appendChild(codeEl);
+    wrapperEl.appendChild(summaryEl);
+    wrapperEl.appendChild(preEl);
+  });
+}
+
+// Generate dynamic dialog code
+function generateDialog () {
+  var demoEl = document.querySelector('.dynamic.demo');
+  // Clear out previous dialog
+  Array.from(demoEl.children).forEach(function (child) {
+    child.remove();
+  });
+
+  // GET CONFIGURATION OPTIONS OUT OF DOM
+  var formData = Array.from(new FormData(document.querySelector('form[dynamic]')).entries());
+  var config = {};
+  formData.forEach(function (item) { config[item[0]] = item[1]; });
+
+  // CREATE CORRECT TYPE OF DIALOG
+  dynamicDialogEl = document.createElement('fs-' + config.type + '-dialog');
+
+  // SET CONTENT
+  var dialogContentString = '';
+  if (config.showHeader) {
+    dialogContentString = '<header><h4>Header Text To Rule Them All And In The Darkness Bind Them</h4></header>';
+  }
+  dialogContentString += '<div class="fs-dialog__body">' + bodycontent[config['content-size']] + '</div>';
+  if (config.showFooter) {
+    dialogContentString += '<footer><button class="fs-button" data-dialog-dismiss>Done</button><button class="fs-button fs-button--destructive demo-button" onclick="disappear(this)">I Disappear</button></footer>';
+  }
+  dynamicDialogEl.innerHTML = dialogContentString;
+
+  // SET max-height/max-width
+  if (config.usemaxheight && config.maxheight) {
+    dynamicDialogEl.style.maxHeight = config.maxheight;
+  }
+  if (config.usemaxwidth && config.maxwidth) {
+    dynamicDialogEl.style.maxWidth = config.maxwidth;
+  }
+
+  // HIDE IRRELEVANT FORM SECTIONS
+  var specificOptionSections = document.querySelectorAll('[class$=-options]');
+  Array.from(specificOptionSections).forEach(function (section) {
+    section.setAttribute('style', 'display: none;');
+  });
+
+  // SHOW RELEVANT FORM SECTION
+  Array.from(document.querySelectorAll('.' + config.type + '-options')).forEach(function (section) {
+    section.removeAttribute('style');
+  });
+
+  // SET SHARED ATTRIBUTES
+  if (config.noTransition) dynamicDialogEl.setAttribute('no-transition', '');
+
+  if (config.type !== 'modeless') {
+    if (!config.noTransition && config.transition) dynamicDialogEl.setAttribute('transition', config.transition);
+    if (config.noFullscreenMobile) dynamicDialogEl.setAttribute('no-fullscreen-mobile', '');
+    if (config.keepFullscreen) dynamicDialogEl.setAttribute('keep-fullscreen', '');
+    if (config.noCloseButton) dynamicDialogEl.setAttribute('no-close-button', '');
+  }
+
+  // SET ANCHORED ATTRIBUTES
+  if (config.type === 'anchored') {
+    if (config.persistent) dynamicDialogEl.setAttribute('persistent', '');
+    if (config.noPointer) {
+      dynamicDialogEl.setAttribute('no-pointer', '');
+      if (config.attachDirection) dynamicDialogEl.setAttribute('attach-direction', config.attachDirection);
+      if (config.alignment) dynamicDialogEl.setAttribute('alignment', config.alignment);
+    } else {
+      if (config.forcedPointerDirection) dynamicDialogEl.setAttribute('forced-pointer-direction', config.forcedPointerDirection);
+      if (!config.forcedPointerDirection && config.preferredPointerDirection) dynamicDialogEl.setAttribute('preferred-pointer-direction', config.preferredPointerDirection);
+    }
+  }
+
+  // SET MODAL ATTRIBUTES
+  if (config.type === 'modal') {
+    if (config.dismissOnBlur) dynamicDialogEl.setAttribute('dismiss-on-blur', '');
+  }
+
+  // SET OPEN FUNCTION OPTIONS
+  openOptions = {};
+  openOptions.focusBackElement = document.querySelector('.demo-snippet button');
+  if (config.type === 'anchored') {
+    if (config.xCoordinate && config.yCoordinate) {
+      openOptions.attachToCoordinates = {x: config.xCoordinate, y: config.yCoordinate};
+    } else {
+      openOptions.attachToElement = document.querySelector('.demo-snippet button');
+    }
+  }
+
+  // SET NESTING DIALOGS
+  if (config.nesting === 'one') {
+    dynamicDialogEl.querySelector('footer').appendChild(oneNestedButton);
+  }
+  if (config.nesting === 'two') {
+    dynamicDialogEl.querySelector('footer').appendChild(twoNestedButton);
+    document.querySelector('#secondNestedDialog').querySelector('footer').appendChild(oneNestedButton);
+  }
+
+  generateCodeSnippet(dynamicDialogEl);
+  // Append dynamic dialog to DOM
+  demoEl.appendChild(dynamicDialogEl);
+
+  return dynamicDialogEl;
+}
+
+function setUpListeners () {
+  var dynamicDialogButton = document.querySelector('.demo-snippet button');
+  dynamicDialogButton.addEventListener('click', function () {
+    dynamicDialogEl.open(openOptions)
+    .then(function() {
+      setTimeout(function() {
+        if (disappearingButton) {
+          disappearingButton.style.visibility = "visible";
+        }
+      }, 300);
+    });
+  });
+
+  var dynamicDemoInputs = document.querySelectorAll('input, select');
+  Array.from(dynamicDemoInputs).forEach(function (input) {
+    input.addEventListener('change', function (evt) {
+      generateDialog();
+    });
+  });
+
+  oneNestedButton.addEventListener('click', function () {
+    document.querySelector('#firstNestedDialog').open({focusBackElement: this, attachToElement: this});
+  });
+  twoNestedButton.addEventListener('click', function () {
+    document.querySelector('#secondNestedDialog').open({focusBackElement: this, attachToElement: this});
+  });
+
+  document.querySelector('form').addEventListener('submit', function (evt) {
+    evt.preventDefault();
+  });
+
+  document.querySelector('form').addEventListener('reset', function (evt) {
+    setTimeout(function () {
+      generateDialog();
+    });
+  });
+  document.querySelector('form[dynamic]').addEventListener('keypress', function (evt) {
+    if (evt.code === 'Enter' || evt.keyCode === 13) {
+      openOptions.focusBackElement = evt.target || openOptions.focusBackElement;
+      dynamicDialogEl.open(openOptions);
+    }
+  });
+}
+
+// Init
+setUpListeners();
+setTimeout(function () {
+  generateDialog();
+}, 0);
+
+function disappear(button) {
+  disappearingButton = button;
+  disappearingButton.parentNode.focus();
+  disappearingButton.style.visibility = "hidden";
+}
+</script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/prism.js'></script>
 
     <!-- by importing the elements last, the code output script can run before it gets
          populated -->
-    <link rel='import' href='../fs-modeless-dialog.html'>
-    <link rel='import' href='../fs-modal-dialog.html'>
-    <link rel='import' href='../fs-anchored-dialog.html'>
+    <script type="module" src="../fs-modeless-dialog.js"></script>
+    <script type="module" src="../fs-modal-dialog.js"></script>
+    <script type="module" src="../fs-anchored-dialog.js"></script>
   </body>
 </html>

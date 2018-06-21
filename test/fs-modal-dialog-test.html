@@ -4,15 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="../../wct-browser-legacy/browser.js"></script>
     <script src="../../fs-globals/fs-globals-mock.js"></script>
-    <script src="../../axe.min/index.js" ></script>
+    <script src="../../axe.min/index.js"></script>
     <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
 
 
     <!-- Step 1: import the element to test -->
-    <link rel="import" href="../fs-dialog-all.html">
+    <script type="module" src="../fs-dialog-all.js"></script>
   </head>
   <body>
     <button id="open-modal-button"></button>
@@ -45,78 +45,77 @@
         </fs-modal-dialog>
       </template>
     </test-fixture>
-    <script>
-      document.addEventListener('WebComponentsReady', function () {
-        var modalFixture;
+    <script type="module">
+import '../fs-dialog-all.js';
+var modalFixture;
 
-        describe('<fs-modal-dialog>', function () {
-          beforeEach(function () {
-            modalFixture = fixture('fs-modal-dialog-fixture');
-          });
-          afterEach(function () {
-            modalFixture.close();
-          });
+describe('<fs-modal-dialog>', function () {
+  beforeEach(function () {
+    modalFixture = fixture('fs-modal-dialog-fixture');
+  });
+  afterEach(function () {
+    modalFixture.close();
+  });
 
-          describe('setup', function () {
-            it('should have a previous sibling element with a class of fs-dialog__mask', function () {
-              expect(modalFixture.previousSibling.classList.contains('fs-dialog__mask'), 'mask was not the previous sibling element of the dialog').to.be.true;
-            });
-            it('should have a role of main on the body element', function () {
-              var bodyEl = modalFixture.querySelector('.fs-dialog__body');
-              expect(bodyEl.hasAttribute('role') && bodyEl.attributes.role.value === 'main', "body did not have a 'main' role").to.be.true;
-            });
-            it('should have tabindex of -1', function () {
-              expect(modalFixture.hasAttribute('tabindex') && modalFixture.attributes.tabindex.value === '-1', 'did not have tabindex of -1').to.be.true;
-            });
-            it('should not have a data-no-inert attribute', function () {
-              expect(modalFixture.hasAttribute('data-no-inert'), 'had a data-no-inert attribute').to.be.false;
-            });
-          });
+  describe('setup', function () {
+    it('should have a previous sibling element with a class of fs-dialog__mask', function () {
+      expect(modalFixture.previousSibling.classList.contains('fs-dialog__mask'), 'mask was not the previous sibling element of the dialog').to.be.true;
+    });
+    it('should have a role of main on the body element', function () {
+      var bodyEl = modalFixture.querySelector('.fs-dialog__body');
+      expect(bodyEl.hasAttribute('role') && bodyEl.attributes.role.value === 'main', "body did not have a 'main' role").to.be.true;
+    });
+    it('should have tabindex of -1', function () {
+      expect(modalFixture.hasAttribute('tabindex') && modalFixture.attributes.tabindex.value === '-1', 'did not have tabindex of -1').to.be.true;
+    });
+    it('should not have a data-no-inert attribute', function () {
+      expect(modalFixture.hasAttribute('data-no-inert'), 'had a data-no-inert attribute').to.be.false;
+    });
+  });
 
-          describe('after opening', function () {
-            it('mask should inherit no-transition attribute', function () {
-              modalFixture.open();
-              expect(modalFixture.previousSibling.hasAttribute('no-transition'), 'mask did not have a no-transition attribute').to.be.true;
-            });
-            it('mask should inherit the keep-fullscreen attribute', function () {
-              modalFixture.open();
-              expect(modalFixture.previousSibling.hasAttribute('keep-fullscreen'), 'mask did not have a keep-fullscreen attribute').to.be.true;
-            });
-            it('mask should inherit the opened attribute', function () {
-              modalFixture.open();
-              expect(modalFixture.previousSibling.hasAttribute('opened'), 'mask did not have an opened attribute').to.be.true;
-            });
-            describe('a11y', function () {
-              it('parent element should not have inert property', function () {
-                modalFixture.open();
-                expect(modalFixture.parentNode.inert, 'had aria-hidden attribute').to.be.falsy;
-              });
-              it('other elements whose ancestor is not the dialog parent or does not have data-no-inert attribute should have inert property', function () {
-                modalFixture.open();
-                expect(document.querySelector('#open-modal-button').inert, 'did not have inert property').to.be.true;
-              });
-            });
-          });
-
-          describe('after closing', function () {
-            it('mask should not have an opened attribute', function () {
-              modalFixture.open();
-              modalFixture.close();
-              expect(modalFixture.previousSibling.hasAttribute('opened'), 'had a no-transition attribute').to.be.false;
-            });
-            describe('a11y', function () {
-              it('other elements whose ancestor is not the dialog parent should not have inert property', function (done) {
-                modalFixture.open();
-                modalFixture.close();
-                setTimeout(function () {
-                  expect(document.querySelector('#open-modal-button').inert, 'had inert property').to.be.false;
-                  done();
-                }, 110);
-              });
-            });
-          });
-        });
+  describe('after opening', function () {
+    it('mask should inherit no-transition attribute', function () {
+      modalFixture.open();
+      expect(modalFixture.previousSibling.hasAttribute('no-transition'), 'mask did not have a no-transition attribute').to.be.true;
+    });
+    it('mask should inherit the keep-fullscreen attribute', function () {
+      modalFixture.open();
+      expect(modalFixture.previousSibling.hasAttribute('keep-fullscreen'), 'mask did not have a keep-fullscreen attribute').to.be.true;
+    });
+    it('mask should inherit the opened attribute', function () {
+      modalFixture.open();
+      expect(modalFixture.previousSibling.hasAttribute('opened'), 'mask did not have an opened attribute').to.be.true;
+    });
+    describe('a11y', function () {
+      it('parent element should not have inert property', function () {
+        modalFixture.open();
+        expect(modalFixture.parentNode.inert, 'had aria-hidden attribute').to.be.falsy;
       });
-    </script>
+      it('other elements whose ancestor is not the dialog parent or does not have data-no-inert attribute should have inert property', function () {
+        modalFixture.open();
+        expect(document.querySelector('#open-modal-button').inert, 'did not have inert property').to.be.true;
+      });
+    });
+  });
+
+  describe('after closing', function () {
+    it('mask should not have an opened attribute', function () {
+      modalFixture.open();
+      modalFixture.close();
+      expect(modalFixture.previousSibling.hasAttribute('opened'), 'had a no-transition attribute').to.be.false;
+    });
+    describe('a11y', function () {
+      it('other elements whose ancestor is not the dialog parent should not have inert property', function (done) {
+        modalFixture.open();
+        modalFixture.close();
+        setTimeout(function () {
+          expect(document.querySelector('#open-modal-button').inert, 'had inert property').to.be.false;
+          done();
+        }, 110);
+      });
+    });
+  });
+});
+</script>
   </body>
 </html>

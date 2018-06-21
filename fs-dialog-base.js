@@ -1,10 +1,28 @@
-<link rel="import" href="../fs-globals/fs-globals.html">
-<link rel="import" href="../a11y-enhancer/dialog.html">
-<link rel="import" href="../inert/inert.html">
+import 'fs-globals/fs-globals.js';
+import {WCI18n} from 'wc-i18n/wc-i18n.js';
+import {dialog as a11yEnhancerDialog} from 'a11y-enhancer/src/dialog.js';
+import 'wicg-inert/dist/inert.js';
 
-<script src="./fs-dialog-service.js"></script>
-<script src="./get-root-node-polyfill.js"></script>
-<style data-fs-dialog>
+const fsDialogBodyStyleTemplate = document.createElement('template');
+fsDialogBodyStyleTemplate.setAttribute('style', 'display: none;');
+
+fsDialogBodyStyleTemplate.innerHTML = `<style data-fs-dialog-body-style>
+    body.fs-modal-dialog-open,
+    body.fs-dialog-keep-fullscreen {
+      overflow: hidden !important;
+    }
+
+    @media screen and (max-width:480px),
+      (max-height:480px) {
+      body.fs-anchored-dialog-open {
+        overflow: hidden !important;
+      }
+    }
+</style>`;
+const fsDialogTemplate = document.createElement('template');
+fsDialogTemplate.setAttribute('style', 'display: none;');
+
+fsDialogTemplate.innerHTML = `<style data-fs-dialog="">
   /*
    * 1. The display property cannot be animated so we need to use opacity and visibility
    *    to fade in
@@ -317,45 +335,181 @@
     /** End Mobile Transitions **/
   }
 </style>
+<button class="fs-dialog__close" data-dialog-dismiss="">
+  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 13 13" preserveAspectRatio="xMidYMin"><g transform="translate(-1.000000, -1.000000)"><path d="M13 2L2 13M2 2L13 13" stroke="currentColor" stroke-width="2.5"></path></g></svg>
+</button>`;
 
-<!--
+document.head.appendChild(fsDialogBodyStyleTemplate.content);
+
+var dialogStack = [];
+var buffer = [];
+var bufferElements = (document.readyState === 'loading');
+
+window.FS = window.FS || {};
+window.FS.dialog = window.FS.dialog || {};
+window.FS.dialog.service = window.FS.dialog.service || {};
+
+/**
+ * This function will register global elements and attach a reference to them to window.FS.dialog
+ * @param {string} elementName - The name of the element to register e.g. fs-person-card
+ * @returns {undefined} - Returns void.
+ */
+window.FS.dialog.register = function (elementName) {
+  if (bufferElements) {
+    buffer.push(elementName);
+    return;
+  }
+  registerElement(elementName);
+};
+
+function registerElement (elementName) {
+  var camelCaseName = elementName.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+  if (window.FS.dialog[camelCaseName]) {
+    console.error('Attempted to create element', elementName, 'which already exists');
+    return;
+  }
+  var element = document.createElement(elementName);
+  document.body.appendChild(element);
+  Object.defineProperty(window.FS.dialog, camelCaseName, {
+    get: function () {
+      return element;
+    }
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function () {
+    bufferElements = false;
+    buffer.forEach(registerElement);
+  });
+}
+
+window.FS.dialog.service.addDialogToStack = function (dialogElement) {
+  window.FS.dialog.service.removeDialogFromStack(dialogElement);
+  dialogStack.push(dialogElement);
+};
+
+window.FS.dialog.service.removeDialogFromStack = function (dialogElement) {
+  var index = dialogStack.indexOf(dialogElement);
+  if (index > -1) dialogStack.splice(index, 1);
+};
+
+window.FS.dialog.service.dialogIsOnTop = function (dialogElement) {
+  var index = dialogStack.indexOf(dialogElement);
+  var lastIndex = dialogStack.length - 1;
+  return index === lastIndex;
+};
+
+window.FS.dialog.service.closeAllDialogs = function () {
+  var reverseStack = [].concat(dialogStack).reverse();
+  reverseStack.forEach(function (dialog) {
+    dialog.close();
+  });
+};
+
+window.FS.dialog.service.closeDialogAndAllChildren = function (dialogElement) {
+  var reverseStack = [].concat(dialogStack).reverse();
+  var index = reverseStack.indexOf(dialogElement);
+
+  var animationToUseToClose = dialogElement.getAttribute('transition');
+  reverseStack.some(function (dialog, dialogIndex) {
+    if (dialogIndex <= index) {
+      var animationToRestore = dialog.getAttribute('transition');
+      if (animationToUseToClose) {
+        dialog.setAttribute('transition', animationToUseToClose);
+      }
+      dialog.close();
+      // Restsore the animation direction after the transition has finished
+      if (animationToUseToClose) {
+        setTimeout(function () {
+          dialog.setAttribute('transition', animationToRestore);
+        }, 300);
+      }
+    } else {
+      return true;
+    }
+  });
+};
+
+window.FS.dialog.service.getStack = function () {
+  return dialogStack;
+};
+
+window.FS.dialog.service.windowHasFocus = true;
+
+if(!isImplemented()) {
+  Node.prototype.getRootNode = getRootNode;
+}
+
+function isImplemented() {
+  return Object.prototype.hasOwnProperty.call(Node.prototype, 'getRootNode');
+}
+
+function isShadowRoot(node) {
+  return typeof ShadowRoot === 'function' && node instanceof ShadowRoot;
+}
+
+function getRoot(node) {
+  if (node.parentNode != null) {
+    return getRoot(node.parentNode);
+  }
+
+  return node;
+}
+
+function getShadowIncludingRoot(node) {
+  var root = getRoot(node);
+
+  if (isShadowRoot(root)) {
+    return getShadowIncludingRoot(root.host);
+  }
+
+  return root;
+}
+
+// Node getRootNode(optional GetRootNodeOptions options);
+
+/**
+ * Returns the context object’s shadow-including root if options’s composed is true.
+ * Returns the context object’s root otherwise.
+ *
+ * The root of an object is itself, if its parent is null, or else it is the root of its parent.
+ *
+ * The shadow-including root of an object is its root’s host’s shadow-including root,
+ * if the object’s root is a shadow root, and its root otherwise.
+ *
+ * https://dom.spec.whatwg.org/#dom-node-getrootnode
+ *
+ * @memberof Node.prototype
+ * @param {!Object} [opt = {}] - Options.
+ * @param {!boolean} [opt.composed] - See above description.
+ * @returns {!Node} The root node.
+ */
+function getRootNode(opt) {
+  var composed = typeof opt === 'object' && Boolean(opt.composed);
+
+  return composed ? getShadowIncludingRoot(this) : getRoot(this);
+}
+
+/*
   This style will be appended to the body element when the first modal or anchored
   dialog is open.  When there is at least one modal open, the fs-modal-dialog-open
   class will be added to the body element.  When there is an anchored dialog open,
   the fs-anchored-dialog-open class will be added to the body element.
--->
-<style id="fs-dialog-body-style">
-    body.fs-modal-dialog-open,
-    body.fs-dialog-keep-fullscreen {
-      overflow: hidden !important;
-    }
-
-    @media screen and (max-width:480px),
-      (max-height:480px) {
-      body.fs-anchored-dialog-open {
-        overflow: hidden !important;
-      }
-    }
-</style>
-
-<!-- 1. Since we're not using shadow DOM and can't use <slot> elements, we can only
+*/
+/* 1. Since we're not using shadow DOM and can't use <slot> elements, we can only
         add siblings to the user nodes and cannot move their nodes (breaks binding
         for polymer and angular)
      2. Use inline svg so the color can be changed with the rest of the text inside
-        the header -->
-<template id="fs-dialog-template">
+        the header */
+/*
+  FIXME(polymer-modulizer): the above comments were extracted
+  from HTML and may be out of place here. Review them and
+  then delete this comment!
+*/
 
-  <button class="fs-dialog__close" data-dialog-dismiss>
-    <svg aria-hidden="true" width='13' height='13' viewbox="0 0 13 13" preserveAspectRatio="xMidYMin"><g transform='translate(-1.000000, -1.000000)'><path d='M13 2L2 13M2 2L13 13' stroke='currentColor' stroke-width='2.5'/></g></svg>
-  </button>
-
-</template>
-
-<script>
-(function (window, document) {
-  var doc = (document._currentScript || document.currentScript).ownerDocument;
-  var template = doc.querySelector('#fs-dialog-template');
-  FS._registerTranslations({'de': {'_LRM_PKTAG439': 'fs-dialog_1_146 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Schließen'}, 'en': {'fs.shared.fsDialog.CLOSE': 'Close'}, 'eo': {'fs.shared.fsDialog.CLOSE': '[Çļöšé--- П國カ내]'}, 'es': {'_LRM_PKTAG33': 'fs-dialog_2_101 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Cerrar'}, 'fr': {'_LRM_PKTAG930': 'fs-dialog_1_102 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Fermer'}, 'it': {'_LRM_PKTAG257': 'fs-dialog_1_103 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Chiudi'}, 'ja': {'_LRM_PKTAG68': 'fs-dialog_1_104 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '閉じる'}, 'ko': {'_LRM_PKTAG569': 'fs-dialog_1_105 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '닫기'}, 'pt': {'_LRM_PKTAG662': 'fs-dialog_1_106 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Fechar'}, 'ru': {'_LRM_PKTAG275': 'fs-dialog_1_107 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': 'Закрыть'}, 'zh': {'_LRM_PKTAG645': 'fs-dialog_1_108 - FULL-FILE', 'fs.shared.fsDialog.CLOSE': '關閉'}});
+  // var doc = (document._currentScript || document.currentScript).ownerDocument;
+  // var template = doc.querySelector('#fs-dialog-template');
 
   var zIndex = 1990;
   var zIndexIncrement = 10;
@@ -379,12 +533,13 @@
     'opened'
   ];
 
-  class FSDialogBase extends HTMLElement {
+  export default class FSDialogBase extends WCI18n()(HTMLElement) {
     constructor () {
       super();
 
       this.keydownHandler = keydownHandler;
     }
+
     createdCallback () {
       this.keydownHandler = keydownHandler;
     }
@@ -411,7 +566,7 @@
     }
 
     attachedCallback (onOpenDialogFunction, onCloseDialogFunction) {
-      this.appendStyles(doc, 'style[data-fs-dialog]', this);
+      // this.appendStyles(doc, 'style[data-fs-dialog]', this);
 
       // initialize the attributes that were set before the component got upgraded.
       // This may not be needed anymore after webcomponents are native everywhere
@@ -420,7 +575,7 @@
         that.attributeChangedCallback(attr, null, that.getAttribute(attr));
       });
 
-      var clone = document.importNode(template.content, true);
+      var clone = document.importNode(fsDialogTemplate.content, true);
 
       // selectors
       var closeEl = clone.querySelector('.fs-dialog__close');
@@ -429,7 +584,7 @@
       var resolvePromise, rejectPromise;
 
       // set aria-label on close button for screen readers
-      closeEl.setAttribute('aria-label', FS.i18n('fs.shared.fsDialog.CLOSE'));
+      closeEl.setAttribute('aria-label', this.i18n('CLOSE'));
 
       // move the close button into the header or as the first child of the dialog
       // (so it's first in the tab order)
@@ -439,14 +594,9 @@
         this.insertBefore(closeEl, this.firstChild);
       }
 
-      // Add style node to document
-      if (!document.querySelector('#fs-dialog-body-style')) {
-        document.querySelector('body').appendChild(doc.querySelector('#fs-dialog-body-style').cloneNode(true));
-      }
-
       this.appendChild(clone);
       this.setAttribute('role', 'dialog');
-      a11yEnhancer.dialog(this); // eslint-disable-line
+      a11yEnhancerDialog(this); // eslint-disable-line
 
       // this._opened = false;
       this._focusoutHandler = focusoutHandler.bind(this);
@@ -502,7 +652,7 @@
 
           // add dialog to the stack unless it is a modeless dialog
           if (!this.doNotUseInStack) {
-            FS.dialog.service.addDialogToStack(this);
+            window.FS.dialog.service.addDialogToStack(this);
           }
 
           this.focusBackElement = optionsObj.focusBackElement;
@@ -612,15 +762,15 @@
         }
 
         // remove dialog from stack
-        FS.dialog.service.removeDialogFromStack(this);
+        window.FS.dialog.service.removeDialogFromStack(this);
 
         // if there are no dialogs with the same tag name in the stack, remove the associated open class from the document body
         if (this.tagName === 'FS-MODAL-DIALOG' || this.tagName === 'FS-ANCHORED-DIALOG' || this.keepFullscreen) {
           var tagName = this.tagName;
-          if (FS.dialog.service.getStack().filter(function (item) { return item.keepFullscreen; }).length === 0) {
+          if (window.FS.dialog.service.getStack().filter(function (item) { return item.keepFullscreen; }).length === 0) {
             document.body.classList.remove('fs-dialog-keep-fullscreen');
           }
-          if (FS.dialog.service.getStack().filter(function (item) { return item.tagName === tagName && !item.noFullscreenMobile; }).length === 0) {
+          if (window.FS.dialog.service.getStack().filter(function (item) { return item.tagName === tagName && !item.noFullscreenMobile; }).length === 0) {
             document.body.classList.remove(this.tagName === 'FS-MODAL-DIALOG' ? 'fs-modal-dialog-open' : this.tagName === 'FS-ANCHORED-DIALOG' ? 'fs-anchored-dialog-open' : '');
           }
         }
@@ -633,7 +783,7 @@
       };
 
       this.closeAndCloseChildren = function () {
-        FS.dialog.service.closeDialogAndAllChildren(this);
+        window.FS.dialog.service.closeDialogAndAllChildren(this);
       };
 
       // start opened (needs to be done after adding the event listeners to open
@@ -719,10 +869,10 @@
   }
 
   function windowFocusListener (event) {
-    FS.dialog.service.windowHasFocus = true;
+    window.FS.dialog.service.windowHasFocus = true;
   }
   function windowBlurListener (event) {
-    FS.dialog.service.windowHasFocus = false;
+    window.FS.dialog.service.windowHasFocus = false;
   }
   function focusoutHandler (event) {
     var dialog = this;
@@ -731,7 +881,7 @@
     window.removeEventListener('focus', dialog._focusoutHandler);
     // use setTimout so that we get the correct document.activeElement
     // TODO: look into using the related target instead of activeElement if possible
-    if (FS.dialog.service.dialogIsOnTop(dialog)) {
+    if (window.FS.dialog.service.dialogIsOnTop(dialog)) {
       // don't close if a node loses focus from dissapearing.
       var target = event.composedPath()[0];
       var targetDisappeared = (!target.offsetHeight && !target.offsetWidth) || target.style.visibility === 'hidden';
@@ -748,12 +898,12 @@
           if (!dialog.opened) return;
           var root = dialog.getRootNode();
           var activeElement = root.activeElement || document.activeElement;
-          if (!FS.dialog.service.windowHasFocus) {
+          if (!window.FS.dialog.service.windowHasFocus) {
             // listen for when the window does get focus and run this function again
             window.addEventListener('focus', dialog._focusoutHandler);
           } else if (!dialog.contains(activeElement)) {
             // cascade down stack until we hit a dialog that has the active element or does not have click away
-            reverseStack = [].concat(FS.dialog.service.getStack()).reverse();
+            reverseStack = [].concat(window.FS.dialog.service.getStack()).reverse();
             var originalDialog = dialog;
             reverseStack.some(function (dialog) {
               root = dialog.getRootNode();
@@ -825,6 +975,4 @@
   window.addEventListener('focus', windowFocusListener);
   window.addEventListener('blur', windowBlurListener);
 
-  FS.dialog.baseDialogComponent = FSDialogBase;
-})(window, document);
-</script>
+  window.FS.dialog.baseDialogComponent = FSDialogBase;

@@ -4,18 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="../../wct-browser-legacy/browser.js"></script>
     <script src="../../fs-globals/fs-globals-mock.js"></script>
-    <script src="../../axe.min/index.js" ></script>
+    <script src="../../axe.min/index.js"></script>
     <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
 
     <!-- The element to test -->
-    <link rel="import" href="../fs-dialog-base.html">
+    <script type="module" src="../fs-dialog-base.js"></script>
 
 
     <!-- Step 1: import the element to test -->
-    <link rel="import" href="../fs-dialog-all.html">
+    <script type="module" src="../fs-dialog-all.js"></script>
     <test-fixture id="fs-dialog-base-fixture">
       <template>
         <fs-dialog-base>
@@ -41,269 +41,266 @@
     </test-fixture>
   </head>
   <body>
-    <script>
-    var fsDialogBase;
+    <script type="module">
+import '../fs-dialog-base.js';
+import '../fs-dialog-all.js';
+var fsDialogBase;
 
-    document.addEventListener('WebComponentsReady', function () {
-      if ('customElements' in window) {
-        fsDialogBase = FS.dialog.baseDialogComponent;
-        customElements.define('fs-dialog-base', fsDialogBase);
-      } else {
-        fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
-        document.registerElement('fs-dialog-base', {prototype: Object.create(FS.dialog.baseDialogComponent.prototype)});
-      }
+if ('customElements' in window) {
+  fsDialogBase = FS.dialog.baseDialogComponent;
+  customElements.define('fs-dialog-base', fsDialogBase);
+} else {
+  fsDialogBase = document.registerElement('fs-dialog-base', FS.dialog.baseDialogComponent);
+  document.registerElement('fs-dialog-base', {prototype: Object.create(FS.dialog.baseDialogComponent.prototype)});
+}
 
-      describe('fsDialogBase', function () {
-        var el, closeEl, bodyEl, headerEl, footerEl, maskEl;
+describe('fsDialogBase', function () {
+  var el, closeEl, bodyEl, headerEl, footerEl, maskEl;
 
-        function updateSelectors() {
-          closeEl = el.querySelector('.fs-dialog__close');
-          bodyEl = el.querySelector('.fs-dialog__body');
-          headerEl = el.querySelector('header');
-          footerEl = el.querySelector('footer');
-          maskEl = el.parentNode.querySelector('.fs-dialog__mask');
+  function updateSelectors() {
+    closeEl = el.querySelector('.fs-dialog__close');
+    bodyEl = el.querySelector('.fs-dialog__body');
+    headerEl = el.querySelector('header');
+    footerEl = el.querySelector('footer');
+    maskEl = el.parentNode.querySelector('.fs-dialog__mask');
+  }
+
+  beforeEach(function() {
+    el = fixture('fs-dialog-base-fixture');
+    updateSelectors();
+  });
+
+  describe('functions', function () {
+    it('createdCallback should add the keydownHandler', function () {
+      fsDialogBase.prototype.createdCallback();
+
+      expect(fsDialogBase.prototype.keydownHandler, 'keydownHandler is not defined as a function').to.be.a('function');
+    });
+
+    it('connectedCallback should call attachedCallback', function () {
+      var attachedCallbackStub = sinon.stub(fsDialogBase.prototype, 'attachedCallback');
+
+      fsDialogBase.prototype.connectedCallback();
+
+      expect(attachedCallbackStub.callCount, 'attachedCallback was not called just once').to.equal(1);
+
+      attachedCallbackStub.restore();
+    });
+
+    describe('appendStyles', function () {
+      it('should call getRootNode', function () {
+        var thisEl = document.createElement('div');
+        var selector = 'style[data-fs-dialog]';
+
+        var getRootNodeStub = sinon.stub(thisEl, 'getRootNode');
+
+        try { // This does not have the complete setup to successfully finish attachedCallback(). Will fail on root.toString()
+          fsDialogBase.prototype.appendStyles(document, selector, thisEl);
+        } catch (err) {
+          expect(getRootNodeStub.callCount, 'getRootNode was not called just once').to.equal(1);
         }
 
-        beforeEach(function() {
-          el = fixture('fs-dialog-base-fixture');
-          updateSelectors();
-        });
-
-        describe('functions', function () {
-          it('createdCallback should add the keydownHandler', function () {
-            fsDialogBase.prototype.createdCallback();
-
-            expect(fsDialogBase.prototype.keydownHandler, 'keydownHandler is not defined as a function').to.be.a('function');
-          });
-
-          it('connectedCallback should call attachedCallback', function () {
-            var attachedCallbackStub = sinon.stub(fsDialogBase.prototype, 'attachedCallback');
-
-            fsDialogBase.prototype.connectedCallback();
-
-            expect(attachedCallbackStub.callCount, 'attachedCallback was not called just once').to.equal(1);
-
-            attachedCallbackStub.restore();
-          });
-
-          describe('appendStyles', function () {
-            it('should call getRootNode', function () {
-              var thisEl = document.createElement('div');
-              var selector = 'style[data-fs-dialog]';
-
-              var getRootNodeStub = sinon.stub(thisEl, 'getRootNode');
-
-              try { // This does not have the complete setup to successfully finish attachedCallback(). Will fail on root.toString()
-                fsDialogBase.prototype.appendStyles(document, selector, thisEl);
-              } catch (err) {
-                expect(getRootNodeStub.callCount, 'getRootNode was not called just once').to.equal(1);
-              }
-
-              getRootNodeStub.restore();
-            });
-
-            // TODO: There could be tests for the call to cloneNode() & appendChild(), but we need to figure out the setup to get past root.toString()
-          });
-
-          describe('attachedCallback', function () {
-            it('should call appendStyles', function () {
-              var appendStylesStub = sinon.stub(fsDialogBase.prototype, 'appendStyles');
-
-              try { // This does not have the complete setup to successfully finish attachedCallback() because it fails with the this.querySelector() call.
-                fsDialogBase.prototype.attachedCallback();
-              } catch (err) {
-                expect(appendStylesStub.callCount, 'appendStyles was not called just once').to.equal(1);
-              }
-
-              appendStylesStub.restore();
-            });
-
-            // TODO: There could several other tests, but we need to figure out the setup to get past this.querySelector().
-          });
-
-          describe('attributeChangedCallback', function () {
-            it('attributeChangedCallback should return false', function () {
-              var attr = 'test-attribute';
-              var attrOldValue = 'oldValue';
-              var attrNewValue = 'newValue';
-
-              expect(fsDialogBase.prototype.attributeChangedCallback(attr, attrOldValue, attrNewValue), 'attributeChangedCallback did not return false').to.be.false;
-            });
-
-            it('attributeChangedCallback should return true', function () {
-              var attr = 'dismiss-on-blur';
-              var attrOldValue = 'oldValue';
-              var attrNewValue = 'newValue';
-
-              expect(fsDialogBase.prototype.attributeChangedCallback(attr, attrOldValue, attrNewValue), 'attributeChangedCallback did not return true').to.be.true;
-            });
-          });
-        });
-
-        describe('attached', function() {
-
-          it('should add a close button with an aria-label', function() {
-            expect(closeEl).to.exist;
-            expect(closeEl.hasAttribute('aria-label')).to.be.true;
-          });
-
-          it('should move the close button to be in the header', function() {
-            expect(closeEl.parentNode).to.equal(headerEl);
-          });
-
-          it('should move the close button to be the first child of the dialog if there is no header', function() {
-            el = fixture('fs-dialog-base-fixture-empty');
-            updateSelectors();
-
-            expect(closeEl.parentNode).to.equal(el);
-            expect(el.firstChild).to.equal(closeEl);
-          });
-
-        });
-
-        describe('functions', function() {
-
-          it('calling "open" should open the dialog', function() {
-            el.open();
-
-            expect(el.hasAttribute('opened')).to.be.true;
-          });
-
-          it('calling "open" should dispatch an "fs-dialog-open" event', function(done) {
-            // timeout after 1 second if the event is not triggered
-            this.timeout(1000);
-
-            el.addEventListener('fs-dialog-open', function(e) {
-              expect(e.target).to.equal(el);
-
-              done();
-            });
-
-            el.open();
-          });
-
-          it('calling "open" should add "tabindex" to the body if it needs to scroll', function() {
-            bodyEl.style.height = '200px';
-            bodyEl.style.width = '200px';
-            bodyEl.style.overflow = 'auto';
-            bodyEl.innerHTML = `<p>This dialogs content will scroll.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu auctor diam. Donec condimentum eleifend purus at lacinia. Cras feugiat sodales pulvinar. Curabitur a aliquet eros. Integer vitae suscipit justo, vel sagittis dui. Maecenas nec porttitor arcu. Maecenas consequat lacinia dui quis vestibulum. Sed cursus consectetur erat quis eleifend. Sed consectetur imperdiet dui, nec iaculis ante lacinia nec. Nullam at nunc sed mauris convallis eleifend. Phasellus at malesuada nisi. Maecenas purus mi, pellentesque nec enim ut, venenatis congue leo. Integer porttitor sem eu nunc ornare, ac aliquet augue gravida. Cras sit amet dolor nisl.</p>
-
-            <p>Curabitur maximus, metus quis rutrum tristique, mi nunc condimentum nibh, sit amet luctus leo velit ultricies sem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque rutrum nec arcu et tincidunt. Maecenas varius convallis bibendum. Proin mattis arcu orci, id eleifend ex posuere et. Aenean faucibus scelerisque turpis, at bibendum urna sodales et. Mauris posuere ultricies nisl, sed tincidunt felis pretium ac. Suspendisse sollicitudin in lacus ut pharetra. Duis dapibus elementum sapien at scelerisque. Vivamus non ullamcorper velit, a eleifend metus. Proin velit lorem, feugiat ac justo et, congue eleifend risus.</p>
-
-            <p>Aenean convallis commodo metus. Donec euismod neque velit, at accumsan velit vulputate gravida. Duis ultricies pellentesque ante at dignissim. Sed non turpis magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam mollis sed eros vitae mattis. Suspendisse non blandit nisi. Etiam mattis sodales congue.</p>`;
-            el.open();
-
-            expect(bodyEl.getAttribute('tabindex')).to.equal('0');
-          });
-
-          it('calling "close" should close the dialog', function() {
-            el.open();
-            el.close();
-
-            expect(el.hasAttribute('opened')).to.be.false;
-          });
-
-          it('calling "close" should dispatch an "fs-dialog-close" event', function(done) {
-            // timeout after 1 second if the event is not triggered
-            this.timeout(1000);
-
-            el.addEventListener('fs-dialog-close', function(e) {
-              expect(e.target).to.equal(el);
-
-              done();
-            });
-
-            el.open();
-            el.close();
-          });
-
-          it('calling open or close should return a promise', function() {
-            expect(el.open().then).to.be.ok
-            expect(el.close().then).to.be.ok
-          })
-
-        });
-
-        describe('attributes', function() {
-
-          it('clicking on an element with "data-dialog-dismiss" should close the dialog', function() {
-            el.open();
-            el.querySelector('button').click();
-
-            el.querySelector('[data-dialog-dismiss]').click();
-          });
-
-          it('clicking on an element with "data-dialog-dismiss" should dispatch a "fs-dialog-dismiss" event', function(done) {
-            // timeout after 1 second if the event is not triggered
-            this.timeout(1000);
-
-            el.addEventListener('fs-dialog-dismiss', function(e) {
-              expect(e.target).to.equal(el);
-
-              done();
-            });
-
-            el.open();
-            el.querySelector('[data-dialog-dismiss]').click();
-          });
-
-          it('clicking on an element with "data-dialog-confirm" should not close the dialog', function() {
-            el.open();
-            el.querySelector('[data-dialog-confirm]').click();
-
-            expect(el.hasAttribute('opened')).to.be.true;
-          });
-
-          it('clicking on an element with "data-dialog-confirm" should dispatch a "fs-dialog-confirm" event', function(done) {
-            // timeout after 1 second if the event is not triggered
-            this.timeout(1000);
-
-            el.addEventListener('fs-dialog-confirm', function(e) {
-              expect(e.target).to.equal(el);
-
-              done();
-            });
-
-            el.open();
-            el.querySelector('[data-dialog-confirm]').click();
-          });
-
-        });
-
-        describe('properties', function() {
-
-          it('should have an "opened" property', function() {
-            expect(el.opened).to.exist;
-            expect(el.opened).to.be.false;
-          });
-
-        });
-
-
+        getRootNodeStub.restore();
       });
 
-      function simulateEvent(type, config) {
-        var evt;
-
-        try {
-          evt = new Event(type);
-        } catch(e) {
-          evt = document.createEvent('Event');
-          evt.initEvent(type, true, false);
-        }
-
-        var config = config || {};
-        for (var prop in config) {
-          evt[prop] = config[prop];
-        }
-
-        return evt;
-      }
-
-
-
+      // TODO: There could be tests for the call to cloneNode() & appendChild(), but we need to figure out the setup to get past root.toString()
     });
-    </script>
+
+    describe('attachedCallback', function () {
+      it('should call appendStyles', function () {
+        var appendStylesStub = sinon.stub(fsDialogBase.prototype, 'appendStyles');
+
+        try { // This does not have the complete setup to successfully finish attachedCallback() because it fails with the this.querySelector() call.
+          fsDialogBase.prototype.attachedCallback();
+        } catch (err) {
+          expect(appendStylesStub.callCount, 'appendStyles was not called just once').to.equal(1);
+        }
+
+        appendStylesStub.restore();
+      });
+
+      // TODO: There could several other tests, but we need to figure out the setup to get past this.querySelector().
+    });
+
+    describe('attributeChangedCallback', function () {
+      it('attributeChangedCallback should return false', function () {
+        var attr = 'test-attribute';
+        var attrOldValue = 'oldValue';
+        var attrNewValue = 'newValue';
+
+        expect(fsDialogBase.prototype.attributeChangedCallback(attr, attrOldValue, attrNewValue), 'attributeChangedCallback did not return false').to.be.false;
+      });
+
+      it('attributeChangedCallback should return true', function () {
+        var attr = 'dismiss-on-blur';
+        var attrOldValue = 'oldValue';
+        var attrNewValue = 'newValue';
+
+        expect(fsDialogBase.prototype.attributeChangedCallback(attr, attrOldValue, attrNewValue), 'attributeChangedCallback did not return true').to.be.true;
+      });
+    });
+  });
+
+  describe('attached', function() {
+
+    it('should add a close button with an aria-label', function() {
+      expect(closeEl).to.exist;
+      expect(closeEl.hasAttribute('aria-label')).to.be.true;
+    });
+
+    it('should move the close button to be in the header', function() {
+      expect(closeEl.parentNode).to.equal(headerEl);
+    });
+
+    it('should move the close button to be the first child of the dialog if there is no header', function() {
+      el = fixture('fs-dialog-base-fixture-empty');
+      updateSelectors();
+
+      expect(closeEl.parentNode).to.equal(el);
+      expect(el.firstChild).to.equal(closeEl);
+    });
+
+  });
+
+  describe('functions', function() {
+
+    it('calling "open" should open the dialog', function() {
+      el.open();
+
+      expect(el.hasAttribute('opened')).to.be.true;
+    });
+
+    it('calling "open" should dispatch an "fs-dialog-open" event', function(done) {
+      // timeout after 1 second if the event is not triggered
+      this.timeout(1000);
+
+      el.addEventListener('fs-dialog-open', function(e) {
+        expect(e.target).to.equal(el);
+
+        done();
+      });
+
+      el.open();
+    });
+
+    it('calling "open" should add "tabindex" to the body if it needs to scroll', function() {
+      bodyEl.style.height = '200px';
+      bodyEl.style.width = '200px';
+      bodyEl.style.overflow = 'auto';
+      bodyEl.innerHTML = `<p>This dialogs content will scroll.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu auctor diam. Donec condimentum eleifend purus at lacinia. Cras feugiat sodales pulvinar. Curabitur a aliquet eros. Integer vitae suscipit justo, vel sagittis dui. Maecenas nec porttitor arcu. Maecenas consequat lacinia dui quis vestibulum. Sed cursus consectetur erat quis eleifend. Sed consectetur imperdiet dui, nec iaculis ante lacinia nec. Nullam at nunc sed mauris convallis eleifend. Phasellus at malesuada nisi. Maecenas purus mi, pellentesque nec enim ut, venenatis congue leo. Integer porttitor sem eu nunc ornare, ac aliquet augue gravida. Cras sit amet dolor nisl.</p>
+
+      <p>Curabitur maximus, metus quis rutrum tristique, mi nunc condimentum nibh, sit amet luctus leo velit ultricies sem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque rutrum nec arcu et tincidunt. Maecenas varius convallis bibendum. Proin mattis arcu orci, id eleifend ex posuere et. Aenean faucibus scelerisque turpis, at bibendum urna sodales et. Mauris posuere ultricies nisl, sed tincidunt felis pretium ac. Suspendisse sollicitudin in lacus ut pharetra. Duis dapibus elementum sapien at scelerisque. Vivamus non ullamcorper velit, a eleifend metus. Proin velit lorem, feugiat ac justo et, congue eleifend risus.</p>
+
+      <p>Aenean convallis commodo metus. Donec euismod neque velit, at accumsan velit vulputate gravida. Duis ultricies pellentesque ante at dignissim. Sed non turpis magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam mollis sed eros vitae mattis. Suspendisse non blandit nisi. Etiam mattis sodales congue.</p>`;
+      el.open();
+
+      expect(bodyEl.getAttribute('tabindex')).to.equal('0');
+    });
+
+    it('calling "close" should close the dialog', function() {
+      el.open();
+      el.close();
+
+      expect(el.hasAttribute('opened')).to.be.false;
+    });
+
+    it('calling "close" should dispatch an "fs-dialog-close" event', function(done) {
+      // timeout after 1 second if the event is not triggered
+      this.timeout(1000);
+
+      el.addEventListener('fs-dialog-close', function(e) {
+        expect(e.target).to.equal(el);
+
+        done();
+      });
+
+      el.open();
+      el.close();
+    });
+
+    it('calling open or close should return a promise', function() {
+      expect(el.open().then).to.be.ok
+      expect(el.close().then).to.be.ok
+    })
+
+  });
+
+  describe('attributes', function() {
+
+    it('clicking on an element with "data-dialog-dismiss" should close the dialog', function() {
+      el.open();
+      el.querySelector('button').click();
+
+      el.querySelector('[data-dialog-dismiss]').click();
+    });
+
+    it('clicking on an element with "data-dialog-dismiss" should dispatch a "fs-dialog-dismiss" event', function(done) {
+      // timeout after 1 second if the event is not triggered
+      this.timeout(1000);
+
+      el.addEventListener('fs-dialog-dismiss', function(e) {
+        expect(e.target).to.equal(el);
+
+        done();
+      });
+
+      el.open();
+      el.querySelector('[data-dialog-dismiss]').click();
+    });
+
+    it('clicking on an element with "data-dialog-confirm" should not close the dialog', function() {
+      el.open();
+      el.querySelector('[data-dialog-confirm]').click();
+
+      expect(el.hasAttribute('opened')).to.be.true;
+    });
+
+    it('clicking on an element with "data-dialog-confirm" should dispatch a "fs-dialog-confirm" event', function(done) {
+      // timeout after 1 second if the event is not triggered
+      this.timeout(1000);
+
+      el.addEventListener('fs-dialog-confirm', function(e) {
+        expect(e.target).to.equal(el);
+
+        done();
+      });
+
+      el.open();
+      el.querySelector('[data-dialog-confirm]').click();
+    });
+
+  });
+
+  describe('properties', function() {
+
+    it('should have an "opened" property', function() {
+      expect(el.opened).to.exist;
+      expect(el.opened).to.be.false;
+    });
+
+  });
+
+
+});
+
+function simulateEvent(type, config) {
+  var evt;
+
+  try {
+    evt = new Event(type);
+  } catch(e) {
+    evt = document.createEvent('Event');
+    evt.initEvent(type, true, false);
+  }
+
+  var config = config || {};
+  for (var prop in config) {
+    evt[prop] = config[prop];
+  }
+
+  return evt;
+}
+</script>
   </body>
 </html>
