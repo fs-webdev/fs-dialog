@@ -1,7 +1,7 @@
 {
   "name": "fs-dialog",
   "description": "An accessible standard dialog for FamilySearch.",
-  "version": "4.1.6",
+  "version": "4.1.7",
   "main": ["src/fs-anchored-dialog.html","src/fs-modal-dialog.html","src/fs-modeless-dialog.html"],
   "author": {
     "name": "FamilySearch",
@@ -9,8 +9,8 @@
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "dependencies": {
-    "fs-styles": "fs-webdev/fs-styles#^3.x.x",
-    "fs-globals": "fs-webdev/fs-globals#^2.0.1",
+    "fs-styles": "fs-webdev/fs-styles#3 - 4",
+    "fs-globals": "fs-webdev/fs-globals#1 - 3",
     "a11y-enhancer": "straker/a11y-enhancer",
     "inert": "https://github.com/straker/inert.git#master",
     "es6-promise": "^4.1.1",
