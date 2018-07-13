@@ -669,6 +669,11 @@
               }
               if (globalDialogBottom > windowRect.bottom) {
                 yOffset = -(globalDialogBottom - windowRect.bottom);
+                // if we've pushed the dialog off the top of the screen now, correct for it - this will only happen if the
+                // height of the dialog has been over-ridden and the height of the dialog is taller than the window height
+                if (globalDialogTop + yOffset < windowRect.top) {
+                  yOffset = windowRect.top - globalDialogTop;
+                }
               } else if (globalDialogTop < windowRect.top) {
                 yOffset = windowRect.top - globalDialogTop;
               }
