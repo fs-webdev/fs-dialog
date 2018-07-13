@@ -388,7 +388,7 @@
         <h5>Consuming Multiple Pieces of fs-dialog error</h5>
         <p>Some teams have reported issues stemming from multiple components importing different portions of <em>fs-dialog</em>, which results in an error (<em>Class extends value undefined is not a constructor or null</em>), and broken <em>fs-dialog</em> functionality. If you run into this, simply import <em>fs-dialog-all</em> in each component.</p>
         <h5>Registering Global Dialogs</h5>
-        <p>You may "register" your dialog as a global dialog, which means it will be appended to the `document.body` so people don't have to include it in their shadow root. This comes in handy when a dialog may be consumed by a parent that is absolutely positioned. For example, if a dialog will be opening another dialog, the second dialog's dom must be located outside of the first dialog, otherwise it will only take up space inside of the first dialog. After you have registered a dialog, you will have a global pointer to it on `FS.dialog.[dialogName]`.</p>
+        <p>You may (and probably should) "register" your dialog as a global dialog, which means it will be appended to the `document.body` so people don't have to include it in their shadow root. This comes in handy when a dialog may be consumed by a parent that is absolutely positioned. For example, if a dialog will be opening another dialog, the second dialog's dom must be located outside of the first dialog, otherwise it will only take up space inside of the first dialog. After you have registered a dialog, you will have a global pointer to it on `FS.dialog.[dialogName]`.</p>
         <pre>
           // Register your dialog in your web-component.html file
           &lt;script&gt;
@@ -401,9 +401,14 @@
           &lt;/script&gt;
 
           // Use the dialog in another component
+          &lt;link rel="import" href="/path/to/web-component.html"&gt;
+
+          // Your component's code 
           _openPersonCard: function(options) {
             FS.dialog.fsPersonCard.openCard(options)
           }
+
+          // Notice that we didn't include any dom here - you do not need to put any dom on the page to make your globally registered dialog work. The act of registering it puts an instance of the component in the dom for you.
         </pre>
         <h5>Open Function Options</h5>
         <p>There are some required parameters to the open function. The function takes one argument which is an options object. The options object always needs a focusBackElement property is required if you want to have the correct element focus when the dialog closes. For anchored dialogs, attachToElement or attachToCoordinates is required.</p>
