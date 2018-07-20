@@ -1,6 +1,6 @@
 {
   "mochaOptions": {
-    "timeout": 20000
+    "timeout": 60000
   },
   "plugins": {
     "local": {
