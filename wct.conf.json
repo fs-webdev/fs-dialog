@@ -8,7 +8,8 @@
         {
           "browserName":  "safari",
           "platform":     "OS X 10.13",
-          "version":      "11.1"
+          "version":      "11.1",
+          "commandTimeout": 600
         },
         {
           "browserName":  "chrome",
@@ -20,7 +21,8 @@
         },
         {
           "browserName":  "microsoftedge",
-          "platform":     "Windows 10"
+          "platform":     "Windows 10",
+          "commandTimeout": 600
         },
         {
           "browserName":  "chrome",
