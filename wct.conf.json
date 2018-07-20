@@ -1,6 +1,6 @@
 {
   "mochaOptions": {
-    "timeout": 60000
+    "timeout": 20000
   },
   "plugins": {
     "local": {
@@ -21,7 +21,9 @@
           "browserName":  "firefox",
           "platform":     "OS X 10.12"
         }
-      ]
+      ],
+      "commandTimeout": 600,
+      "idleTimeout": 1000
     },
     "istanbub": {
       "dir": "./reports/coverage",
