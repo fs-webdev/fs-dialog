@@ -8,8 +8,7 @@
         {
           "browserName":  "safari",
           "platform":     "OS X 10.13",
-          "version":      "11.1",
-          "idleTimeout": 600
+          "version":      "11.1"
         },
         {
           "browserName":  "chrome",
@@ -21,8 +20,7 @@
         },
         {
           "browserName":  "microsoftedge",
-          "platform":     "Windows 10",
-          "idleTimeout": 600
+          "platform":     "Windows 10"
         },
         {
           "browserName":  "chrome",
@@ -32,7 +30,9 @@
           "browserName":  "firefox",
           "platform":     "Windows 10"
         }
-      ]
+      ],
+      "commandTimeout": 600,
+      "idleTimeout": 600
     },
     "istanbub": {
       "dir": "./reports/coverage",
