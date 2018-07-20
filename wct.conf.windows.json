@@ -1,0 +1,26 @@
+{
+  "mochaOptions": {
+    "timeout": 20000
+  },
+  "plugins": {
+    "local": {
+      "browsers": [ "chrome" ]
+    },
+    "sauce": {
+      "browsers": [
+        {
+          "browserName":  "chrome",
+          "platform":     "Windows 10"
+        },
+        {
+          "browserName":  "microsoftedge",
+          "platform":     "Windows 10"
+        },
+        {
+          "browserName":  "firefox",
+          "platform":     "Windows 10"
+        }
+      ]
+    }
+  }
+}

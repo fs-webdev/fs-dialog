@@ -17,22 +17,8 @@
         {
           "browserName":  "firefox",
           "platform":     "OS X 10.12"
-        },
-        {
-          "browserName":  "microsoftedge",
-          "platform":     "Windows 10"
-        },
-        {
-          "browserName":  "chrome",
-          "platform":     "Windows 10"
-        },
-        {
-          "browserName":  "firefox",
-          "platform":     "Windows 10"
         }
-      ],
-      "commandTimeout": 600,
-      "idleTimeout": 600
+      ]
     },
     "istanbub": {
       "dir": "./reports/coverage",
