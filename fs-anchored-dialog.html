@@ -435,6 +435,12 @@
       function closeAnchoredFunction () {
         window.removeEventListener('resize', this._resizeThrottler);
         this.attachToElement = null;
+        // remove the positioning on the dialog so that dialogs don't cause extra space to be taken up on the page when they are not showing
+        setTimeout(() => {
+          if (this.opened) return;
+          this.style.top = '';
+          this.style.left = '';
+        }, 300);
       }
 
       function getPointerlessDialogRect (positionObj) {

@@ -15,11 +15,11 @@
         },
         {
           "browserName":  "chrome",
-          "platform":     "OS X 10.12"
+          "platform":     "OS X 10.13"
         },
         {
           "browserName":  "firefox",
-          "platform":     "OS X 10.12"
+          "platform":     "OS X 10.13"
         }
       ],
       "commandTimeout": 600,
