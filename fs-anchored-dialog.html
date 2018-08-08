@@ -3,72 +3,76 @@
 <link rel="import" href="./fs-dialog-base.html">
 <script src="./fs-dialog-positioning-obj.js"></script>
 
-<style data-fs-anchored-dialog>
-
-  fs-anchored-dialog {
-    position: absolute;
-    top: 0;
-  }
-
-  fs-anchored-dialog .fs-dialog-pointer {
-    border: 16px solid transparent;
-    content: '';
-    height: 0;
-    width: 0;
-    overflow: visible;
-    position: absolute;
-  }
-
-  fs-anchored-dialog[pointer-direction="up"] .fs-dialog-pointer {
-    left: calc(50% - 16px);
-    top: -16px;
-    border-top-width: 0;
-    border-bottom-color: var(--fs-pointer-up-color, #fff);
-  }
-
-  fs-anchored-dialog[pointer-direction="down"] .fs-dialog-pointer {
-    left: calc(50% - 16px);
-    bottom: -16px;
-    border-bottom-width: 0;
-    border-top-color: var(--fs-pointer-down-color, #fff);
-  }
-
-  fs-anchored-dialog[pointer-direction="left"] .fs-dialog-pointer {
-    left: -16px;
-    top: calc(50% - 16px);
-    border-left-width: 0;
-    border-right-color: var(--fs-pointer-left-color, #fff);
-  }
-
-  fs-anchored-dialog[pointer-direction="right"] .fs-dialog-pointer {
-    right: -16px;
-    top: calc(50% - 16px);
-    border-right-width: 0;
-    border-left-color: var(--fs-pointer-right-color, #fff);
-  }
-
-  fs-anchored-dialog[no-pointer] .fs-dialog-pointer {
-    visibility: hidden;
-    display: none;
-  }
-
-  @media screen and (max-width: 480px) {
-    fs-anchored-dialog:not([no-fullscreen-mobile]) .fs-dialog-pointer {
-      visibility: hidden;
-      display: none;
-    }
-  }
-
-</style>
-
-<template id="fs-anchored-dialog-template">
-  <div class="fs-dialog-pointer"></div>
-</template>
 
 <script>
 (function () {
-  var doc = (document._currentScript || document.currentScript).ownerDocument;
-  var template = doc.querySelector('#fs-anchored-dialog-template');
+  const fsAnchoredDialogStyles = document.createElement('template');
+  fsAnchoredDialogStyles.setAttribute('style', 'display: none;');
+  fsAnchoredDialogStyles.innerHTML = `
+    <style data-fs-anchored-dialog>
+
+      fs-anchored-dialog {
+        position: absolute;
+        top: 0;
+      }
+
+      fs-anchored-dialog .fs-dialog-pointer {
+        border: 16px solid transparent;
+        content: '';
+        height: 0;
+        width: 0;
+        overflow: visible;
+        position: absolute;
+      }
+
+      fs-anchored-dialog[pointer-direction="up"] .fs-dialog-pointer {
+        left: calc(50% - 16px);
+        top: -16px;
+        border-top-width: 0;
+        border-bottom-color: var(--fs-pointer-up-color, #fff);
+      }
+
+      fs-anchored-dialog[pointer-direction="down"] .fs-dialog-pointer {
+        left: calc(50% - 16px);
+        bottom: -16px;
+        border-bottom-width: 0;
+        border-top-color: var(--fs-pointer-down-color, #fff);
+      }
+
+      fs-anchored-dialog[pointer-direction="left"] .fs-dialog-pointer {
+        left: -16px;
+        top: calc(50% - 16px);
+        border-left-width: 0;
+        border-right-color: var(--fs-pointer-left-color, #fff);
+      }
+
+      fs-anchored-dialog[pointer-direction="right"] .fs-dialog-pointer {
+        right: -16px;
+        top: calc(50% - 16px);
+        border-right-width: 0;
+        border-left-color: var(--fs-pointer-right-color, #fff);
+      }
+
+      fs-anchored-dialog[no-pointer] .fs-dialog-pointer {
+        visibility: hidden;
+        display: none;
+      }
+
+      @media screen and (max-width: 480px) {
+        fs-anchored-dialog:not([no-fullscreen-mobile]) .fs-dialog-pointer {
+          visibility: hidden;
+          display: none;
+        }
+      }
+
+    </style>
+  `;
+  const fsAnchoredDialogTemplate = document.createElement('template');
+  fsAnchoredDialogTemplate.setAttribute('style', 'display: none;');
+  fsAnchoredDialogTemplate.innerHTML = `
+    <div class="fs-dialog-pointer"></div>
+  `;
+
   var positioningObj = FS.dialog.service.positioningObj;
 
   var LEFT = 'left';
@@ -324,7 +328,7 @@
      * the DOM on attached callback otherwise it breaks Polymer bindings.
      */
     attachedCallback () {
-      this.appendStyles(doc, 'style[data-fs-anchored-dialog]', this);
+      this.appendStyles(fsAnchoredDialogStyles, 'style[data-fs-anchored-dialog]', this);
 
       // initialize the attributes that were set before the component got upgraded.
       // This may not be needed anymore after webcomponents are native everywhere
@@ -333,7 +337,7 @@
         that.attributeChangedCallback(attr, null, that.getAttribute(attr));
       });
 
-      var clone = document.importNode(template.content, true);
+      var clone = document.importNode(fsAnchoredDialogTemplate.content, true);
       this.appendChild(clone);
 
       if (this.persistent) {
