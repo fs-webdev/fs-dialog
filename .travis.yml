@@ -44,7 +44,7 @@ before_script:
   - node_modules/fs-common-build-scripts/bin/before_script.sh
 script:
   # pipe standard & wct output through tee to create a log to parse for errors and preserve exit code
-  - 'npm run standard && npx wct --skip-plugin local 2>&1 | tee wct.log; ( exit ${PIPESTATUS[0]} )'
+  - 'npm run standard && npx wct --skip-plugin local --configFile wct.conf.windows.json && npx wct --skip-plugin local --configFile wct.conf.json 2>&1 | tee wct.log; ( exit ${PIPESTATUS[0]} )'
 after_success:
   - node node_modules/fs-common-build-scripts/bin/create_release.js
 after_failure:

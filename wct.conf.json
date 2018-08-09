@@ -1,4 +1,7 @@
 {
+  "mochaOptions": {
+    "timeout": 20000
+  },
   "plugins": {
     "local": {
       "browsers": [ "chrome" ]
@@ -17,20 +20,10 @@
         {
           "browserName":  "firefox",
           "platform":     "OS X 10.13"
-        },
-        {
-          "browserName":  "microsoftedge",
-          "platform":     "Windows 10"
-        },
-        {
-          "browserName":  "chrome",
-          "platform":     "Windows 10"
-        },
-        {
-          "browserName":  "firefox",
-          "platform":     "Windows 10"
         }
-      ]
+      ],
+      "commandTimeout": 600,
+      "idleTimeout": 1000
     },
     "istanbub": {
       "dir": "./reports/coverage",
