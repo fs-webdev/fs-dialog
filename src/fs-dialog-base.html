@@ -4,357 +4,364 @@
 
 <script src="./fs-dialog-service.js"></script>
 <script src="./get-root-node-polyfill.js"></script>
-<style data-fs-dialog>
-  /*
-   * 1. The display property cannot be animated so we need to use opacity and visibility
-   *    to fade in
-   *    @see https://stackoverflow.com/questions/3331353/transitions-on-the-display-property
-   * 2. Delay the visibility property so we can see the dialog disappear
-   *    @see https://codepen.io/matthewlein/pen/fvrLD
-   * 3. Support a fixed modal header/footer and scrollable middle
-   * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
-   * 5. Safari's default active button color seems to be white (activebuttontext)
-   */
-  fs-modeless-dialog,
-  fs-modal-dialog,
-  fs-anchored-dialog {
-    background: #fff;
-    border-radius: 4px;
-    border-radius: var(--fs-border-radius, 4px);
-    -webkit-filter: drop-shadow(0 0 7px rgba(0, 0, 0, 0.5));
-    filter: drop-shadow(0 0 7px rgba(0, 0, 0, 0.5));
-    display: flex; /* [3] */
-    flex-direction: column;
-    max-height: 100vh;
-    max-width: 545px;
-    opacity: 0;
-    visibility: hidden;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
-    width: fit-content;
-  }
-
-  .fs-dialog__mask {
-    background: rgba(51, 51, 49, 0.8);
-    bottom: 0;
-    left: 0;
-    opacity: 0;
-    position: fixed;
-    right: 0;
-    top: 0;
-    visibility: hidden;
-  }
-
-  fs-modeless-dialog:not([opened]),
-  fs-modal-dialog:not([opened]),
-  fs-anchored-dialog:not([opened]),
-  .fs-dialog__mask:not([opened]) {
-    pointer-events: none;
-  }
-
-  fs-modeless-dialog:not([no-transition]),
-  fs-anchored-dialog:not([no-transition]) {
-    transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
-  }
-
-  /* [1] */
-  fs-modeless-dialog[opened],
-  fs-modal-dialog[opened],
-  fs-anchored-dialog[opened],
-  .fs-dialog__mask[opened] {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  fs-modeless-dialog[opened]:not([no-transition]),
-  fs-anchored-dialog[opened]:not([no-transition]),
-  .fs-dialog__mask[opened]:not([no-transition]) {
-    transition: opacity 0.3s, visibility 0s linear;
-  }
-
-  fs-modal-dialog[opened] {
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  fs-modal-dialog[opened]:not([no-transition]) {
-    transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
-  }
-
-  .fs-dialog__mask[keep-fullscreen] {
-    display: none;
-    transition: none;
-  }
-
-  .fs-dialog__mask:not([no-transition]) {
-    transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
-  }
-
-  fs-anchored-dialog header,
-  fs-modeless-dialog header,
-  fs-modal-dialog header {
-    /* border-bottom: 1px solid #ccc;
-    border-bottom: 1px solid var(--fs-color-grey-border, #ccc); */
-    border-radius: 4px 4px 0 0;
-    border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
-    flex-shrink: 0;
-    padding: 15px 4rem 10px 15px;
-    background-color: #fff;
-    position: relative;
-  }
-
-  fs-anchored-dialog[no-close-button] header,
-  fs-modeless-dialog[no-close-button] header,
-  fs-modal-dialog[no-close-button] header {
-    padding-right: 15px;
-  }
-
-  /* [4] */
-  fs-anchored-dialog .fs-dialog__close,
-  fs-modeless-dialog .fs-dialog__close,
-  fs-modal-dialog .fs-dialog__close {
-    background-image: none !important;
-    -webkit-appearance: none;
-    -webkit-touch-callout: none;
-    background-color: transparent;
-    background-position: center;
-    background-repeat: no-repeat;
-    border: none;
-    box-shadow: 0 0 0 transparent;
-    height: 48px;
-    height: 4rem;
-    line-height: 1;
-    opacity: 1;
-    padding: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    width: 48px;
-    width: 4rem;
-    color: inherit; /* [5] */
-    z-index: 2;
-  }
-
-  fs-anchored-dialog .fs-dialog__close:hover,
-  fs-modeless-dialog .fs-dialog__close:hover,
-  fs-modal-dialog .fs-dialog__close:hover {
-    cursor: pointer;
-    opacity: 1;
-  }
-
-  fs-anchored-dialog .fs-dialog__close:active svg,
-  fs-modeless-dialog .fs-dialog__close:active svg,
-  fs-modal-dialog .fs-dialog__close:active svg {
-    opacity: 1;
-    width: 11px;
-    height: 11px;
-  }
-
-  fs-modal-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close,
-  fs-anchored-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close {
-    display: none;
-  }
-
-  fs-anchored-dialog .fs-dialog__body,
-  fs-modeless-dialog .fs-dialog__body,
-  fs-modal-dialog .fs-dialog__body {
-    flex-grow: 3;
-    overflow-y: auto;
-    padding: 15px;
-    position: relative;
-    background-color: #fff;
-    z-index: 1;
-  }
-
-  fs-modal-dialog footer,
-  fs-modeless-dialog footer,
-  fs-anchored-dialog footer {
-    background-color: #fff;
-
-    /* background: #f4f4f4;
-    background: var(--fs-color-grey-background-light, #f4f4f4); */
-    border-radius: 0 0 4px 4px;
-    border-radius: 0 0 var(--fs-border-radius, 4px) var(--fs-border-radius, 4px);
-
-    /* border-top: 1px solid #ccc;
-    border-top: 1px solid var(--fs-color-grey-border, #ccc); */
-    flex-shrink: 0;
-    padding: 10px 15px;
-    position: relative;
-  }
-
-  /** FULLSCREEN ON MOBILE **/
-
-  /********* CAVEAT *********/
-
-  /** This isn't going to
-    work on all dialogs
-    who have parents who
-    are going to contain
-    an absolute child **/
-
-  fs-modal-dialog[keep-fullscreen],
-  fs-anchored-dialog[keep-fullscreen] {
-    border-radius: 0;
-    bottom: 0 !important;
-    height: 100% !important;
-    left: 0 !important;
-    max-height: 100% !important;
-    max-width: 100%;
-    position: fixed;
-    right: 0 !important;
-    top: 0 !important;
-    transform: translate(0, 0) !important;
-    width: 100%;
-  }
-
-  /** Begin Mobile Transitions **/
-
-  fs-anchored-dialog[transition][keep-fullscreen] {
-    transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-  }
-
-  fs-anchored-dialog[transition][opened][keep-fullscreen] {
-    transition: visibility 0s, opacity 0s;
-  }
-
-  fs-modal-dialog[transition="from-bottom"][keep-fullscreen],
-  fs-anchored-dialog[transition="from-bottom"][keep-fullscreen] {
-    top: 100% !important;
-    transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-  }
-
-  fs-modal-dialog[transition="from-bottom"][opened][keep-fullscreen],
-  fs-anchored-dialog[transition="from-bottom"][opened][keep-fullscreen] {
-    top: 0 !important;
-    transition: top 0.3s;
-  }
-
-  fs-modal-dialog[transition="from-right"][keep-fullscreen],
-  fs-anchored-dialog[transition="from-right"][keep-fullscreen] {
-    left: 100% !important;
-    transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-  }
-
-  fs-modal-dialog[transition="from-right"][opened][keep-fullscreen],
-  fs-anchored-dialog[transition="from-right"][opened][keep-fullscreen] {
-    left: 0 !important;
-    transition: left 0.3s;
-  }
-
-  /** End Mobile Transitions **/
-
-  @media screen and (max-width:480px),
-    (max-height:480px) {
-    fs-anchored-dialog[no-close-button] header,
-    fs-modeless-dialog[no-close-button] header,
-    fs-modal-dialog[no-close-button] header {
-      padding-right: 4rem;
-    }
-
-    fs-modal-dialog[no-close-button]:not([no-fullscreen-mobile]) .fs-dialog__close,
-    fs-anchored-dialog[no-close-button]:not([no-fullscreen-mobile]) .fs-dialog__close {
-      display: block;
-    }
-
-    fs-modal-dialog:not([no-fullscreen-mobile]),
-    fs-anchored-dialog:not([no-fullscreen-mobile]) {
-      border-radius: 0;
-      bottom: 0 !important;
-      height: 100% !important;
-      left: 0 !important;
-      max-height: 100% !important;
-      max-width: 100%;
-      position: fixed;
-      right: 0 !important;
-      top: 0 !important;
-      transform: translate(0, 0) !important;
-      width: 100%;
-    }
-
-    .fs-dialog__mask {
-      display: none;
-      transition: none;
-    }
-
-    /** Begin Mobile Transitions **/
-
-    fs-anchored-dialog[transition]:not([no-fullscreen-mobile]) {
-      transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-    }
-
-    fs-anchored-dialog[transition][opened]:not([no-fullscreen-mobile]) {
-      transition: visibility 0s, opacity 0s;
-    }
-
-    fs-modal-dialog[transition="from-bottom"]:not([no-fullscreen-mobile]),
-    fs-anchored-dialog[transition="from-bottom"]:not([no-fullscreen-mobile]) {
-      top: 100% !important;
-      transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-    }
-
-    fs-modal-dialog[transition="from-bottom"][opened]:not([no-fullscreen-mobile]),
-    fs-anchored-dialog[transition="from-bottom"][opened]:not([no-fullscreen-mobile]) {
-      top: 0 !important;
-      transition: top 0.3s;
-    }
-
-    fs-modal-dialog[transition="from-right"]:not([no-fullscreen-mobile]),
-    fs-anchored-dialog[transition="from-right"]:not([no-fullscreen-mobile]) {
-      left: 100% !important;
-      transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
-    }
-
-    fs-modal-dialog[transition="from-right"][opened]:not([no-fullscreen-mobile]),
-    fs-anchored-dialog[transition="from-right"][opened]:not([no-fullscreen-mobile]) {
-      left: 0 !important;
-      transition: left 0.3s;
-    }
-
-    /** End Mobile Transitions **/
-  }
-</style>
-
-<!--
-  This style will be appended to the body element when the first modal or anchored
-  dialog is open.  When there is at least one modal open, the fs-modal-dialog-open
-  class will be added to the body element.  When there is an anchored dialog open,
-  the fs-anchored-dialog-open class will be added to the body element.
--->
-<style id="fs-dialog-body-style">
-    body.fs-modal-dialog-open,
-    body.fs-dialog-keep-fullscreen {
-      overflow: hidden !important;
-    }
-
-    @media screen and (max-width:480px),
-      (max-height:480px) {
-      body.fs-anchored-dialog-open {
-        overflow: hidden !important;
-      }
-    }
-</style>
-
-<!-- 1. Since we're not using shadow DOM and can't use <slot> elements, we can only
-        add siblings to the user nodes and cannot move their nodes (breaks binding
-        for polymer and angular)
-     2. Use inline svg so the color can be changed with the rest of the text inside
-        the header -->
-<template id="fs-dialog-template">
-
-  <button class="fs-dialog__close" data-dialog-dismiss data-test-close>
-    <svg aria-hidden="true" width='13' height='13' viewbox="0 0 13 13" preserveAspectRatio="xMidYMin"><g transform='translate(-1.000000, -1.000000)'><path d='M13 2L2 13M2 2L13 13' stroke='currentColor' stroke-width='2.5'/></g></svg>
-  </button>
-
-</template>
 
 <script>
 (function (window, document) {
-  var doc = (document._currentScript || document.currentScript).ownerDocument;
-  var template = doc.querySelector('#fs-dialog-template');
+  const fsDialogTemplate = document.createElement('template');
+  fsDialogTemplate.setAttribute('style', 'display: none;');
+  fsDialogTemplate.innerHTML = `
+  <!-- 1. Since we're not using shadow DOM and can't use <slot> elements, we can only
+          add siblings to the user nodes and cannot move their nodes (breaks binding
+          for polymer and angular)
+       2. Use inline svg so the color can be changed with the rest of the text inside
+          the header -->
+    <button class="fs-dialog__close" data-dialog-dismiss data-test-close>
+      <svg aria-hidden="true" width='13' height='13' viewbox="0 0 13 13" preserveAspectRatio="xMidYMin"><g transform='translate(-1.000000, -1.000000)'><path d='M13 2L2 13M2 2L13 13' stroke='currentColor' stroke-width='2.5'/></g></svg>
+    </button>
+  `;
+
+  const fsDialogBodyStyle = document.createElement('template');
+  fsDialogBodyStyle.setAttribute('style', 'display: none;');
+  fsDialogBodyStyle.innerHTML = `
+    <!--
+      This style will be appended to the body element when the first modal or anchored
+      dialog is open.  When there is at least one modal open, the fs-modal-dialog-open
+      class will be added to the body element.  When there is an anchored dialog open,
+      the fs-anchored-dialog-open class will be added to the body element.
+    -->
+    <style id="fs-dialog-body-style">
+        body.fs-modal-dialog-open,
+        body.fs-dialog-keep-fullscreen {
+          overflow: hidden !important;
+        }
+
+        @media screen and (max-width:480px),
+          (max-height:480px) {
+          body.fs-anchored-dialog-open {
+            overflow: hidden !important;
+          }
+        }
+    </style>
+  `;
+
+  const fsDialogStyles = document.createElement('template');
+  fsDialogStyles.setAttribute('style', 'display: none;');
+  fsDialogStyles.innerHTML = `
+    <style data-fs-dialog>
+      /*
+       * 1. The display property cannot be animated so we need to use opacity and visibility
+       *    to fade in
+       *    @see https://stackoverflow.com/questions/3331353/transitions-on-the-display-property
+       * 2. Delay the visibility property so we can see the dialog disappear
+       *    @see https://codepen.io/matthewlein/pen/fvrLD
+       * 3. Support a fixed modal header/footer and scrollable middle
+       * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
+       * 5. Safari's default active button color seems to be white (activebuttontext)
+       */
+      fs-modeless-dialog,
+      fs-modal-dialog,
+      fs-anchored-dialog {
+        background: #fff;
+        border-radius: 4px;
+        border-radius: var(--fs-border-radius, 4px);
+        -webkit-filter: drop-shadow(0 0 7px rgba(0, 0, 0, 0.5));
+        filter: drop-shadow(0 0 7px rgba(0, 0, 0, 0.5));
+        display: flex; /* [3] */
+        flex-direction: column;
+        max-height: 100vh;
+        max-width: 545px;
+        opacity: 0;
+        visibility: hidden;
+        width: -webkit-fit-content;
+        width: -moz-fit-content;
+        width: fit-content;
+      }
+
+      .fs-dialog__mask {
+        background: rgba(51, 51, 49, 0.8);
+        bottom: 0;
+        left: 0;
+        opacity: 0;
+        position: fixed;
+        right: 0;
+        top: 0;
+        visibility: hidden;
+      }
+
+      fs-modeless-dialog:not([opened]),
+      fs-modal-dialog:not([opened]),
+      fs-anchored-dialog:not([opened]),
+      .fs-dialog__mask:not([opened]) {
+        pointer-events: none;
+      }
+
+      fs-modeless-dialog:not([no-transition]),
+      fs-anchored-dialog:not([no-transition]) {
+        transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
+      }
+
+      /* [1] */
+      fs-modeless-dialog[opened],
+      fs-modal-dialog[opened],
+      fs-anchored-dialog[opened],
+      .fs-dialog__mask[opened] {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      fs-modeless-dialog[opened]:not([no-transition]),
+      fs-anchored-dialog[opened]:not([no-transition]),
+      .fs-dialog__mask[opened]:not([no-transition]) {
+        transition: opacity 0.3s, visibility 0s linear;
+      }
+
+      fs-modal-dialog[opened] {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      fs-modal-dialog[opened]:not([no-transition]) {
+        transition: opacity 0.3s, visibility 0s linear, transform 0.3s;
+      }
+
+      .fs-dialog__mask[keep-fullscreen] {
+        display: none;
+        transition: none;
+      }
+
+      .fs-dialog__mask:not([no-transition]) {
+        transition: opacity 0.3s, visibility 0s linear 0.3s; /* [2] */
+      }
+
+      fs-anchored-dialog header,
+      fs-modeless-dialog header,
+      fs-modal-dialog header {
+        /* border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid var(--fs-color-grey-border, #ccc); */
+        border-radius: 4px 4px 0 0;
+        border-radius: var(--fs-border-radius, 4px) var(--fs-border-radius, 4px) 0 0;
+        flex-shrink: 0;
+        padding: 15px 4rem 10px 15px;
+        background-color: #fff;
+        position: relative;
+      }
+
+      fs-anchored-dialog[no-close-button] header,
+      fs-modeless-dialog[no-close-button] header,
+      fs-modal-dialog[no-close-button] header {
+        padding-right: 15px;
+      }
+
+      /* [4] */
+      fs-anchored-dialog .fs-dialog__close,
+      fs-modeless-dialog .fs-dialog__close,
+      fs-modal-dialog .fs-dialog__close {
+        background-image: none !important;
+        -webkit-appearance: none;
+        -webkit-touch-callout: none;
+        background-color: transparent;
+        background-position: center;
+        background-repeat: no-repeat;
+        border: none;
+        box-shadow: 0 0 0 transparent;
+        height: 48px;
+        height: 4rem;
+        line-height: 1;
+        opacity: 1;
+        padding: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        width: 48px;
+        width: 4rem;
+        color: inherit; /* [5] */
+        z-index: 2;
+      }
+
+      fs-anchored-dialog .fs-dialog__close:hover,
+      fs-modeless-dialog .fs-dialog__close:hover,
+      fs-modal-dialog .fs-dialog__close:hover {
+        cursor: pointer;
+        opacity: 1;
+      }
+
+      fs-anchored-dialog .fs-dialog__close:active svg,
+      fs-modeless-dialog .fs-dialog__close:active svg,
+      fs-modal-dialog .fs-dialog__close:active svg {
+        opacity: 1;
+        width: 11px;
+        height: 11px;
+      }
+
+      fs-modal-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close,
+      fs-anchored-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close {
+        display: none;
+      }
+
+      fs-anchored-dialog .fs-dialog__body,
+      fs-modeless-dialog .fs-dialog__body,
+      fs-modal-dialog .fs-dialog__body {
+        flex-grow: 3;
+        overflow-y: auto;
+        padding: 15px;
+        position: relative;
+        background-color: #fff;
+        z-index: 1;
+      }
+
+      fs-modal-dialog footer,
+      fs-modeless-dialog footer,
+      fs-anchored-dialog footer {
+        background-color: #fff;
+
+        /* background: #f4f4f4;
+        background: var(--fs-color-grey-background-light, #f4f4f4); */
+        border-radius: 0 0 4px 4px;
+        border-radius: 0 0 var(--fs-border-radius, 4px) var(--fs-border-radius, 4px);
+
+        /* border-top: 1px solid #ccc;
+        border-top: 1px solid var(--fs-color-grey-border, #ccc); */
+        flex-shrink: 0;
+        padding: 10px 15px;
+        position: relative;
+      }
+
+      /** FULLSCREEN ON MOBILE **/
+
+      /********* CAVEAT *********/
+
+      /** This isn't going to
+        work on all dialogs
+        who have parents who
+        are going to contain
+        an absolute child **/
+
+      fs-modal-dialog[keep-fullscreen],
+      fs-anchored-dialog[keep-fullscreen] {
+        border-radius: 0;
+        bottom: 0 !important;
+        height: 100% !important;
+        left: 0 !important;
+        max-height: 100% !important;
+        max-width: 100%;
+        position: fixed;
+        right: 0 !important;
+        top: 0 !important;
+        transform: translate(0, 0) !important;
+        width: 100%;
+      }
+
+      /** Begin Mobile Transitions **/
+
+      fs-anchored-dialog[transition][keep-fullscreen] {
+        transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+      }
+
+      fs-anchored-dialog[transition][opened][keep-fullscreen] {
+        transition: visibility 0s, opacity 0s;
+      }
+
+      fs-modal-dialog[transition="from-bottom"][keep-fullscreen],
+      fs-anchored-dialog[transition="from-bottom"][keep-fullscreen] {
+        top: 100% !important;
+        transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+      }
+
+      fs-modal-dialog[transition="from-bottom"][opened][keep-fullscreen],
+      fs-anchored-dialog[transition="from-bottom"][opened][keep-fullscreen] {
+        top: 0 !important;
+        transition: top 0.3s;
+      }
+
+      fs-modal-dialog[transition="from-right"][keep-fullscreen],
+      fs-anchored-dialog[transition="from-right"][keep-fullscreen] {
+        left: 100% !important;
+        transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+      }
+
+      fs-modal-dialog[transition="from-right"][opened][keep-fullscreen],
+      fs-anchored-dialog[transition="from-right"][opened][keep-fullscreen] {
+        left: 0 !important;
+        transition: left 0.3s;
+      }
+
+      /** End Mobile Transitions **/
+
+      @media screen and (max-width:480px),
+        (max-height:480px) {
+        fs-anchored-dialog[no-close-button] header,
+        fs-modeless-dialog[no-close-button] header,
+        fs-modal-dialog[no-close-button] header {
+          padding-right: 4rem;
+        }
+
+        fs-modal-dialog[no-close-button]:not([no-fullscreen-mobile]) .fs-dialog__close,
+        fs-anchored-dialog[no-close-button]:not([no-fullscreen-mobile]) .fs-dialog__close {
+          display: block;
+        }
+
+        fs-modal-dialog:not([no-fullscreen-mobile]),
+        fs-anchored-dialog:not([no-fullscreen-mobile]) {
+          border-radius: 0;
+          bottom: 0 !important;
+          height: 100% !important;
+          left: 0 !important;
+          max-height: 100% !important;
+          max-width: 100%;
+          position: fixed;
+          right: 0 !important;
+          top: 0 !important;
+          transform: translate(0, 0) !important;
+          width: 100%;
+        }
+
+        .fs-dialog__mask {
+          display: none;
+          transition: none;
+        }
+
+        /** Begin Mobile Transitions **/
+
+        fs-anchored-dialog[transition]:not([no-fullscreen-mobile]) {
+          transition: visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+        }
+
+        fs-anchored-dialog[transition][opened]:not([no-fullscreen-mobile]) {
+          transition: visibility 0s, opacity 0s;
+        }
+
+        fs-modal-dialog[transition="from-bottom"]:not([no-fullscreen-mobile]),
+        fs-anchored-dialog[transition="from-bottom"]:not([no-fullscreen-mobile]) {
+          top: 100% !important;
+          transition: top 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+        }
+
+        fs-modal-dialog[transition="from-bottom"][opened]:not([no-fullscreen-mobile]),
+        fs-anchored-dialog[transition="from-bottom"][opened]:not([no-fullscreen-mobile]) {
+          top: 0 !important;
+          transition: top 0.3s;
+        }
+
+        fs-modal-dialog[transition="from-right"]:not([no-fullscreen-mobile]),
+        fs-anchored-dialog[transition="from-right"]:not([no-fullscreen-mobile]) {
+          left: 100% !important;
+          transition: left 0.3s, visibility 0s linear 0.3s, opacity 0s linear 0.3s;
+        }
+
+        fs-modal-dialog[transition="from-right"][opened]:not([no-fullscreen-mobile]),
+        fs-anchored-dialog[transition="from-right"][opened]:not([no-fullscreen-mobile]) {
+          left: 0 !important;
+          transition: left 0.3s;
+        }
+
+        /** End Mobile Transitions **/
+      }
+    </style>
+  `;
+
   FS._registerTranslations(/* LANG CODE */);
 
   var zIndex = 1990;
@@ -395,8 +402,11 @@
      * Initialize the dialog, add events, and accessibility features. Should only change
      * the DOM on attached callback otherwise it breaks Polymer bindings.
      */
-    appendStyles (doc, selector, thisEl) {
+    appendStyles (template, selector, thisEl) {
       var root = thisEl.getRootNode();
+
+      let clone = document.importNode(template.content, true);
+      let styles = clone.querySelector('style');
 
       // // In polyfilled browsers there is no shadow DOM so global styles still style
       // // the "fake" shadow DOM. We need to test for truly native support so we know
@@ -405,13 +415,14 @@
       // // returns true when it's just a document-fragment in polyfilled browsers
       // // @see https://stackoverflow.com/questions/45068560/using-a-non-shadow-dom-custom-element-both-inside-and-outside-the-shadow-dom
       if (root.toString() === '[object ShadowRoot]' && !root.querySelector(selector)) {
-        var styles = doc.querySelector(selector).cloneNode(true);
         root.appendChild(styles);
+      } else if (!document.head.querySelector(selector)) {
+        document.head.appendChild(styles);
       }
     }
 
     attachedCallback (onOpenDialogFunction, onCloseDialogFunction) {
-      this.appendStyles(doc, 'style[data-fs-dialog]', this);
+      this.appendStyles(fsDialogStyles, 'style[data-fs-dialog]', this);
 
       // initialize the attributes that were set before the component got upgraded.
       // This may not be needed anymore after webcomponents are native everywhere
@@ -420,7 +431,7 @@
         that.attributeChangedCallback(attr, null, that.getAttribute(attr));
       });
 
-      var clone = document.importNode(template.content, true);
+      var clone = document.importNode(fsDialogTemplate.content, true);
 
       // selectors
       var closeEl = clone.querySelector('.fs-dialog__close');
@@ -439,9 +450,11 @@
         this.insertBefore(closeEl, this.firstChild);
       }
 
-      // Add style node to document
-      if (!document.querySelector('#fs-dialog-body-style')) {
-        document.querySelector('body').appendChild(doc.querySelector('#fs-dialog-body-style').cloneNode(true));
+      // Add style node to document head
+      if (!document.head.querySelector('#fs-dialog-body-style')) {
+        let clone = document.importNode(fsDialogBodyStyle.content, true);
+        let styles = clone.querySelector('style');
+        document.head.appendChild(styles);
       }
 
       this.appendChild(clone);

@@ -1,41 +1,42 @@
 <link rel="import" href="../fs-globals/fs-globals.html">
 <link rel="import" href="./fs-dialog-base.html">
 
-<style data-fs-modeless-dialog>
-  /*
-   * 1. Touch-action is not supported in safari but is the recommended solution
-   *    to prevent touch events from scrolling the page - preventDefault() will
-   *    no longer work. We still want to allow the user to zoom in on the modal
-   *    though so they can have a comfortable reading experience.
-   *    @see https://developers.google.com/web/updates/2017/01/scrolling-intervention#breakage_and_guidance
-   */
-  fs-modeless-dialog {
-    left: 0;
-    position: fixed;
-    top: 0;
-    transform: translateX(0) translateY(0);
-    touch-action: pinch-zoom; /* [1] */
-  }
-
-  fs-modeless-dialog header {
-    border-bottom: 1px solid #ccc;
-    border-bottom: 1px solid var(--fs-color-grey-border, #ccc);
-    cursor: move;
-  }
-
-  .fs-dialog--dragging {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    cursor: move;
-  }
-</style>
-
 <script>
 (function () {
-  var doc = (document._currentScript || document.currentScript).ownerDocument;
+  const fsModelessDialogStyles = document.createElement('template');
+  fsModelessDialogStyles.setAttribute('style', 'display: none;');
+  fsModelessDialogStyles.innerHTML = `
+    <style data-fs-modeless-dialog>
+      /*
+       * 1. Touch-action is not supported in safari but is the recommended solution
+       *    to prevent touch events from scrolling the page - preventDefault() will
+       *    no longer work. We still want to allow the user to zoom in on the modal
+       *    though so they can have a comfortable reading experience.
+       *    @see https://developers.google.com/web/updates/2017/01/scrolling-intervention#breakage_and_guidance
+       */
+      fs-modeless-dialog {
+        left: 0;
+        position: fixed;
+        top: 0;
+        transform: translateX(0) translateY(0);
+        touch-action: pinch-zoom; /* [1] */
+      }
 
+      fs-modeless-dialog header {
+        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid var(--fs-color-grey-border, #ccc);
+        cursor: move;
+      }
+
+      .fs-dialog--dragging {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: move;
+      }
+    </style>
+  `;
   /**
     * `<fs-modeless-dialog>` is a modeless dialog centered on the screen and displayed above other content. It can be dragged around the screen by dragging the header of the dialog. The user can click on content below the
     *
@@ -124,7 +125,7 @@
       this.setAttribute('type', 'modeless');
       this.doNotUseInStack = true;
 
-      this.appendStyles(doc, 'style[data-fs-modeless-dialog]', this);
+      this.appendStyles(fsModelessDialogStyles, 'style[data-fs-modeless-dialog]', this);
 
       // use the attachedCallback for the base dialog and pass in our open and close functions
       super.attachedCallback(openModelessFunction, closeModelessFunction);

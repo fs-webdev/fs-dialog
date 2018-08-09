@@ -1,35 +1,36 @@
 <link rel="import" href="../fs-globals/fs-globals.html">
 <link rel="import" href="./fs-dialog-base.html">
 
-<style data-fs-modal-dialog>
-/*
- * 1. The display property cannot be animated so we need to use opacity and visibility
- *    to fade in
- *    @see https://stackoverflow.com/questions/3331353/transitions-on-the-display-property
- * 2. Delay the visibility property so we can see the dialog disappear
- *    @see https://codepen.io/matthewlein/pen/fvrLD
- * 3. Support a fixed modal header/footer and scrollable middle
- * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
- * 5. Safari's default active button color seems to be white (activebuttontext)
- */
-
-fs-modal-dialog {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0.7);
-}
-
-fs-modal-dialog:not([no-transition]) {
-  transition: opacity 0.3s, visibility 0s linear 0.3s, transform 0.3s; /* [2] */
-}
-
-</style>
-
 <script>
 (function () {
-  var doc = (document._currentScript || document.currentScript).ownerDocument; // eslint-disable-line
+  const fsModalDialogStyles = document.createElement('template');
+  fsModalDialogStyles.setAttribute('style', 'display: none;');
+  fsModalDialogStyles.innerHTML = `
+    <style data-fs-modal-dialog>
+    /*
+     * 1. The display property cannot be animated so we need to use opacity and visibility
+     *    to fade in
+     *    @see https://stackoverflow.com/questions/3331353/transitions-on-the-display-property
+     * 2. Delay the visibility property so we can see the dialog disappear
+     *    @see https://codepen.io/matthewlein/pen/fvrLD
+     * 3. Support a fixed modal header/footer and scrollable middle
+     * 4. Temporary hack until fs-styles removes background image from fs-dialog__close
+     * 5. Safari's default active button color seems to be white (activebuttontext)
+     */
 
+    fs-modal-dialog {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+    }
+
+    fs-modal-dialog:not([no-transition]) {
+      transition: opacity 0.3s, visibility 0s linear 0.3s, transform 0.3s; /* [2] */
+    }
+
+    </style>
+  `;
   /**
       * `<fs-modal-dialog>` is a modal dialog centered on the screen that is displayed above other content, masks the content underneath it, and prevents the user from interacting with the content underneath.
       *
@@ -151,7 +152,7 @@ fs-modal-dialog:not([no-transition]) {
      * the DOM on attached callback otherwise it breaks Polymer bindings.
      */
     attachedCallback () {
-      this.appendStyles(doc, 'style[data-fs-modal-dialog]', this);
+      this.appendStyles(fsModalDialogStyles, 'style[data-fs-modal-dialog]', this);
 
       // selectors
       var bodyEl = this.querySelector('.fs-dialog__body');
