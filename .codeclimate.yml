@@ -45,6 +45,8 @@ prepare:
   - url: "https://raw.githubusercontent.com/standard/eslint-config-standard/master/eslintrc.json"
     path: ".eslint-config-standard.json"
 plugins:
+  babel-eslint:
+    enabled: true
   csslint:
     enabled: true
   eslint:
@@ -116,8 +118,10 @@ exclude_patterns:
   - bower_components/
   - build/
   - dist/
+  - node_modules/
   - src/
   - "**/*-polyfill.js"
-  - node_modules/
+  - "**/*min.*"
   - "**/reports/**/*"
   - "**/test/**/*"
+  - "**/vendor/**/*"

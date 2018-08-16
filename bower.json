@@ -1,7 +1,7 @@
 {
   "name": "fs-dialog",
   "description": "An accessible standard dialog for FamilySearch.",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "main": ["src/fs-anchored-dialog.html","src/fs-modal-dialog.html","src/fs-modeless-dialog.html"],
   "author": {
     "name": "FamilySearch",
@@ -9,31 +9,28 @@
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "dependencies": {
+    "a11y-enhancer": "straker/a11y-enhancer",
     "fs-styles": "fs-webdev/fs-styles#3 - 4",
     "fs-globals": "fs-webdev/fs-globals#1 - 3",
-    "a11y-enhancer": "straker/a11y-enhancer",
     "inert": "https://github.com/straker/inert.git#master",
-    "es6-promise": "^4.1.1",
     "webcomponentsjsv1": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "devDependencies": {
     "axe.min": "https://unpkg.com/axe-core/axe.min.js",
-    "iron-component-page": "PolymerElements/iron-component-page#1 - 3",
     "web-component-tester": "Polymer/web-component-tester#^6.5.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#0.7 - 1"
   },
-  "resolutions": {
-    "test-fixture" : "^3.0.0"
-  },
   "ignore": [
-    ".*",
-    "bin/",
-    "bin/*",
-    "test/",
-    "test/*",
-    "wct.conf.json",
+    "**/.*",
+    "**/node_modules",
+    "**/bower_components",
+    "**/components",
+    "**/demo",
+    "**/test",
+    "gulpfile.js",
+    "package.json",
     "src/",
     "src/*",
-    "gulpfile.js"
+    "wct.*.json"
   ]
 }

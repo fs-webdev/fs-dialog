@@ -8,10 +8,6 @@ branches:
 cache:
   directories: null
 dist: trusty
-env:
-  global:
-    # Map existing Code Climate env var to new key
-    - CC_TEST_REPORTER_ID=$CODECLIMATE_REPO_TOKEN
 language: node_js
 node_js:
   - '8'
@@ -34,7 +30,7 @@ notifications:
 
 before_install:
   # Create .netrc for private repo install
-  - 'echo -e "machine github.com\n  login $CI_USER_TOKEN" >> ~/.netrc'
+  - 'echo -e "machine github.com\n  login $GITHUB_AUTH_TOKEN" >> ~/.netrc'
   - npm install -g bower
 install:
   # pipe bower install output through tee to create a log to parse for errors and preserve exit code
@@ -44,7 +40,7 @@ before_script:
   - node_modules/fs-common-build-scripts/bin/before_script.sh
 script:
   # pipe standard & wct output through tee to create a log to parse for errors and preserve exit code
-  - 'npm run standard && npx wct --skip-plugin local 2>&1 | tee wct.log; ( exit ${PIPESTATUS[0]} )'
+  - 'npm run standard && npx wct --configFile wct.conf.windows.json --skip-plugin local && npx wct --configFile wct.conf.json --skip-plugin local 2>&1 | tee wct.log; ( exit ${PIPESTATUS[0]} )'
 after_success:
   - node node_modules/fs-common-build-scripts/bin/create_release.js
 after_failure:
