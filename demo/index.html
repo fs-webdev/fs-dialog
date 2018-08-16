@@ -403,7 +403,7 @@
           // Use the dialog in another component
           &lt;link rel="import" href="/path/to/web-component.html"&gt;
 
-          // Your component's code 
+          // Your component's code
           _openPersonCard: function(options) {
             FS.dialog.fsPersonCard.openCard(options)
           }
@@ -419,7 +419,7 @@
         <h5>closeAndCloseChildren</h5>
         <p>To close a dialog and all the dialogs above it in the stack, you can call <code>&lt;dialog-element&gt;.closeAndCloseChildren()</code> This will automatically use the same direction of transition for all dialogs (whatever the dialog element that you use to call the function has).</p>
         <h5>focusable-component</h5>
-        <p>In order to loop users through the modal and anchored dialogs when they press the tab key, we do a query selector to get all focusable elements. If you put a component in the dialog that needs to be able to get focus, please add the attribute <code>focusable-component</code> to it so that we don't break tab looping.</p>
+        <p>In order to loop users through the modal and anchored dialogs when they press the tab key, we do a query selector to get all focusable elements. If you put a component in the dialog that needs to be able to get focus, please add the attribute <code>focusable-component</code> to it so that we don't break tab looping, or break tabbing at all. All nested shadow dom elements inside will need the attribute as well. If you find that keyboard interaction is broken in your dialog, it is probably due to this issue.</p>
         <p>Also, if you remove the last tabbable element from the dialog, it will break tab looping, as well.
         </p>
         <p>In addition, if you are going to remove an element you should reassign focus to another element in the dialog so that keyboard users do not lose context.

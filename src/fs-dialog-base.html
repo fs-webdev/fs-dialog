@@ -810,9 +810,20 @@
       // of the document before clearing focus on the dialog
       if (!focusableChildren.length) return event.preventDefault();
 
-      // This line is required due to how the Shadow DOM polyfill wraps elements
-      // (See: https://github.com/webcomponents/webcomponentsjs#element-wrapping--unwrapping-limitations-)
-      var focusedItemIndex = focusableChildren.indexOf(event.target) ? focusableChildren.indexOf(event.target) : focusableChildren.indexOf(window.ShadowDOMPolyfill && window.ShadowDOMPolyfill.wrap ? window.ShadowDOMPolyfill.wrap(document.activeElement) : document.activeElement);
+      var focusedItemIndex;
+
+      if (event.target === this) {
+        // the dialog is focusable, and is not technically its own child, so we need to manually set it to be the "first" item
+        focusedItemIndex = 0;
+      } else {
+        // This line is required due to how the Shadow DOM polyfill wraps elements
+        // (See: https://github.com/webcomponents/webcomponentsjs#element-wrapping--unwrapping-limitations-)
+        let composedTarget = event.target;
+        while (composedTarget.hasAttribute('focusable-component')) {
+          composedTarget = composedTarget.shadowRoot ? composedTarget.shadowRoot.activeElement : composedTarget.activeElement;
+        }
+        focusedItemIndex = focusableChildren.indexOf(composedTarget) >= 0 ? focusableChildren.indexOf(composedTarget) : focusableChildren.indexOf(window.ShadowDOMPolyfill && window.ShadowDOMPolyfill.wrap ? window.ShadowDOMPolyfill.wrap(document.activeElement) : document.activeElement);
+      }
 
       if (event.shiftKey && focusedItemIndex === 0) {
         focusableChildren[focusableChildren.length - 1].focus();
@@ -830,6 +841,21 @@
       var focusableElements = Array.prototype.filter.call(node.querySelectorAll(focusableElementsSelector.join(',')), function (child) {
         return !!(child.offsetWidth || child.offsetHeight || child.getClientRects().length);
       });
+      // get the children of anything that was labeled as a focusable-component and loop through its focusable children
+
+      var focusableComponents = node.querySelectorAll('[focusable-component]');
+      if (focusableComponents) {
+        focusableComponents.forEach((component) => {
+          if (focusableElements.indexOf(component) < 0) return;
+
+          let componentChildren = [];
+          if (component.shadowRoot) {
+            componentChildren = getFocusableChildren(component.shadowRoot);
+          }
+          focusableElements.splice(focusableElements.indexOf(component), 1, ...componentChildren);
+        });
+      }
+
       return focusableElements;
     }
   }
