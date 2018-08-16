@@ -121,7 +121,7 @@ exclude_patterns:
   - node_modules/
   - src/
   - "**/*-polyfill.js"
-  - "**/*min.*",
+  - "**/*min.*"
   - "**/reports/**/*"
   - "**/test/**/*"
   - "**/vendor/**/*"
