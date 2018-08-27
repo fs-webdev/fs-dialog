@@ -16,7 +16,7 @@
     "webcomponentsjsv1": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "devDependencies": {
-    "axe.min": "https://unpkg.com/axe-core/axe.min.js",
+    "axe.min": "https://unpkg.com/axe-core@3.0.3/axe.min.js",
     "web-component-tester": "Polymer/web-component-tester#^6.5.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#0.7 - 1"
   },
