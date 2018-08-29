@@ -16,7 +16,7 @@
         top: 0;
       }
 
-      fs-anchored-dialog .fs-dialog-pointer {
+      fs-anchored-dialog > .fs-dialog-pointer {
         border: 16px solid transparent;
         content: '';
         height: 0;
@@ -25,41 +25,41 @@
         position: absolute;
       }
 
-      fs-anchored-dialog[pointer-direction="up"] .fs-dialog-pointer {
+      fs-anchored-dialog[pointer-direction="up"] > .fs-dialog-pointer {
         left: calc(50% - 16px);
         top: -16px;
         border-top-width: 0;
         border-bottom-color: var(--fs-pointer-up-color, #fff);
       }
 
-      fs-anchored-dialog[pointer-direction="down"] .fs-dialog-pointer {
+      fs-anchored-dialog[pointer-direction="down"] > .fs-dialog-pointer {
         left: calc(50% - 16px);
         bottom: -16px;
         border-bottom-width: 0;
         border-top-color: var(--fs-pointer-down-color, #fff);
       }
 
-      fs-anchored-dialog[pointer-direction="left"] .fs-dialog-pointer {
+      fs-anchored-dialog[pointer-direction="left"] > .fs-dialog-pointer {
         left: -16px;
         top: calc(50% - 16px);
         border-left-width: 0;
         border-right-color: var(--fs-pointer-left-color, #fff);
       }
 
-      fs-anchored-dialog[pointer-direction="right"] .fs-dialog-pointer {
+      fs-anchored-dialog[pointer-direction="right"] > .fs-dialog-pointer {
         right: -16px;
         top: calc(50% - 16px);
         border-right-width: 0;
         border-left-color: var(--fs-pointer-right-color, #fff);
       }
 
-      fs-anchored-dialog[no-pointer] .fs-dialog-pointer {
+      fs-anchored-dialog[no-pointer] > .fs-dialog-pointer {
         visibility: hidden;
         display: none;
       }
 
       @media screen and (max-width: 480px) {
-        fs-anchored-dialog:not([no-fullscreen-mobile]) .fs-dialog-pointer {
+        fs-anchored-dialog:not([no-fullscreen-mobile]) > .fs-dialog-pointer {
           visibility: hidden;
           display: none;
         }
