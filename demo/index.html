@@ -385,6 +385,8 @@
             display: none;
           }
         </pre>
+        <h5>Dialogs inside other Dialogs</h5>
+        <p>If you end up in a situation where you have a dialog inside the dom of another dialog, you may run into some clashing css and you may not have some of the attributes apply styles correctly. The most obvious one is a dialog that is no-fullscreen-mobile with no-close-button inside of a dialog that does go fullscreen on mobile - the close button shows up in the inner dialog in this case. If this happens, you will need to manually override styles.</p>
         <h5>Consuming Multiple Pieces of fs-dialog error</h5>
         <p>Some teams have reported issues stemming from multiple components importing different portions of <em>fs-dialog</em>, which results in an error (<em>Class extends value undefined is not a constructor or null</em>), and broken <em>fs-dialog</em> functionality. If you run into this, simply import <em>fs-dialog-all</em> in each component.</p>
         <h5>Registering Global Dialogs</h5>
