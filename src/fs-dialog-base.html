@@ -196,6 +196,12 @@
         height: 11px;
       }
 
+      /* When a dialog is inside another dialog, and its supposed to be hiding the close button on mobile, the display: none style gets overridden due to the selector for display: block being more specific because its inside a media query. */
+      fs-modal-dialog[no-close-button][no-fullscreen-mobile] .fs-dialog__close,
+      fs-anchored-dialog[no-close-button][no-fullscreen-mobile] .fs-dialog__close {
+        display: none !important;
+      }
+
       fs-modal-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close,
       fs-anchored-dialog[no-close-button]:not([keep-fullscreen]) .fs-dialog__close {
         display: none;
