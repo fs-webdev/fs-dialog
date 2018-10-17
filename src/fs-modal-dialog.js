@@ -51,7 +51,7 @@ fsModalDialogStyles.innerHTML = `
     *
     * @demo demo/index.html
     */
-class FSModalDialog extends FS.dialog.baseDialogComponent {
+export default class FSModalDialog extends FS.dialog.baseDialogComponent {
   // only used for docs.
   static get properties () {
     return {

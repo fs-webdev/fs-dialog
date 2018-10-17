@@ -309,4 +309,3 @@ if ('customElements' in window) {
   document.registerElement('fs-modal-dialog', {prototype: Object.create(FSModalDialog.prototype)});
 }
 
-export default FSModalDialog;

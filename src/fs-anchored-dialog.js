@@ -320,7 +320,7 @@ function fsLocalToLocal (localSrcEl, localDstEl, rect) {
  *
  * @demo demo/index.html
  */
-class FSAnchoredDialog extends FS.dialog.baseDialogComponent {
+export default class FSAnchoredDialog extends FS.dialog.baseDialogComponent {
   // only used for docs.
   static get properties () {
     return {
@@ -1020,4 +1020,3 @@ if ('customElements' in window) {
   document.registerElement('fs-anchored-dialog', {prototype: Object.create(FSAnchoredDialog.prototype)});
 }
 
-export default FSAnchoredDialog;

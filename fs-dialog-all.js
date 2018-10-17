@@ -1,9 +1,9 @@
-import FsAnchoredDialog from  './fs-anchored-dialog.js';
-import FsModalDialog from './fs-modal-dialog.js';
-import FsModelessDialog from './fs-modeless-dialog.js';
+import FSAnchoredDialog from  './fs-anchored-dialog.js';
+import FSModalDialog from './fs-modal-dialog.js';
+import FSModelessDialog from './fs-modeless-dialog.js';
 
 export {
-  FsAnchoredDialog,
-  FsModalDialog,
-  FsModelessDialog
+  FSAnchoredDialog,
+  FSModalDialog,
+  FSModelessDialog
 }
