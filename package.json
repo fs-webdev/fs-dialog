@@ -37,7 +37,6 @@
   },
   "scripts": {
     "postinstall": "bower install",
-    "precommit": "gulp && node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && node_modules/fs-common-build-scripts/bin/pre_commit_commands.sh",
     "preinstall": "git config --global url.https://github.com/.insteadOf git://github.com/",
     "standard": "semistandard --verbose '**/*.html' '**/*.js' | snazzy && stylelint '**/*.html' '**/*.css'",
     "standard-fix": "semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",

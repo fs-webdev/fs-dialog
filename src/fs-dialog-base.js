@@ -1,3 +1,6 @@
+import 'fs-globals'
+import 'wicg-inert'
+
 var dialogStack = [];
 var buffer = [];
 var bufferElements = (document.readyState === 'loading');
