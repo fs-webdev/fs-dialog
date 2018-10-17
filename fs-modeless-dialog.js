@@ -56,7 +56,7 @@ fsModelessDialogStyles.innerHTML = `
   *
   * @demo demo/index.html
   */
-class FSModelessDialog extends FS.dialog.baseDialogComponent {
+export default class FSModelessDialog extends FS.dialog.baseDialogComponent {
   // only used for docs.
   static get properties () {
     return {
@@ -308,4 +308,3 @@ if ('customElements' in window) {
 } else {
   document.registerElement('fs-modeless-dialog', {prototype: Object.create(FSModelessDialog.prototype)});
 }
-
