@@ -30,7 +30,7 @@ gulp.task('watch', function () {
 gulp.task('default', ['build']);
 
 gulp.task('moveFiles', function (done) {
-  return gulp.src(['./src/*', '!./src/fs-dialog-base.html'])
+  return gulp.src(['./src/*', '!./src/fs-dialog-base.js'])
     .pipe(gulp.dest('./'));
 });
 
@@ -52,12 +52,12 @@ gulp.task('build', ['moveFiles'], function (done) {
       }
     });
 
-    fs.readFile('./src/fs-dialog-base.html', 'utf-8', function (err, file) {
+    fs.readFile('./src/fs-dialog-base.js', 'utf-8', function (err, file) {
       if (err) done(err);
 
       file = file.replace('/* LANG CODE */', JSON.stringify(langObj));
 
-      fs.writeFile('./fs-dialog-base.html', file, 'utf-8', done);
+      fs.writeFile('./fs-dialog-base.js', file, 'utf-8', done);
     });
   });
 });

@@ -4,15 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="../../wct-browser-legacy/browser.js"></script>
     <script src="../../fs-globals/mocks/fs-globals-mock.js"></script>
-    <script src="../../axe.min/index.js" ></script>
+    <script src="../../axe.min/index.js"></script>
     <link rel="stylesheet" href="../../fs-styles/dist/familysearch-styles.css">
 
 
     <!-- Step 1: import the element to test -->
-    <link rel="import" href="../fs-dialog-all.html">
+    <script type="module" src="../fs-dialog-all.js"></script>
   </head>
   <body>
 
@@ -66,167 +66,166 @@
       </template>
     </test-fixture>
 
-    <script>
-      document.addEventListener('WebComponentsReady', function () {
-        describe('fs-modal-dialog', function () {
-          var el;
+    <script type="module">
+import '../fs-dialog-all.js';
+describe('fs-modal-dialog', function () {
+  var el;
 
-          beforeEach(function () {
-            el = fixture('fs-modal-dialog-fixture');
-          });
+  beforeEach(function () {
+    el = fixture('fs-modal-dialog-fixture');
+  });
 
-          afterEach(function () {
-            el.close();
-          });
+  afterEach(function () {
+    el.close();
+  });
 
-          describe('a11y', function () {
-            it('should pass accessibility guidelines', function (done) {
-              el.open();
+  describe('a11y', function () {
+    it('should pass accessibility guidelines', function (done) {
+      el.open();
 
-              axe.run(el, {
-                'rules': {
-                  'color-contrast': { enabled: false }
-                }
-              }, function (err, results) {
-                if (err) return done(err);
+      axe.run(el, {
+        'rules': {
+          'color-contrast': { enabled: false }
+        }
+      }, function (err, results) {
+        if (err) return done(err);
 
-                if (results.violations.length || results.incomplete.length) {
-                  var errMsg = '';
+        if (results.violations.length || results.incomplete.length) {
+          var errMsg = '';
 
-                  results.violations.forEach(function (violation) {
-                    errMsg += `\n\n${violation.help}:`;
+          results.violations.forEach(function (violation) {
+            errMsg += `\n\n${violation.help}:`;
 
-                    violation.nodes.forEach(function (node, index) {
-                      errMsg += `\n\t${index + 1}: ${node.html}`;
-                    });
-                  });
-
-                  results.incomplete.forEach(function (incomplete) {
-                    errMsg += `\n\n${incomplete.help}:`;
-
-                    incomplete.nodes.forEach(function (node, index) {
-                      errMsg += `\n\t${index + 1}: ${node.html}`;
-                    });
-                  });
-
-                  var error = new Error(errMsg + '\n');
-                  error.stack = null;
-
-                  return done(error);
-                }
-
-                done();
-              });
+            violation.nodes.forEach(function (node, index) {
+              errMsg += `\n\t${index + 1}: ${node.html}`;
             });
           });
-        });
 
-        describe('fs-anchored-dialog', function () {
-          var el;
+          results.incomplete.forEach(function (incomplete) {
+            errMsg += `\n\n${incomplete.help}:`;
 
-          beforeEach(function () {
-            el = fixture('fs-anchored-dialog-fixture');
-          });
-
-          afterEach(function () {
-            el.close();
-          });
-
-          describe('a11y', function () {
-            it('should pass accessibility guidelines', function (done) {
-              el.open();
-
-              axe.run(el, {
-                'rules': {
-                  'color-contrast': { enabled: false }
-                }
-              }, function (err, results) {
-                if (err) return done(err);
-
-                if (results.violations.length || results.incomplete.length) {
-                  var errMsg = '';
-
-                  results.violations.forEach(function (violation) {
-                    errMsg += `\n\n${violation.help}:`;
-
-                    violation.nodes.forEach(function (node, index) {
-                      errMsg += `\n\t${index + 1}: ${node.html}`;
-                    });
-                  });
-
-                  results.incomplete.forEach(function (incomplete) {
-                    errMsg += `\n\n${incomplete.help}:`;
-
-                    incomplete.nodes.forEach(function (node, index) {
-                      errMsg += `\n\t${index + 1}: ${node.html}`;
-                    });
-                  });
-
-                  var error = new Error(errMsg + '\n');
-                  error.stack = null;
-
-                  return done(error);
-                }
-
-                done();
-              });
+            incomplete.nodes.forEach(function (node, index) {
+              errMsg += `\n\t${index + 1}: ${node.html}`;
             });
           });
-        });
 
-        describe('fs-modeless-dialog', function () {
-          var el;
+          var error = new Error(errMsg + '\n');
+          error.stack = null;
 
-          beforeEach(function () {
-            el = fixture('fs-modeless-dialog-fixture');
-          });
+          return done(error);
+        }
 
-          afterEach(function () {
-            el.close();
-          });
-
-          describe('a11y', function () {
-            it('should pass accessibility guidelines', function (done) {
-              el.open();
-
-              axe.run(el, {
-                'rules': {
-                  'color-contrast': { enabled: false }
-                }
-              }, function (err, results) {
-                if (err) return done(err);
-
-                if (results.violations.length || results.incomplete.length) {
-                  var errMsg = '';
-
-                  results.violations.forEach(function (violation) {
-                    errMsg += `\n\n${violation.help}:`;
-
-                    violation.nodes.forEach(function (node, index) {
-                      errMsg += `\n\t${index + 1}: ${node.html}`;
-                    });
-                  });
-
-                  results.incomplete.forEach(function (incomplete) {
-                    errMsg += `\n\n${incomplete.help}:`;
-
-                    incomplete.nodes.forEach(function (node, index) {
-                      errMsg += `\n\t${index + 1}: ${node.html}`;
-                    });
-                  });
-
-                  var error = new Error(errMsg + '\n');
-                  error.stack = null;
-
-                  return done(error);
-                }
-
-                done();
-              });
-            });
-          });
-        });
+        done();
       });
-    </script>
+    });
+  });
+});
+
+describe('fs-anchored-dialog', function () {
+  var el;
+
+  beforeEach(function () {
+    el = fixture('fs-anchored-dialog-fixture');
+  });
+
+  afterEach(function () {
+    el.close();
+  });
+
+  describe('a11y', function () {
+    it('should pass accessibility guidelines', function (done) {
+      el.open();
+
+      axe.run(el, {
+        'rules': {
+          'color-contrast': { enabled: false }
+        }
+      }, function (err, results) {
+        if (err) return done(err);
+
+        if (results.violations.length || results.incomplete.length) {
+          var errMsg = '';
+
+          results.violations.forEach(function (violation) {
+            errMsg += `\n\n${violation.help}:`;
+
+            violation.nodes.forEach(function (node, index) {
+              errMsg += `\n\t${index + 1}: ${node.html}`;
+            });
+          });
+
+          results.incomplete.forEach(function (incomplete) {
+            errMsg += `\n\n${incomplete.help}:`;
+
+            incomplete.nodes.forEach(function (node, index) {
+              errMsg += `\n\t${index + 1}: ${node.html}`;
+            });
+          });
+
+          var error = new Error(errMsg + '\n');
+          error.stack = null;
+
+          return done(error);
+        }
+
+        done();
+      });
+    });
+  });
+});
+
+describe('fs-modeless-dialog', function () {
+  var el;
+
+  beforeEach(function () {
+    el = fixture('fs-modeless-dialog-fixture');
+  });
+
+  afterEach(function () {
+    el.close();
+  });
+
+  describe('a11y', function () {
+    it('should pass accessibility guidelines', function (done) {
+      el.open();
+
+      axe.run(el, {
+        'rules': {
+          'color-contrast': { enabled: false }
+        }
+      }, function (err, results) {
+        if (err) return done(err);
+
+        if (results.violations.length || results.incomplete.length) {
+          var errMsg = '';
+
+          results.violations.forEach(function (violation) {
+            errMsg += `\n\n${violation.help}:`;
+
+            violation.nodes.forEach(function (node, index) {
+              errMsg += `\n\t${index + 1}: ${node.html}`;
+            });
+          });
+
+          results.incomplete.forEach(function (incomplete) {
+            errMsg += `\n\n${incomplete.help}:`;
+
+            incomplete.nodes.forEach(function (node, index) {
+              errMsg += `\n\t${index + 1}: ${node.html}`;
+            });
+          });
+
+          var error = new Error(errMsg + '\n');
+          error.stack = null;
+
+          return done(error);
+        }
+
+        done();
+      });
+    });
+  });
+});
+</script>
   </body>
 </html>

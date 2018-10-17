@@ -1,10 +1,8 @@
 addons:
   sauce_connect: true
-# Branch whitelist
 branches:
   only:
     - master
-# Caching of bower_components & node_modules disabled, due to an increase in delayed breakages
 cache:
   directories: null
 dist: trusty
@@ -16,7 +14,6 @@ notifications:
     on_success: never
     on_failure: change
   slack:
-    # Custom template used because SUCCESS/FAILURE is all the way at the end by default
     template:
       - '%{result}: %{repository} <%{build_url}|#%{build_number}>  (<%{compare_url}|%{commit}>)'
       - "\tin %{duration} for %{author}'s commit:"
@@ -27,23 +24,16 @@ notifications:
     on_success: always
     on_failure: change
     on_start: never
-
 before_install:
-  # Create .netrc for private repo install
-  - 'echo -e "machine github.com\n  login $GITHUB_AUTH_TOKEN" >> ~/.netrc'
+  - echo -e "machine github.com\n  login $GITHUB_AUTH_TOKEN" >> ~/.netrc
   - npm install -g bower
-install:
-  # pipe bower install output through tee to create a log to parse for errors and preserve exit code
-  - 'bower install --config.interactive=false 2>&1 | tee bower-debug.log; ( exit ${PIPESTATUS[0]} )'
-  - npm install
-before_script:
-  - node_modules/fs-common-build-scripts/bin/before_script.sh
-script:
-  # pipe standard & wct output through tee to create a log to parse for errors and preserve exit code
-  - 'npm run standard && npx wct --configFile wct.conf.windows.json --skip-plugin local && npx wct --configFile wct.conf.json --skip-plugin local 2>&1 | tee wct.log; ( exit ${PIPESTATUS[0]} )'
+install: npm install
+before_script: node_modules/fs-common-build-scripts/bin/before_script.sh
+script: 'npm run standard && npx wct --module-resolution=node --npm --configFile wct.conf.windows.json --skip-plugin local && npx wct --configFile wct.conf.json --skip-plugin local 2>&1 | tee wct.log; ( exit ${PIPESTATUS[0]} )'
 after_success:
   - node node_modules/fs-common-build-scripts/bin/create_release.js
 after_failure:
   - node_modules/fs-common-build-scripts/bin/report_failure_details.sh
 after_script:
   - node_modules/fs-common-build-scripts/bin/after_script.sh
+
