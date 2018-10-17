@@ -308,3 +308,5 @@ if ('customElements' in window) {
 } else {
   document.registerElement('fs-modeless-dialog', {prototype: Object.create(FSModelessDialog.prototype)});
 }
+
+export default FSModelessDialog;

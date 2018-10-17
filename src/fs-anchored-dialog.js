@@ -1019,3 +1019,5 @@ if ('customElements' in window) {
 } else {
   document.registerElement('fs-anchored-dialog', {prototype: Object.create(FSAnchoredDialog.prototype)});
 }
+
+export default FSAnchoredDialog;

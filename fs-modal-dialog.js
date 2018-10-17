@@ -308,3 +308,5 @@ if ('customElements' in window) {
 } else {
   document.registerElement('fs-modal-dialog', {prototype: Object.create(FSModalDialog.prototype)});
 }
+
+export default FSModalDialog;
