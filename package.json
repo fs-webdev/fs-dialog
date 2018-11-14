@@ -37,7 +37,6 @@
     "@webcomponents/webcomponentsjs": "^2.0.0"
   },
   "scripts": {
-    "postinstall": "bower install",
     "preinstall": "git config --global url.https://github.com/.insteadOf git://github.com/",
     "standard": "semistandard --verbose '**/*.html' '**/*.js' | snazzy && stylelint '**/*.html' '**/*.css'",
     "standard-fix": "semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
