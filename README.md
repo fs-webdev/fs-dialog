@@ -66,7 +66,7 @@ ___
 
 ### Properties
 
-* `opened` - Boolean that opens the dialog and denotes that it is open. Set to `false` to close.
+* `opened` - Boolean that denotes whether it is open.
 
 ### Classes
 
