@@ -397,7 +397,7 @@
       super();
 
       this.keydownHandler = keydownHandler;
-      this.notifyDefaultCloseOnly = false;
+      this.defaultCloseEventOnly = false;
     }
     createdCallback () {
       this.keydownHandler = keydownHandler;
@@ -675,12 +675,12 @@
       this.fsDialogReady = true;
     }
 
-    get notifyDefaultCloseOnly () {
-      return this._notifyDefaultCloseOnly;
+    get defaultCloseEventOnly () {
+      return this._defaultCloseEventOnly;
     }
 
-    set notifyDefaultCloseOnly (value) {
-      this._notifyDefaultCloseOnly = value;
+    set defaultCloseEventOnly (value) {
+      this._defaultCloseEventOnly = value;
     }
 
     static get observedAttributes () {
@@ -726,7 +726,7 @@
 
         // stop the event from propagating to parent fs-dialogs
         event.stopPropagation();
-        this.close({ eventOnly: this.notifyDefaultCloseOnly });
+        this.close({ eventOnly: this.defaultCloseEventOnly });
       }
 
       // confirming the dialog does not close it. allow the user to determine
@@ -801,7 +801,7 @@
                   dialog.focus();
                   return true;
                 }
-                dialog.close({ eventOnly: dialog.notifyDefaultCloseOnly });
+                dialog.close({ eventOnly: dialog.defaultCloseEventOnly });
               } else {
                 return true;
               }
@@ -820,7 +820,7 @@
     if (event.which === 27) {
       // 27 is the code for the escape key
       this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true, composed: true}));
-      this.close({ eventOnly: this.notifyDefaultCloseOnly });
+      this.close({ eventOnly: this.defaultCloseEventOnly });
     } else if (this.tagName !== 'FS-MODELESS-DIALOG' && event.which === 9) {
       // catches tab key
 

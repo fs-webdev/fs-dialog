@@ -430,8 +430,8 @@
         <h5>closeAllDialogs</h5>
         <p>To close all modal and anchored dialogs on the page you can call <code>FS.dialog.service.closeAllDialogs()</code> This does not close modeless dialogs.</p>
 
-        <h5>notifyDefaultCloseOnly</h5>
-        <p>In some situations you may want to run your own logic before the modal closes. To prevent the modal from closing before running your logic, setting the public property `notifyDefaultCloseOnly` to true will only have the `fs-dialog-close` event fired allowing you to then run your logic and then manually call the `close()` method when the dialog should be closed. This applies to when `dismiss-on-blur` is enabled, the "esc" key is hit, and when the close "X" button in the top-right is clicked.</p>
+        <h5>defaultCloseEventOnly</h5>
+        <p>In some situations you may want to run your own logic before the modal closes. To prevent the modal from closing before running your logic, setting the public property `defaultCloseEventOnly` to true will only have the `fs-dialog-close` event fired allowing you to then run your logic and then manually call the `close()` method when the dialog should be closed. This applies to when `dismiss-on-blur` is enabled, the "esc" key is hit, and when the close "X" button in the top-right is clicked.</p>
       </div>
     </div>
 

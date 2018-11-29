@@ -72,7 +72,7 @@
         describe('functions', function () {
           it('should exist and have certain properties', function () {
             expect(el).to.exist;
-            expect(el.notifyDefaultCloseOnly).to.be.false;
+            expect(el.defaultCloseEventOnly).to.be.false;
           });
 
           it('createdCallback should add the keydownHandler', function () {
@@ -223,11 +223,11 @@
             el.close();
           });
 
-          it('clicking the close button should only dispatch the "fs-dialog-close" event when the property "notifyDefaultCloseOnly" is true', function(done) {
+          it('clicking the close button should only dispatch the "fs-dialog-close" event when the property "defaultCloseEventOnly" is true', function(done) {
             // timeout after 1 second if the event is not triggered
             this.timeout(1000);
 
-            el.notifyDefaultCloseOnly = true;
+            el.defaultCloseEventOnly = true;
             el.addEventListener('fs-dialog-close', function(e) {
               expect(e.target).to.equal(el);
               expect(el.opened).to.be.true;
