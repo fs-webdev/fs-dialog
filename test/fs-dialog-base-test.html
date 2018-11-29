@@ -70,6 +70,11 @@
         });
 
         describe('functions', function () {
+          it('should exist and have certain properties', function () {
+            expect(el).to.exist;
+            expect(el.notifyDefaultCloseOnly).to.be.false;
+          });
+
           it('createdCallback should add the keydownHandler', function () {
             fsDialogBase.prototype.createdCallback();
 
@@ -218,6 +223,22 @@
             el.close();
           });
 
+          it('clicking the close button should only dispatch the "fs-dialog-close" event when the property "notifyDefaultCloseOnly" is true', function(done) {
+            // timeout after 1 second if the event is not triggered
+            this.timeout(1000);
+
+            el.notifyDefaultCloseOnly = true;
+            el.addEventListener('fs-dialog-close', function(e) {
+              expect(e.target).to.equal(el);
+              expect(el.opened).to.be.true;
+
+              done();
+            });
+
+            el.open();
+            closeEl.click();
+          });
+
           it('calling open or close should return a promise', function() {
             expect(el.open().then).to.be.ok
             expect(el.close().then).to.be.ok
@@ -229,9 +250,11 @@
 
           it('clicking on an element with "data-dialog-dismiss" should close the dialog', function() {
             el.open();
+            expect(el.hasAttribute('opened')).to.be.true;
             el.querySelector('button').click();
 
             el.querySelector('[data-dialog-dismiss]').click();
+            expect(el.hasAttribute('opened')).to.be.false;
           });
 
           it('clicking on an element with "data-dialog-dismiss" should dispatch a "fs-dialog-dismiss" event', function(done) {
