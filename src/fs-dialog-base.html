@@ -397,6 +397,7 @@
       super();
 
       this.keydownHandler = keydownHandler;
+      this.notifyDefaultCloseOnly = false;
     }
     createdCallback () {
       this.keydownHandler = keydownHandler;
@@ -592,9 +593,14 @@
       };
 
       // close the dialog
-      this.close = function (optionsObj) {
+      this.close = function (optionsObj = {}) {
         // Do not close a dialog that is already closed
         if (!this.opened) return this.pendingPromise;
+
+        if (optionsObj.eventOnly) {
+          this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true, composed: true}));
+          return this.pendingPromise;
+        }
 
         // remove event listeners
         // consider reducing event listeners by putting them in the service
@@ -669,6 +675,14 @@
       this.fsDialogReady = true;
     }
 
+    get notifyDefaultCloseOnly () {
+      return this._notifyDefaultCloseOnly;
+    }
+
+    set notifyDefaultCloseOnly (value) {
+      this._notifyDefaultCloseOnly = value;
+    }
+
     static get observedAttributes () {
       return attrList;
     }
@@ -712,7 +726,7 @@
 
         // stop the event from propagating to parent fs-dialogs
         event.stopPropagation();
-        this.close();
+        this.close({ eventOnly: this.notifyDefaultCloseOnly });
       }
 
       // confirming the dialog does not close it. allow the user to determine
@@ -787,7 +801,7 @@
                   dialog.focus();
                   return true;
                 }
-                dialog.close();
+                dialog.close({ eventOnly: dialog.notifyDefaultCloseOnly });
               } else {
                 return true;
               }
@@ -806,7 +820,7 @@
     if (event.which === 27) {
       // 27 is the code for the escape key
       this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true, composed: true}));
-      this.close();
+      this.close({ eventOnly: this.notifyDefaultCloseOnly });
     } else if (this.tagName !== 'FS-MODELESS-DIALOG' && event.which === 9) {
       // catches tab key
 
