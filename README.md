@@ -67,7 +67,7 @@ ___
 ### Properties
 
 * `opened` - Boolean that denotes whether it is open.
-* `notifyDefaultCloseOnly` - Boolean that makes the default ways the modal is closed (E.g. Clicking the 'X' in the top right, pressing the `esc` key or clicking outside the `fs-modal-dialog`) to fire the `fs-dialog-close` only. This is useful if you use a custom function with the `on-fs-dialog-close`.
+* `defaultCloseEventOnly` - Boolean that makes the default ways the modal is closed (E.g. Clicking the 'X' in the top right, pressing the `esc` key or clicking outside the `fs-modal-dialog`) to fire the `fs-dialog-close` only. This is useful if you use a custom function with the `on-fs-dialog-close`.
 
 ### Classes
 
