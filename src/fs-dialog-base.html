@@ -377,19 +377,22 @@
     'dismiss-on-blur': 'boolean',
     'keep-fullscreen': 'boolean',
     'no-fullscreen-mobile': 'boolean',
-    'opened': 'boolean'
+    'opened': 'boolean',
+    'self-closing': 'boolean'
   };
   var attrNameMap = {
     'dismiss-on-blur': 'dismissOnBlur',
     'keep-fullscreen': 'keepFullscreen',
     'no-fullscreen-mobile': 'noFullscreenMobile',
-    'opened': 'opened'
+    'opened': 'opened',
+    'self-closing': 'selfClosing'
   };
   var attrList = [
     'dismiss-on-blur',
     'keep-fullscreen',
     'no-fullscreen-mobile',
-    'opened'
+    'opened',
+    'self-closing'
   ];
 
   class FSDialogBase extends HTMLElement {
@@ -397,7 +400,6 @@
       super();
 
       this.keydownHandler = keydownHandler;
-      this.defaultCloseEventOnly = false;
     }
     createdCallback () {
       this.keydownHandler = keydownHandler;
@@ -593,11 +595,12 @@
       };
 
       // close the dialog
-      this.close = function (optionsObj = {}) {
+      this.close = function (forceClose) {
+        console.log(forceClose, this.selfClosing);
         // Do not close a dialog that is already closed
         if (!this.opened) return this.pendingPromise;
 
-        if (optionsObj.eventOnly) {
+        if (!forceClose && this.selfClosing) {
           this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true, composed: true}));
           return this.pendingPromise;
         }
@@ -675,14 +678,6 @@
       this.fsDialogReady = true;
     }
 
-    get defaultCloseEventOnly () {
-      return this._defaultCloseEventOnly;
-    }
-
-    set defaultCloseEventOnly (value) {
-      this._defaultCloseEventOnly = value;
-    }
-
     static get observedAttributes () {
       return attrList;
     }
@@ -726,7 +721,7 @@
 
         // stop the event from propagating to parent fs-dialogs
         event.stopPropagation();
-        this.close({ eventOnly: this.defaultCloseEventOnly });
+        this.close();
       }
 
       // confirming the dialog does not close it. allow the user to determine
@@ -801,7 +796,7 @@
                   dialog.focus();
                   return true;
                 }
-                dialog.close({ eventOnly: dialog.defaultCloseEventOnly });
+                dialog.close();
               } else {
                 return true;
               }
@@ -820,7 +815,7 @@
     if (event.which === 27) {
       // 27 is the code for the escape key
       this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true, composed: true}));
-      this.close({ eventOnly: this.defaultCloseEventOnly });
+      this.close();
     } else if (this.tagName !== 'FS-MODELESS-DIALOG' && event.which === 9) {
       // catches tab key
 

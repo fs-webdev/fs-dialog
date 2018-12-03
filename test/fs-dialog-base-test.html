@@ -70,9 +70,10 @@
         });
 
         describe('functions', function () {
-          it('should exist and have certain properties', function () {
+          it('should exist and have correct default properties', function () {
             expect(el).to.exist;
-            expect(el.defaultCloseEventOnly).to.be.false;
+            expect(el.opened).to.equal(false);
+            expect(el.selfClosing).to.equal(false);
           });
 
           it('createdCallback should add the keydownHandler', function () {
@@ -223,13 +224,13 @@
             el.close();
           });
 
-          it('clicking the close button should only dispatch the "fs-dialog-close" event when the property "defaultCloseEventOnly" is true', function(done) {
+          it('clicking the close button should not close the dialog when the property "self-closing" is true', function(done) {
             // timeout after 1 second if the event is not triggered
             this.timeout(1000);
 
-            el.defaultCloseEventOnly = true;
-            el.addEventListener('fs-dialog-close', function(e) {
-              expect(e.target).to.equal(el);
+            el.selfClosing = true;
+            el.addEventListener('fs-dialog-close', function(evt) {
+              expect(evt.target).to.equal(el);
               expect(el.opened).to.be.true;
 
               done();
@@ -237,6 +238,21 @@
 
             el.open();
             closeEl.click();
+          });
+
+          it('calling "close(true)" should dispatch an "fs-dialog-close" event, even if "self-closing" is true', function(done) {
+            // timeout after 1 second if the event is not triggered
+            this.timeout(1000);
+
+            el.selfClosing = true;
+            el.addEventListener('fs-dialog-close', function(e) {
+              expect(e.target).to.equal(el);
+
+              done();
+            });
+
+            el.open();
+            el.close(true);
           });
 
           it('calling open or close should return a promise', function() {
