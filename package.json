@@ -122,7 +122,7 @@
   },
   "dependencies": {
     "a11y-enhancer": "github:straker/a11y-enhancer",
-    "fs-globals": "github:fs-webdev/fs-globals#modulizerTesting",
+    "fs-globals": "github:fs-webdev/fs-globals#modulizer",
     "fs-styles": "github:fs-webdev/fs-styles",
     "wicg-inert": "github:straker/inert"
   }
