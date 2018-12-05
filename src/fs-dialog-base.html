@@ -377,19 +377,22 @@
     'dismiss-on-blur': 'boolean',
     'keep-fullscreen': 'boolean',
     'no-fullscreen-mobile': 'boolean',
-    'opened': 'boolean'
+    'opened': 'boolean',
+    'self-closing': 'boolean'
   };
   var attrNameMap = {
     'dismiss-on-blur': 'dismissOnBlur',
     'keep-fullscreen': 'keepFullscreen',
     'no-fullscreen-mobile': 'noFullscreenMobile',
-    'opened': 'opened'
+    'opened': 'opened',
+    'self-closing': 'selfClosing'
   };
   var attrList = [
     'dismiss-on-blur',
     'keep-fullscreen',
     'no-fullscreen-mobile',
-    'opened'
+    'opened',
+    'self-closing'
   ];
 
   class FSDialogBase extends HTMLElement {
@@ -592,9 +595,15 @@
       };
 
       // close the dialog
-      this.close = function (optionsObj) {
+      this.close = function (forceClose) {
+        console.log(forceClose, this.selfClosing);
         // Do not close a dialog that is already closed
         if (!this.opened) return this.pendingPromise;
+
+        if (!forceClose && this.selfClosing) {
+          this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true, composed: true}));
+          return this.pendingPromise;
+        }
 
         // remove event listeners
         // consider reducing event listeners by putting them in the service

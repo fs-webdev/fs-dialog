@@ -70,6 +70,12 @@
         });
 
         describe('functions', function () {
+          it('should exist and have correct default properties', function () {
+            expect(el).to.exist;
+            expect(el.opened).to.equal(false);
+            expect(el.selfClosing).to.equal(false);
+          });
+
           it('createdCallback should add the keydownHandler', function () {
             fsDialogBase.prototype.createdCallback();
 
@@ -218,6 +224,37 @@
             el.close();
           });
 
+          it('clicking the close button should not close the dialog when the property "self-closing" is true', function(done) {
+            // timeout after 1 second if the event is not triggered
+            this.timeout(1000);
+
+            el.selfClosing = true;
+            el.addEventListener('fs-dialog-close', function(evt) {
+              expect(evt.target).to.equal(el);
+              expect(el.opened).to.be.true;
+
+              done();
+            });
+
+            el.open();
+            closeEl.click();
+          });
+
+          it('calling "close(true)" should dispatch an "fs-dialog-close" event, even if "self-closing" is true', function(done) {
+            // timeout after 1 second if the event is not triggered
+            this.timeout(1000);
+
+            el.selfClosing = true;
+            el.addEventListener('fs-dialog-close', function(e) {
+              expect(e.target).to.equal(el);
+
+              done();
+            });
+
+            el.open();
+            el.close(true);
+          });
+
           it('calling open or close should return a promise', function() {
             expect(el.open().then).to.be.ok
             expect(el.close().then).to.be.ok
@@ -229,9 +266,11 @@
 
           it('clicking on an element with "data-dialog-dismiss" should close the dialog', function() {
             el.open();
+            expect(el.hasAttribute('opened')).to.be.true;
             el.querySelector('button').click();
 
             el.querySelector('[data-dialog-dismiss]').click();
+            expect(el.hasAttribute('opened')).to.be.false;
           });
 
           it('clicking on an element with "data-dialog-dismiss" should dispatch a "fs-dialog-dismiss" event', function(done) {

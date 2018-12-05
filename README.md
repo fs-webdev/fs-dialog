@@ -61,6 +61,7 @@ ___
 ### Attributes
 
 * `opened` - Both opens the dialog and denotes that it is open. Remove attribute to close.
+* `self-closing` - Boolean that makes the default ways the modal is closed (E.g. Clicking the 'X' in the top right, pressing the `esc` key or clicking outside the `fs-modal-dialog`) only fire the `fs-dialog-close` event, without closing the dialog. This is useful if you use a custom function with the `on-fs-dialog-close` event. You will then need to call close(true) on your own.
 * `type` - The type of dialog. Values can be `modal` or `modeless`. Defaults to `modal`.
 * `transition` - Transition to use when opening a modal dialog. Values can be `from-bottom`, `from-right`, or `center`. Defaults to `center`.
 
