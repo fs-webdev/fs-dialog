@@ -33,6 +33,7 @@
     "WCI18n": true
   },
   "plugins": [
+    "babel-eslint",
     "eslint-plugin-html",
     "eslint-plugin-jsdoc"
   ],
@@ -49,6 +50,7 @@
     "jsdoc/require-returns-description": 2,
     "jsdoc/require-returns-type": 2,
     "no-extra-semi": 2,
+    "object-curly-spacing": 0,
     "semi": [2, "always"]
   }
 }
