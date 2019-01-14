@@ -400,9 +400,11 @@
       super();
 
       this.keydownHandler = keydownHandler;
+      this.getFocusableChildren = getFocusableChildren.bind(this);
     }
     createdCallback () {
       this.keydownHandler = keydownHandler;
+      this.getFocusableChildren = getFocusableChildren.bind(this);
     }
     connectedCallback () {
       this.attachedCallback();
@@ -847,31 +849,36 @@
         event.preventDefault();
       }
     }
+  }
 
-    function getFocusableChildren (node) {
-      var focusableElementsSelector = ['a[href]:not([tabindex="-1"])', 'area[href]:not([tabindex="-1"])', 'input:not([disabled]):not([tabindex="-1"])', 'select:not([disabled]):not([tabindex="-1"])', 'textarea:not([disabled]):not([tabindex="-1"])', 'button:not([disabled]):not([tabindex="-1"])', 'iframe:not([tabindex="-1"])', 'object:not([tabindex="-1"])', 'embed:not([tabindex="-1"])', '*[tabindex]:not([tabindex="-1"])', '*[contenteditable]:not([tabindex="-1"])', '[focusable-component]'];
+  function getFocusableChildren (node) {
+    var focusableElementsSelector = ['a[href]:not([tabindex="-1"])', 'area[href]:not([tabindex="-1"])', 'input:not([disabled]):not([tabindex="-1"])', 'select:not([disabled]):not([tabindex="-1"])', 'textarea:not([disabled]):not([tabindex="-1"])', 'button:not([disabled]):not([tabindex="-1"])', 'iframe:not([tabindex="-1"])', 'object:not([tabindex="-1"])', 'embed:not([tabindex="-1"])', '*[tabindex]:not([tabindex="-1"])', '*[contenteditable]:not([tabindex="-1"])', '[focusable-component]'];
 
-      // filter out any elements that are not visible
-      var focusableElements = Array.prototype.filter.call(node.querySelectorAll(focusableElementsSelector.join(',')), function (child) {
-        return !!(child.offsetWidth || child.offsetHeight || child.getClientRects().length);
-      });
-      // get the children of anything that was labeled as a focusable-component and loop through its focusable children
-
-      var focusableComponents = node.querySelectorAll('[focusable-component]');
-      if (focusableComponents) {
-        focusableComponents.forEach((component) => {
-          if (focusableElements.indexOf(component) < 0) return;
-
-          let componentChildren = [];
-          if (component.shadowRoot) {
-            componentChildren = getFocusableChildren(component.shadowRoot);
-          }
-          focusableElements.splice(focusableElements.indexOf(component), 1, ...componentChildren);
-        });
-      }
-
-      return focusableElements;
+    // for the public version, use this if no node is passed
+    if (!node) {
+      node = this;
     }
+
+    // filter out any elements that are not visible
+    var focusableElements = Array.prototype.filter.call(node.querySelectorAll(focusableElementsSelector.join(',')), function (child) {
+      return !!(child.offsetWidth || child.offsetHeight || child.getClientRects().length);
+    });
+    // get the children of anything that was labeled as a focusable-component and loop through its focusable children
+
+    var focusableComponents = node.querySelectorAll('[focusable-component]');
+    if (focusableComponents) {
+      focusableComponents.forEach((component) => {
+        if (focusableElements.indexOf(component) < 0) return;
+
+        let componentChildren = [];
+        if (component.shadowRoot) {
+          componentChildren = getFocusableChildren(component.shadowRoot);
+        }
+        focusableElements.splice(focusableElements.indexOf(component), 1, ...componentChildren);
+      });
+    }
+
+    return focusableElements;
   }
 
   // keep track of if the window has focus or not

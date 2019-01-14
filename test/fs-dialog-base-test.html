@@ -82,6 +82,12 @@
             expect(fsDialogBase.prototype.keydownHandler, 'keydownHandler is not defined as a function').to.be.a('function');
           });
 
+          it('createdCallback should add getFocusableChildren', function () {
+            fsDialogBase.prototype.createdCallback();
+
+            expect(fsDialogBase.prototype.getFocusableChildren, 'getFocusableChildren is not defined as a function').to.be.a('function');
+          });
+
           it('connectedCallback should call attachedCallback', function () {
             var attachedCallbackStub = sinon.stub(fsDialogBase.prototype, 'attachedCallback');
 
