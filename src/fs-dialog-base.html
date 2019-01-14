@@ -403,6 +403,7 @@
       this.getFocusableChildren = getFocusableChildren.bind(this);
     }
     createdCallback () {
+      this.keydownHandler = keydownHandler;
       this.getFocusableChildren = getFocusableChildren.bind(this);
     }
     connectedCallback () {
