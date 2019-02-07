@@ -378,14 +378,15 @@
     <div class="demo-snippet fs-card">
       <div class="demo do-not-codify">
         <h5>Auto-hiding dialogs from initial load</h5>
-        <p>While the component is loading, you may get flashes of dialogs being visible/unstyled. To avoid this, add these styles to the css early in your page.</p>
+        <p>While the component is loading, you may get flashes of dialogs being visible/unstyled. To avoid this, add these styles to the css early in your application or as the initial styling of the consuming component on a case-by-case basis.</p>
         <pre>
           fs-modeless-dialog,
           fs-modal-dialog,
           fs-anchored-dialog {
-            visibility: hidden;
             opacity: 0;
-            display: none;
+            position: absolute;
+            top: 0;
+            visibility: hidden;
           }
         </pre>
 
