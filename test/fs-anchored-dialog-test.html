@@ -82,7 +82,7 @@
                 expect(getRectsWithForcedDirectionStub.callCount).to.equal(1);
                 expect(getPointerlessDialogRectStub.callCount).to.equal(0);
                 done();
-              }, 15);
+              }, 20);
             });
 
             it('should call the correct functions with no-pointer', function (done) {
@@ -93,7 +93,7 @@
                 expect(getRectsWithForcedDirectionStub.callCount).to.equal(0);
                 expect(getPointerlessDialogRectStub.callCount).to.equal(1);
                 done();
-              }, 15);
+              }, 20);
             });
 
             it('should not reposition dialogs that are already closed', function (done) {
@@ -104,7 +104,7 @@
                 expect(positionDialogWithinDomStub.callCount).to.equal(0);
                 expect(getRectsWithForcedDirectionStub.callCount).to.equal(0);
                 done();
-              }, 15);
+              }, 20);
             });
           });
 
