@@ -95,6 +95,17 @@
                 done();
               }, 15);
             });
+
+            it('should not reposition dialogs that are already closed', function (done) {
+              el.close();
+              el._resizeHandler();
+
+              setTimeout(function () {
+                expect(positionDialogWithinDomStub.callCount).to.equal(0);
+                expect(getRectsWithForcedDirectionStub.callCount).to.equal(0);
+                done();
+              }, 15);
+            });
           });
 
           describe('openAnchoredFunction', function () {
