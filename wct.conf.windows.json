@@ -11,7 +11,8 @@
         },
         {
           "browserName":  "chrome",
-          "platform":     "Windows 10"
+          "platform":     "Windows 10",
+          "version":      "70"
         },
         {
           "browserName":  "firefox",

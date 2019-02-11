@@ -380,6 +380,11 @@
 
         // we put this in a setTimout so that the dom can update before we do our calculations
         setTimeout(function () {
+          // Avoid situations where the resize function fires after the attachToElement has already been unset
+          if (!dialogElement.opened) {
+            return;
+          }
+
           if (dialogElement.noPointer) {
             dialogElement._positionDialogWithinDom(dialogElement, pointerElement, dialogElement._getPointerlessDialogRect({attachToElement: sourceElement}), {left: 0, top: 0}, '');
           } else {

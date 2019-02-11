@@ -57,43 +57,57 @@
           //   el.remove();
           // });
 
-          describe('resizeHandler', function () {
+          describe('resizeHandler', () => {
             var positionDialogWithinDomStub;
             var getPointerlessDialogRectStub;
             var getRectsWithForcedDirectionStub;
 
-            beforeEach(function () {
+            beforeEach(() => {
               el.open();
               positionDialogWithinDomStub = sinon.stub(el, '_positionDialogWithinDom');
               getPointerlessDialogRectStub = sinon.stub(el, '_getPointerlessDialogRect');
-              getRectsWithForcedDirectionStub = sinon.stub(el, '_getRectsWithForcedDirection', function () { return {}; });
+              getRectsWithForcedDirectionStub = sinon.stub(el, '_getRectsWithForcedDirection', () => { return {}; });
             });
 
-            afterEach(function () {
+            afterEach(() => {
+              el.close();
               positionDialogWithinDomStub.restore();
               getPointerlessDialogRectStub.restore();
               getRectsWithForcedDirectionStub.restore();
             });
 
-            it('should call the correct functions', function (done) {
+            it('should call the correct functions', (done) => {
               el._resizeHandler();
-              setTimeout(function () {
+
+              setTimeout(() => {
                 expect(positionDialogWithinDomStub.callCount).to.equal(1);
                 expect(getRectsWithForcedDirectionStub.callCount).to.equal(1);
                 expect(getPointerlessDialogRectStub.callCount).to.equal(0);
                 done();
-              }, 15);
+              }, 20);
             });
 
-            it('should call the correct functions with no-pointer', function (done) {
+            it('should call the correct functions with no-pointer', (done) => {
               el.setAttribute('no-pointer', '');
               el._resizeHandler();
-              setTimeout(function () {
+
+              setTimeout(() => {
                 expect(positionDialogWithinDomStub.callCount).to.equal(1);
                 expect(getRectsWithForcedDirectionStub.callCount).to.equal(0);
                 expect(getPointerlessDialogRectStub.callCount).to.equal(1);
                 done();
-              }, 15);
+              }, 20);
+            });
+
+            it('should not reposition dialogs that are already closed', (done) => {
+              el.close();
+              el._resizeHandler();
+
+              setTimeout(() => {
+                expect(positionDialogWithinDomStub.callCount).to.equal(0);
+                expect(getRectsWithForcedDirectionStub.callCount).to.equal(0);
+                done();
+              }, 20);
             });
           });
 

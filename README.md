@@ -54,6 +54,21 @@ and then set up your dialog content as desired (`fs-dialog` is light DOM, so you
 
 ___
 
+> PROTIP: Avoid flashes of unstyled dialogs with the following (NOT `display: none`, or the positioning calculations will be thrown off):
+
+```
+fs-modeless-dialog,
+fs-modal-dialog,
+fs-anchored-dialog {
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	visibility: hidden;
+}
+```
+
+> NOTE: Most display issues encountered can be avoided by globally registering your dialog.
+
 > NOTE: Some teams have reported issues stemming from multiple components importing different portions of `fs-dialog`, which results in an error (`Class extends value undefined is not a constructor or null`), and broken `fs-dialog` functionality. If you run into this, simply import `fs-dialog-all` in each component.
 
 ___

@@ -181,6 +181,13 @@
         z-index: 2;
       }
 
+      /* The svg itself is a microscopic dead zone for clicks */
+      fs-anchored-dialog .fs-dialog__close svg,
+      fs-modeless-dialog .fs-dialog__close svg,
+      fs-modal-dialog .fs-dialog__close svg {
+        pointer-events: none;
+      }
+
       fs-anchored-dialog .fs-dialog__close:hover,
       fs-modeless-dialog .fs-dialog__close:hover,
       fs-modal-dialog .fs-dialog__close:hover {
