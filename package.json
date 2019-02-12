@@ -38,9 +38,9 @@
     "postinstall": "bower install",
     "precommit": "gulp && node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && node_modules/fs-common-build-scripts/bin/pre_commit_commands.sh",
     "preinstall": "git config --global url.https://github.com/.insteadOf git://github.com/",
-    "pretest": "gulp && semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
-    "standard": "semistandard --verbose '**/*.html' '**/*.js' | snazzy && stylelint '**/*.html' '**/*.css'",
-    "standard-fix": "semistandard --verbose '**/*.html' '**/*.js' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
+    "pretest": "semistandard --verbose '**/*.html' '**/*.js' '**/*.json' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
+    "standard": "semistandard --verbose '**/*.html' '**/*.js' '**/*.json' | snazzy && stylelint '**/*.html' '**/*.css'",
+    "standard-fix": "semistandard --verbose '**/*.html' '**/*.js' '**/*.json' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
     "test": "wct --skip-plugin sauce",
     "test-p": "wct --skip-plugin sauce -p",
     "test-s": "wct --configFile wct.conf.windows.json --skip-plugin local && wct --configFile wct.conf.json --skip-plugin local"
@@ -88,7 +88,10 @@
       "gulpfile.js"
     ],
     "parser": "babel-eslint",
-    "plugin": "html"
+    "plugin": [
+      "html",
+      "json"
+    ]
   },
   "stylelint": {
     "about": "https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md#possible-errors",
