@@ -593,7 +593,7 @@
           }
 
           // fire an event for the outside world to hear
-          this.dispatchEvent(new Event('fs-dialog-open', {bubbles: true, composed: true}));
+          this.dispatchEvent(new Event('fs-dialog-open'));
         } catch (err) {
           rejectPromise(err);
         }
@@ -609,7 +609,7 @@
         if (!this.opened) return this.pendingPromise;
 
         if (!forceClose && this.selfClosing) {
-          this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true, composed: true}));
+          this.dispatchEvent(new Event('fs-dialog-close'));
           return this.pendingPromise;
         }
 
@@ -662,7 +662,7 @@
         }
 
         // fire an event for the outside world to hear
-        this.dispatchEvent(new Event('fs-dialog-close', {bubbles: true, composed: true}));
+        this.dispatchEvent(new Event('fs-dialog-close'));
 
         resolvePromise();
         return this.pendingPromise;
@@ -682,7 +682,7 @@
       // event will fire after our element is all set up and ready to use.
       // we can remove this when all browsers support custom elements natively,
       // but that will be a breaking change to our API.
-      this.dispatchEvent(new Event('fs-dialog-ready', { bubbles: true, composed: true }));
+      this.dispatchEvent(new Event('fs-dialog-ready'));
       this.fsDialogReady = true;
     }
 
@@ -725,7 +725,7 @@
       // make this event fire with the escape key
       // consider making this a custom event
       if (el.hasAttribute('data-dialog-dismiss')) {
-        this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true, composed: true}));
+        this.dispatchEvent(new Event('fs-dialog-dismiss'));
 
         // stop the event from propagating to parent fs-dialogs
         event.stopPropagation();
@@ -735,7 +735,7 @@
       // confirming the dialog does not close it. allow the user to determine
       // what to do with the modal
       if (el.hasAttribute('data-dialog-confirm')) {
-        this.dispatchEvent(new Event('fs-dialog-confirm', {bubbles: true, composed: true}));
+        this.dispatchEvent(new Event('fs-dialog-confirm'));
 
         // stop the event from propagating to parent fs-dialogs
         event.stopPropagation();
@@ -822,7 +822,7 @@
   function keydownHandler (event) {
     if (event.which === 27) {
       // 27 is the code for the escape key
-      this.dispatchEvent(new Event('fs-dialog-dismiss', {bubbles: true, composed: true}));
+      this.dispatchEvent(new Event('fs-dialog-dismiss'));
       this.close();
     } else if (this.tagName !== 'FS-MODELESS-DIALOG' && event.which === 9) {
       // catches tab key
