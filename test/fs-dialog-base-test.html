@@ -153,21 +153,35 @@
         });
 
         describe('keyDownHandler', () => {
-          el = fixture('fs-dialog-base-fixture-empty');
+          let closeFunc = null;
+          let el = null;
+          beforeEach(() => {
+            el = fixture('fs-dialog-base-fixture-empty');
+            closeFunc = el.close;
+          });
+
+          afterEach(() => {
+            el.close = closeFunc;
+          });
 
           it('should test esc char', (done) => {
-
+            let eventFired = false;
             el.addEventListener('fs-dialog-dismiss', function(e) {
-              expect(e.target).to.equal(el);
 
-              done();
+              eventFired = true;
             });
+            el.close = () => {
+              expect(eventFired).to.equal(true);
+              closeFunc.call(el);
+              done();
+            }
+            el.open();
             el.keydownHandler({which: 27});
           });
 
           it('should test tab char with non modeless dialogs', () => {
             el.keydownHandler({which: 9, shiftKey: true, target: el, preventDefault: ()=> {}});
-            expect(document.activeElement.innerHTML).to.equal("Cancel");
+            expect(document.activeElement.className).to.equal("fs-dialog__close");
           });
         });
 
