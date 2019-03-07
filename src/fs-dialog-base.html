@@ -770,7 +770,7 @@
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
       // don't close if a node loses focus from dissapearing.
       var target = event.composedPath()[0];
-      var targetDisappeared = (!target.offsetHeight && !target.offsetWidth) || target.style.visibility === 'hidden';
+      var targetDisappeared = (!target.offsetHeight && !target.offsetWidth) || target.style.visibility === 'hidden' || target.hasAttribute('disabled');
       if (targetDisappeared) {
         setTimeout(function () {
           var root = dialog.getRootNode();

@@ -1,6 +1,6 @@
 {
   "name": "fs-dialog",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "description": "An accessible standard dialog for FamilySearch.",
   "directories": {
     "test": "test"
