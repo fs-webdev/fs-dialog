@@ -1,0 +1,8 @@
+#########################################################################################
+# Code Ownership for fs-dialog 
+#   All files owned by tw-gold
+#
+# See https://help.github.com/en/articles/about-code-owners for information on how to use
+#########################################################################################
+
+*   @fs-webdev/tw-gold
