@@ -635,13 +635,23 @@
         if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
           // this has a settimeout because of modal dialog's uninert needing to run before we can do the focusback
           setTimeout(function () {
-            this.focusBackElement && this.focusBackElement.focus();
+            if (this.focusBackElement && !((!this.focusBackElement.offsetHeight && !this.focusBackElement.offsetWidth) || this.focusBackElement.style.visibility === 'hidden' || this.focusBackElement.hasAttribute('disabled'))) {
+              this.focusBackElement.focus();
+            } else if (FS.dialog.service.getStack().length > 0) {
+              // focus the last open dialog
+              FS.dialog.service.getStack()[FS.dialog.service.getStack().length - 1].focus();
+            }
             this.cancelFocusback = false;
             this.focusBackElement = null;
           }.bind(this), 100);
         } else {
           if (!this.cancelFocusback) {
-            this.focusBackElement && this.focusBackElement.focus();
+            if (this.focusBackElement && !((!this.focusBackElement.offsetHeight && !this.focusBackElement.offsetWidth) || this.focusBackElement.style.visibility === 'hidden' || this.focusBackElement.hasAttribute('disabled'))) {
+              this.focusBackElement.focus();
+            } else if (FS.dialog.service.getStack().length > 1) {
+              // focus the last open dialog - this current dialog is still in the stack, so we're getting the second to last dialog
+              FS.dialog.service.getStack()[FS.dialog.service.getStack().length - 2].focus();
+            }
           }
           this.cancelFocusback = false;
           this.focusBackElement = null;
@@ -788,27 +798,34 @@
             // listen for when the window does get focus and run this function again
             window.addEventListener('focus', dialog._focusoutHandler);
           } else if (!dialog.contains(activeElement)) {
-            // cascade down stack until we hit a dialog that has the active element or does not have click away
-            reverseStack = [].concat(FS.dialog.service.getStack()).reverse();
-            var originalDialog = dialog;
-            reverseStack.some(function (dialog) {
-              root = dialog.getRootNode();
-              activeElement = root.activeElement || activeElement;
-              // This does not work in firefox 59 as of 2018-04-19 (april 2018) because the
-              // active element is always the document.body at this point for some reason
-              dialog.attachedToElementClicked = ((dialog.attachToElement && dialog.attachToElement.contains(dialog.attachToElement.getRootNode().activeElement)) || (dialog.focusBackElement && dialog.focusBackElement.contains(dialog.focusBackElement.getRootNode().activeElement)));
-              if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
-                dialog.cancelFocusback = true;
-                // don't close if a node doesn't get focus because it dissapeared
-                if (dialogContainedRelatedTarget && dialog === originalDialog) {
-                  dialog.focus();
+            // the target may have lost focus and then disappeared
+            targetDisappeared = (!target.offsetHeight && !target.offsetWidth) || target.style.visibility === 'hidden' || target.hasAttribute('disabled');
+            if (targetDisappeared) {
+              dialog.focus();
+              return true;
+            } else {
+              // cascade down stack until we hit a dialog that has the active element or does not have click away
+              reverseStack = [].concat(FS.dialog.service.getStack()).reverse();
+              var originalDialog = dialog;
+              reverseStack.some(function (dialog) {
+                root = dialog.getRootNode();
+                activeElement = root.activeElement || activeElement;
+                // This does not work in firefox 59 as of 2018-04-19 (april 2018) because the
+                // active element is always the document.body at this point for some reason
+                dialog.attachedToElementClicked = ((dialog.attachToElement && dialog.attachToElement.contains(dialog.attachToElement.getRootNode().activeElement)) || (dialog.focusBackElement && dialog.focusBackElement.contains(dialog.focusBackElement.getRootNode().activeElement)));
+                if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
+                  dialog.cancelFocusback = true;
+                  // don't close if a node doesn't get focus because it dissapeared
+                  if (dialogContainedRelatedTarget && dialog === originalDialog) {
+                    dialog.focus();
+                    return true;
+                  }
+                  dialog.close();
+                } else {
                   return true;
                 }
-                dialog.close();
-              } else {
-                return true;
-              }
-            });
+              });
+            }
           }
         }, 0);
       }
