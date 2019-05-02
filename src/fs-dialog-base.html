@@ -635,9 +635,10 @@
         if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
           // this has a settimeout because of modal dialog's uninert needing to run before we can do the focusback
           setTimeout(function () {
-            if (this.focusBackElement && !((!this.focusBackElement.offsetHeight && !this.focusBackElement.offsetWidth) || this.focusBackElement.style.visibility === 'hidden' || this.focusBackElement.hasAttribute('disabled'))) {
+            if (!elementIsGoneOrDisabled(this.focusBackElement)) {
               this.focusBackElement.focus();
             } else if (FS.dialog.service.getStack().length > 0) {
+              // there is not a focusBackElement, or it has disappeared or been disabled
               // focus the last open dialog
               FS.dialog.service.getStack()[FS.dialog.service.getStack().length - 1].focus();
             }
@@ -646,9 +647,10 @@
           }.bind(this), 100);
         } else {
           if (!this.cancelFocusback) {
-            if (this.focusBackElement && !((!this.focusBackElement.offsetHeight && !this.focusBackElement.offsetWidth) || this.focusBackElement.style.visibility === 'hidden' || this.focusBackElement.hasAttribute('disabled'))) {
+            if (!elementIsGoneOrDisabled(this.focusBackElement)) {
               this.focusBackElement.focus();
             } else if (FS.dialog.service.getStack().length > 1) {
+              // there is not a focusBackElement, or it has disappeared or been disabled
               // focus the last open dialog - this current dialog is still in the stack, so we're getting the second to last dialog
               FS.dialog.service.getStack()[FS.dialog.service.getStack().length - 2].focus();
             }
@@ -780,7 +782,7 @@
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
       // don't close if a node loses focus from disappearing or getting disabled
       var target = event.composedPath()[0];
-      var targetDisappeared = (!target.offsetHeight && !target.offsetWidth) || target.style.visibility === 'hidden' || target.hasAttribute('disabled');
+      var targetDisappeared = elementIsGoneOrDisabled(target);
       if (targetDisappeared) {
         setTimeout(function () {
           var root = dialog.getRootNode();
@@ -799,7 +801,7 @@
             window.addEventListener('focus', dialog._focusoutHandler);
           } else if (!dialog.contains(activeElement)) {
             // the target may have lost focus and then disappeared
-            targetDisappeared = (!target.offsetHeight && !target.offsetWidth) || target.style.visibility === 'hidden' || target.hasAttribute('disabled');
+            targetDisappeared = elementIsGoneOrDisabled(target);
             if (targetDisappeared) {
               dialog.focus();
               return true;
@@ -903,6 +905,10 @@
     }
 
     return focusableElements;
+  }
+
+  function elementIsGoneOrDisabled (node) {
+    return !node || (!node.offsetHeight && !node.offsetWidth) || node.style.visibility === 'hidden' || node.hasAttribute('disabled');
   }
 
   // keep track of if the window has focus or not
