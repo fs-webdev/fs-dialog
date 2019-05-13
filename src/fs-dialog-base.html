@@ -731,7 +731,7 @@
    */
   function dialogClickHandler (event) {
     // handle child elements of elements with these attributes
-    var el = event.target;
+    var el = event.composedPath()[0];
     while (el !== this) {
       // add a value to the event
       // make this event fire with the escape key
@@ -747,7 +747,7 @@
       // confirming the dialog does not close it. allow the user to determine
       // what to do with the modal
       if (el.hasAttribute('data-dialog-confirm')) {
-        this.dispatchEvent(new Event('fs-dialog-confirm', {bubbles: true, composed: true}));
+        this.dispatchEvent(new CustomEvent('fs-dialog-confirm', {bubbles: true, composed: true, detail: {value: el.getAttribute('data-dialog-confirm')}}));
 
         // stop the event from propagating to parent fs-dialogs
         event.stopPropagation();
