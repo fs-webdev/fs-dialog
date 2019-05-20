@@ -60,10 +60,10 @@ ___
 fs-modeless-dialog,
 fs-modal-dialog,
 fs-anchored-dialog {
-	opacity: 0;
-	position: absolute;
-	top: 0;
-	visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  visibility: hidden;
 }
 ```
 

@@ -417,8 +417,11 @@
       this.attachedCallback();
     }
     /**
-     * Initialize the dialog, add events, and accessibility features. Should only change
-     * the DOM on attached callback otherwise it breaks Polymer bindings.
+     * Initialize the dialog, add events, and accessibility features.
+     * Note: Should only change the DOM on attached callback otherwise it breaks Polymer bindings.
+     * @param {Object} template - The dialog DOM template itself.
+     * @param {string} selector - The querySelector for the DOM element where we are putting the styles, events, etc.
+     * @param {Object} thisEl - The this object from the attach function.
      */
     appendStyles (template, selector, thisEl) {
       var root = thisEl.getRootNode();
@@ -484,18 +487,18 @@
 
       // open the dialog
       this.open = function (optionsObj) {
-        if (this.doTimoutPromise) {
+        if (this.doTimeoutPromise) {
           // this is to help with touch devices and toggle.
           // Previous to this part of the function being written,
           // touch devices had a problem where when losing focus
           // due to clicking on the attachToElement the open function
           // was firing before the close function (since with focusout
           // the close function is happening inside a timeout). We
-          // had to do some insantiy here do make a timeout happen
+          // had to do some insanity here do make a timeout happen
           // because this function needs to return a promise and
-          // as soon as you do anything inside a setTimout, everything
+          // as soon as you do anything inside a setTimeout, everything
           // inside of it is lost.
-          this.doTimoutPromise = false;
+          this.doTimeoutPromise = false;
           let resolveTimeoutPromise;
           var timeoutPromise = new Promise(function (resolve, reject) {
             resolveTimeoutPromise = resolve;
@@ -507,7 +510,7 @@
           }, 0);
           return timeoutPromise;
         }
-        this.doTimoutPromise = true;
+        this.doTimeoutPromise = true;
         var pendingPromise;
 
         try {
@@ -633,7 +636,7 @@
         zIndex -= zIndexIncrement;
 
         if (!this.cancelFocusback && this.tagName === 'FS-MODAL-DIALOG') {
-          // this has a settimeout because of modal dialog's uninert needing to run before we can do the focusback
+          // this has a setTimeout because of modal dialog's uninert needing to run before we can do the focusback
           setTimeout(function () {
             if (!elementIsGoneOrDisabled(this.focusBackElement)) {
               this.focusBackElement.focus();
@@ -701,8 +704,12 @@
     static get observedAttributes () {
       return attrList;
     }
+
     /**
-     * Set our attributes to be properties too
+     * Set our attributes to be properties, too, and keep them up-to-date.
+     * @param {string} attr - The name of the attribute that changed.
+     * @param {string} oldValue - The previous value.
+     * @param {string} newValue - The new value.
      */
     attributeChangedCallback (attr, oldValue, newValue) {
       return attrList.some(function (attributeName) {
@@ -728,6 +735,7 @@
 
   /**
    * Determine when to close the dialog.
+   * @param {Object} event - Mouse/touch event that triggered the handler.
    */
   function dialogClickHandler (event) {
     // handle child elements of elements with these attributes
@@ -766,18 +774,32 @@
     }
   }
 
+  /**
+   * Keep track of if the window has focus, to keep from losing focus and closing when entering dev tools or another browser window/application.
+   * @param {Object} event - Focus event that triggered the handler.
+   */
   function windowFocusListener (event) {
     FS.dialog.service.windowHasFocus = true;
   }
+
+  /**
+   * Keep track of if the window has focus, to keep from losing focus and closing when entering dev tools or another browser window/application.
+   * @param {Object} event - Blur event that triggered the handler.
+   */
   function windowBlurListener (event) {
     FS.dialog.service.windowHasFocus = false;
   }
+
+  /**
+   * Determine what to put focus back onto, once loss of focus actually occurs.
+   * @param {Object} event - Focusout event that triggered the handler.
+   */
   function focusoutHandler (event) {
     var dialog = this;
     var dialogContainedRelatedTarget;
     var reverseStack;
     window.removeEventListener('focus', dialog._focusoutHandler);
-    // use setTimout so that we get the correct document.activeElement
+    // use setTimeout so that we get the correct document.activeElement
     // TODO: look into using the related target instead of activeElement if possible
     if (FS.dialog.service.dialogIsOnTop(dialog)) {
       // don't close if a node loses focus from disappearing or getting disabled
@@ -789,7 +811,7 @@
           if (!dialog.contains(root.activeElement)) dialog.focus();
         }, 0);
       } else {
-        // don't close if a node doesn't get focus because it dissapeared
+        // don't close if a node doesn't get focus because it disappeared
         if (event.relatedTarget && dialog.contains(event.relatedTarget)) dialogContainedRelatedTarget = true;
         setTimeout(function () {
           // Don't do anything if somehow the dialog was already closed
@@ -817,7 +839,7 @@
                 dialog.attachedToElementClicked = ((dialog.attachToElement && dialog.attachToElement.contains(dialog.attachToElement.getRootNode().activeElement)) || (dialog.focusBackElement && dialog.focusBackElement.contains(dialog.focusBackElement.getRootNode().activeElement)));
                 if (dialog.dismissOnBlur && !dialog.contains(activeElement)) {
                   dialog.cancelFocusback = true;
-                  // don't close if a node doesn't get focus because it dissapeared
+                  // don't close if a node doesn't get focus because it disappeared
                   if (dialogContainedRelatedTarget && dialog === originalDialog) {
                     dialog.focus();
                     return true;
@@ -836,7 +858,7 @@
 
   /**
    * Check for events that should close the dialog.
-   * @param {Event} e
+   * @param {Event} event - The triggering keyDown event.
    */
   function keydownHandler (event) {
     if (event.which === 27) {

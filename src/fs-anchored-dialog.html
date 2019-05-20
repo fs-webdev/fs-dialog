@@ -289,8 +289,12 @@
     static get observedAttributes () {
       return FS.dialog.baseDialogComponent.observedAttributes.concat(attrList);
     }
+
     /**
-     * Set our attributes to be properties too
+     * Set our attributes to be properties, too, and keep them up-to-date.
+     * @param {string} attr - The name of the attribute that changed.
+     * @param {string} oldValue - The previous value.
+     * @param {string} newValue - The new value.
      */
     attributeChangedCallback (attr, oldValue, newValue) {
       var handledByParent = super.attributeChangedCallback(attr, oldValue, newValue);
