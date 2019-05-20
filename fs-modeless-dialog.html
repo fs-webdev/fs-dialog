@@ -215,6 +215,7 @@
 
   /**
    * Set up dragging for the dialog.
+   * @param {Object} e - Mouse/touch event that triggered the handler.
    * @see http://jsfiddle.net/Lk2hLt
    * @see http://interactjs.io/
    */
@@ -253,6 +254,7 @@
 
   /**
    * Update the x/y position of the dialog while dragging.
+   * @param {Object} e - Mouse/touch event that triggered the handler.
    */
   function dragHandler (e) {
     e.preventDefault();
@@ -298,6 +300,7 @@
 
   /**
    * Clean up events and properties when drag is finished.
+   * @param {Object} e - Mouse/touch event that triggered the handler.
    */
   function endDragHandler (e) {
     document.body.classList.remove('fs-dialog--dragging');

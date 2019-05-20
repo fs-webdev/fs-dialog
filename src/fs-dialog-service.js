@@ -9,7 +9,7 @@
   FS.dialog.service = FS.dialog.service || {};
 
   /**
-   * This function will register global elements and attach a reference to them to FS.dialog
+   * Register global elements and attach a reference to them to FS.dialog.
    * @param {string} elementName - The name of the element to register e.g. fs-person-card
    * @returns {undefined} - Returns void.
    */
