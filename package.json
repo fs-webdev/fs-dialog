@@ -54,7 +54,7 @@
     "postinstall": "bower install",
     "lint": "eslint '**/*.html' '**/*.js' '**/*.json' && stylelint '**/*.html' '**/*.css'",
     "lint:fix": "eslint '**/*.html' '**/*.js' '**/*.json' --fix && stylelint '**/*.html' '**/*.css' --fix",
-    "lint:staged": "node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && lint-staged",
+    "lint:staged": "gulp && node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && lint-staged",
     "standard": "npm run lint",
     "standard-fix": "npm run lint:fix",
     "test": "wct --skip-plugin sauce",
