@@ -10,7 +10,7 @@ cache:
 dist: trusty
 language: node_js
 node_js:
-  - '8'
+  - 10
 notifications:
   email:
     on_success: never
@@ -39,8 +39,11 @@ install:
 before_script:
   - node_modules/fs-common-build-scripts/bin/before_script.sh
 script:
-  # pipe standard & wct output through tee to create a log to parse for errors and preserve exit code
-  - 'npm run standard && npx wct --configFile wct.conf.windows.json --skip-plugin local && npx wct --configFile wct.conf.json --skip-plugin local 2>&1 | tee wct.log; ( exit ${PIPESTATUS[0]} )'
+  # Run linting checks, suppressing warnings for cleanliness
+  - npx eslint '**/*.html' '**/*.json' --quiet
+  - stylelint '**/*.html' '**/*.css'
+  # Run tests
+  - 'npx wct --configFile wct.conf.windows.json --skip-plugin local && npx wct --configFile wct.conf.json --skip-plugin local'
 after_success:
   - node node_modules/fs-common-build-scripts/bin/create_release.js
 after_failure:

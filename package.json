@@ -32,66 +32,34 @@
     "gulp-replace": "^0.6.1",
     "gulp-uglify": "^3.0.0",
     "polymer-build": "^2.1.1",
-    "fs-common-build-scripts": "github:fs-webdev/fs-common-build-scripts"
+    "eslint-config-frontier": "github:fs-webdev/eslint-config-frontier",
+    "eslint-config-tree": "github:fs-webdev/eslint-config-tree#semver:^1",
+    "fs-common-build-scripts": "github:fs-webdev/fs-common-build-scripts#semver:^1",
+    "husky": "^2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint:staged",
+      "pre-push": "npm run lint && CI=true npm run test"
+    }
+  },
+  "lint-staged": {
+    "*.{html,js,json}": [
+      "suppress-exit-code npx eslint '**/*.html' '**/*.js' '**/*.json' --fix",
+      "suppress-exit-code git add"
+    ]
   },
   "scripts": {
-    "postinstall": "bower install",
-    "precommit": "gulp && node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && node_modules/fs-common-build-scripts/bin/pre_commit_commands.sh",
     "preinstall": "git config --global url.https://github.com/.insteadOf git://github.com/",
-    "pretest": "semistandard --verbose '**/*.html' '**/*.js' '**/*.json' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
-    "standard": "semistandard --verbose '**/*.html' '**/*.js' '**/*.json' | snazzy && stylelint '**/*.html' '**/*.css'",
-    "standard-fix": "semistandard --verbose '**/*.html' '**/*.js' '**/*.json' --fix | snazzy && stylelint '**/*.html' '**/*.css' --fix",
+    "postinstall": "bower install",
+    "lint": "eslint '**/*.html' '**/*.js' '**/*.json' && stylelint '**/*.html' '**/*.css'",
+    "lint:fix": "eslint '**/*.html' '**/*.js' '**/*.json' --fix && stylelint '**/*.html' '**/*.css' --fix",
+    "lint:staged": "node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && lint-staged",
+    "standard": "npm run lint",
+    "standard-fix": "npm run lint:fix",
     "test": "wct --skip-plugin sauce",
     "test-p": "wct --skip-plugin sauce -p",
     "test-s": "wct --configFile wct.conf.windows.json --skip-plugin local && wct --configFile wct.conf.json --skip-plugin local"
-  },
-  "semistandard": {
-    "about": "https://github.com/Flet/semistandard#javascript-semi-standard-style",
-    "globals": [
-      "__actions__",
-      "__services__",
-      "__state__",
-      "after",
-      "afterEach",
-      "axe",
-      "before",
-      "beforeEach",
-      "customElements",
-      "CustomEvent",
-      "describe",
-      "Event",
-      "expect",
-      "fixture",
-      "FS",
-      "FsBehaviors",
-      "Headers",
-      "HTMLElement",
-      "indexedDB",
-      "it",
-      "location",
-      "Polymer",
-      "ResettablePropertiesBehavior",
-      "sessionStorage",
-      "sinon",
-      "WCI18n"
-    ],
-    "ignore": [
-      "**/*bower_components*/**",
-      "**/*min.*",
-      "**/*node_modules*/**",
-      "**/*polyfill*",
-      "**/demo/**",
-      "**/reports/**",
-      "**/test/**",
-      "**/vendor/**",
-      "analysis.json",
-      "gulpfile.js"
-    ],
-    "parser": "babel-eslint",
-    "plugin": [
-      "html",
-      "json"
-    ]
   },
   "stylelint": {
     "about": "https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md#possible-errors",

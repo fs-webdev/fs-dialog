@@ -270,7 +270,7 @@
 
     /**
      * Open the dialog.
-     * @param {Object} config - Object containing the following properties (attachToElement and attachToCoordinates are mutually exclusive, but one is required):
+     * @param {object} config - Object containing the following properties (attachToElement and attachToCoordinates are mutually exclusive, but one is required):
      *                          focusBackElement - The element to return focus back after the dialog closes.
      *                          attachToElement - The element to which the dialog will be attached.
      *                          attachToCoordinates - Object containing 'x' and 'y' properties representing the coordinates to attach the dialog to the element.
@@ -792,8 +792,7 @@
         var width = containingRect.width / scale;
         var height = containingRect.height / scale;
 
-        var rect = new positioningObj.FSRect(left, top, width, height);
-        return rect;
+        return new positioningObj.FSRect(left, top, width, height);
       }
 
       function getOffsetParentTranslates (element) {
@@ -815,8 +814,7 @@
         var top = rect.top / scale;
         var width = rect.width * scale;
         var height = rect.height * scale;
-        var newRect = new positioningObj.FSRect(left, top, width, height);
-        return newRect;
+        return new positioningObj.FSRect(left, top, width, height);
       }
 
       function adjustDialogRectForTranslates (rect, dialogElement) {
