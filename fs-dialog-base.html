@@ -332,6 +332,12 @@
           width: 100%;
         }
 
+        fs-modal-dialog[helper-mode-on]:not([no-fullscreen-mobile]),
+        fs-anchored-dialog[helper-mode-on]:not([no-fullscreen-mobile]) {
+          height: calc(100% - 40px) !important;
+          margin-top: 40px;
+        }
+
         .fs-dialog__mask {
           display: none;
           transition: none;
@@ -409,6 +415,13 @@
 
       this.keydownHandler = keydownHandler;
       this.getFocusableChildren = getFocusableChildren.bind(this);
+
+      if (FS.showEx('helperModeMobileNewDesignEx')) {
+        if(Boolean(FS && FS.User && FS.User.helper)){
+          this.setAttribute('helper-mode-on', '');
+        }
+      }
+      
     }
     createdCallback () {
       this.keydownHandler = keydownHandler;
