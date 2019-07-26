@@ -419,11 +419,10 @@
       if (FS.showEx('helperModeMobileNewDesignEx')) {
         const helperModeOn = Boolean(FS && FS.User && FS.User.helper);
         const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole());
-        if(helperModeOn || adminModeOn){
+        if (helperModeOn || adminModeOn) {
           this.setAttribute('role-indicator-on', '');
         }
       }
-      
     }
     createdCallback () {
       this.keydownHandler = keydownHandler;
