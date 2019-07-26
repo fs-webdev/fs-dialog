@@ -417,9 +417,9 @@
       this.getFocusableChildren = getFocusableChildren.bind(this);
 
       if (FS.showEx('helperModeMobileNewDesignEx')) {
-        const helperModeOn = FS && FS.User && FS.User.helper;
-        const adminModeOn = HF && HF.roles && HF.roles.getSessionAdminRole();
-        if(helperModeOn && adminModeOn){
+        const helperModeOn = Boolean(FS && FS.User && FS.User.helper);
+        const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole());
+        if(helperModeOn || adminModeOn){
           this.setAttribute('role-indicator-on', '');
         }
       }
