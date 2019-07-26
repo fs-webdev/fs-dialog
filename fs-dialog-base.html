@@ -332,8 +332,8 @@
           width: 100%;
         }
 
-        fs-modal-dialog[helper-mode-on]:not([no-fullscreen-mobile]),
-        fs-anchored-dialog[helper-mode-on]:not([no-fullscreen-mobile]) {
+        fs-modal-dialog[role-indicator-on]:not([no-fullscreen-mobile]),
+        fs-anchored-dialog[role-indicator-on]:not([no-fullscreen-mobile]) {
           height: calc(100% - 40px) !important;
           margin-top: 40px;
         }
@@ -417,8 +417,10 @@
       this.getFocusableChildren = getFocusableChildren.bind(this);
 
       if (FS.showEx('helperModeMobileNewDesignEx')) {
-        if(Boolean(FS && FS.User && FS.User.helper)){
-          this.setAttribute('helper-mode-on', '');
+        const helperModeOn = FS && FS.User && FS.User.helper;
+        const adminModeOn = HF && HF.roles && HF.roles.getSessionAdminRole();
+        if(helperModeOn && adminModeOn){
+          this.setAttribute('role-indicator-on', '');
         }
       }
       
