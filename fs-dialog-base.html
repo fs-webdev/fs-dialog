@@ -415,14 +415,6 @@
 
       this.keydownHandler = keydownHandler;
       this.getFocusableChildren = getFocusableChildren.bind(this);
-
-      if (FS.showEx('helperModeMobileNewDesignEx')) {
-        const helperModeOn = Boolean(FS && FS.User && FS.User.helper);
-        const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole());
-        if (helperModeOn || adminModeOn) {
-          this.setAttribute('role-indicator-on', '');
-        }
-      }
     }
     createdCallback () {
       this.keydownHandler = keydownHandler;
@@ -496,6 +488,14 @@
       this.appendChild(clone);
       this.setAttribute('role', 'dialog');
       a11yEnhancer.dialog(this); // eslint-disable-line
+
+      if (FS.showEx('helperModeMobileNewDesignEx')) {
+        const helperModeOn = Boolean(FS && FS.User && FS.User.helper);
+        const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole());
+        if (helperModeOn || adminModeOn) {
+          this.setAttribute('role-indicator-on', '');
+        }
+      }
 
       // this._opened = false;
       this._focusoutHandler = focusoutHandler.bind(this);
