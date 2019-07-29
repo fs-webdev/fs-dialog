@@ -332,6 +332,12 @@
           width: 100%;
         }
 
+        fs-modal-dialog[role-indicator-on]:not([no-fullscreen-mobile]),
+        fs-anchored-dialog[role-indicator-on]:not([no-fullscreen-mobile]) {
+          height: calc(100% - 40px) !important;
+          margin-top: 40px;
+        }
+
         .fs-dialog__mask {
           display: none;
           transition: none;
@@ -482,6 +488,14 @@
       this.appendChild(clone);
       this.setAttribute('role', 'dialog');
       a11yEnhancer.dialog(this); // eslint-disable-line
+
+      if (FS.showEx('helperModeMobileNewDesignEx')) {
+        const helperModeOn = Boolean(FS && FS.User && FS.User.helper);
+        const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole());
+        if (helperModeOn || adminModeOn) {
+          this.setAttribute('role-indicator-on', '');
+        }
+      }
 
       // this._opened = false;
       this._focusoutHandler = focusoutHandler.bind(this);
