@@ -6,6 +6,7 @@ branches:
     - master
 # Caching of bower_components & node_modules disabled, due to an increase in delayed breakages
 cache:
+  npm: false
   directories: null
 dist: trusty
 language: node_js
@@ -22,7 +23,7 @@ notifications:
       - "\tin %{duration} for %{author}'s commit:"
       - "\t\"%{commit_subject}\""
     rooms:
-      - 'ldschurch:S4NvL7BI3BFGOMfoiSCfARk5#treeweb-gold-builds'
+      - 'familysearch:S4NvL7BI3BFGOMfoiSCfARk5#treeweb-gold-builds'
     on_pull_requests: false
     on_success: always
     on_failure: change
