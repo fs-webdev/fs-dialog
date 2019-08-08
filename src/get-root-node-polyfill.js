@@ -35,7 +35,7 @@
   }
 
   function getRoot (node) {
-    if (node.parentNode != null) {
+    if (node.parentNode !== null) {
       return getRoot(node.parentNode);
     }
 
