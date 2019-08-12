@@ -56,7 +56,7 @@
       describe('fsDialogBase', function () {
         var el, closeEl, bodyEl, headerEl, footerEl, maskEl;
 
-        function updateSelectors() {
+        function updateSelectors () {
           closeEl = el.querySelector('.fs-dialog__close');
           bodyEl = el.querySelector('.fs-dialog__body');
           headerEl = el.querySelector('header');
@@ -64,7 +64,7 @@
           maskEl = el.parentNode.querySelector('.fs-dialog__mask');
         }
 
-        beforeEach(function() {
+        beforeEach(function () {
           el = fixture('fs-dialog-base-fixture');
           updateSelectors();
         });
@@ -152,40 +152,37 @@
           });
         });
 
-        describe('attached', function() {
-
-          it('should add a close button with an aria-label', function() {
+        describe('attached', function () {
+          it('should add a close button with an aria-label', function () {
             expect(closeEl).to.exist;
             expect(closeEl.hasAttribute('aria-label')).to.be.true;
           });
 
-          it('should move the close button to be in the header', function() {
+          it('should move the close button to be in the header', function () {
             expect(closeEl.parentNode).to.equal(headerEl);
           });
 
-          it('should move the close button to be the first child of the dialog if there is no header', function() {
+          it('should move the close button to be the first child of the dialog if there is no header', function () {
             el = fixture('fs-dialog-base-fixture-empty');
             updateSelectors();
 
             expect(closeEl.parentNode).to.equal(el);
             expect(el.firstChild).to.equal(closeEl);
           });
-
         });
 
-        describe('functions', function() {
-
-          it('calling "open" should open the dialog', function() {
+        describe('functions', function () {
+          it('calling "open" should open the dialog', function () {
             el.open();
 
             expect(el.hasAttribute('opened')).to.be.true;
           });
 
-          it('calling "open" should dispatch an "fs-dialog-open" event', function(done) {
+          it('calling "open" should dispatch an "fs-dialog-open" event', function (done) {
             // timeout after 1 second if the event is not triggered
             this.timeout(1000);
 
-            el.addEventListener('fs-dialog-open', function(e) {
+            el.addEventListener('fs-dialog-open', function (e) {
               expect(e.target).to.equal(el);
 
               done();
@@ -194,7 +191,7 @@
             el.open();
           });
 
-          it('calling "open" should add "tabindex" to the body if it needs to scroll', function() {
+          it('calling "open" should add "tabindex" to the body if it needs to scroll', function () {
             bodyEl.style.height = '200px';
             bodyEl.style.width = '200px';
             bodyEl.style.overflow = 'auto';
@@ -209,18 +206,18 @@
             expect(bodyEl.getAttribute('tabindex')).to.equal('0');
           });
 
-          it('calling "close" should close the dialog', function() {
+          it('calling "close" should close the dialog', function () {
             el.open();
             el.close();
 
             expect(el.hasAttribute('opened')).to.be.false;
           });
 
-          it('calling "close" should dispatch an "fs-dialog-close" event', function(done) {
+          it('calling "close" should dispatch an "fs-dialog-close" event', function (done) {
             // timeout after 1 second if the event is not triggered
             this.timeout(1000);
 
-            el.addEventListener('fs-dialog-close', function(e) {
+            el.addEventListener('fs-dialog-close', function (e) {
               expect(e.target).to.equal(el);
 
               done();
@@ -230,12 +227,12 @@
             el.close();
           });
 
-          it('clicking the close button should not close the dialog when the property "self-closing" is true', function(done) {
+          it('clicking the close button should not close the dialog when the property "self-closing" is true', function (done) {
             // timeout after 1 second if the event is not triggered
             this.timeout(1000);
 
             el.selfClosing = true;
-            el.addEventListener('fs-dialog-close', function(evt) {
+            el.addEventListener('fs-dialog-close', function (evt) {
               expect(evt.target).to.equal(el);
               expect(el.opened).to.be.true;
 
@@ -246,12 +243,12 @@
             closeEl.click();
           });
 
-          it('calling "close(true)" should dispatch an "fs-dialog-close" event, even if "self-closing" is true', function(done) {
+          it('calling "close(true)" should dispatch an "fs-dialog-close" event, even if "self-closing" is true', function (done) {
             // timeout after 1 second if the event is not triggered
             this.timeout(1000);
 
             el.selfClosing = true;
-            el.addEventListener('fs-dialog-close', function(e) {
+            el.addEventListener('fs-dialog-close', function (e) {
               expect(e.target).to.equal(el);
 
               done();
@@ -261,16 +258,14 @@
             el.close(true);
           });
 
-          it('calling open or close should return a promise', function() {
-            expect(el.open().then).to.be.ok
-            expect(el.close().then).to.be.ok
-          })
-
+          it('calling open or close should return a promise', function () {
+            expect(el.open().then).to.be.ok;
+            expect(el.close().then).to.be.ok;
+          });
         });
 
-        describe('attributes', function() {
-
-          it('clicking on an element with "data-dialog-dismiss" should close the dialog', function() {
+        describe('attributes', function () {
+          it('clicking on an element with "data-dialog-dismiss" should close the dialog', function () {
             el.open();
             expect(el.hasAttribute('opened')).to.be.true;
             el.querySelector('button').click();
@@ -279,11 +274,11 @@
             expect(el.hasAttribute('opened')).to.be.false;
           });
 
-          it('clicking on an element with "data-dialog-dismiss" should dispatch a "fs-dialog-dismiss" event', function(done) {
+          it('clicking on an element with "data-dialog-dismiss" should dispatch a "fs-dialog-dismiss" event', function (done) {
             // timeout after 1 second if the event is not triggered
             this.timeout(1000);
 
-            el.addEventListener('fs-dialog-dismiss', function(e) {
+            el.addEventListener('fs-dialog-dismiss', function (e) {
               expect(e.target).to.equal(el);
 
               done();
@@ -293,18 +288,18 @@
             el.querySelector('[data-dialog-dismiss]').click();
           });
 
-          it('clicking on an element with "data-dialog-confirm" should not close the dialog', function() {
+          it('clicking on an element with "data-dialog-confirm" should not close the dialog', function () {
             el.open();
             el.querySelector('[data-dialog-confirm]').click();
 
             expect(el.hasAttribute('opened')).to.be.true;
           });
 
-          it('clicking on an element with "data-dialog-confirm" should dispatch a "fs-dialog-confirm" event', function(done) {
+          it('clicking on an element with "data-dialog-confirm" should dispatch a "fs-dialog-confirm" event', function (done) {
             // timeout after 1 second if the event is not triggered
             this.timeout(1000);
 
-            el.addEventListener('fs-dialog-confirm', function(e) {
+            el.addEventListener('fs-dialog-confirm', function (e) {
               expect(e.target).to.equal(el);
 
               done();
@@ -313,27 +308,22 @@
             el.open();
             el.querySelector('[data-dialog-confirm]').click();
           });
-
         });
 
-        describe('properties', function() {
-
-          it('should have an "opened" property', function() {
+        describe('properties', function () {
+          it('should have an "opened" property', function () {
             expect(el.opened).to.exist;
             expect(el.opened).to.be.false;
           });
-
         });
-
-
       });
 
-      function simulateEvent(type, config) {
+      function simulateEvent (type, config) {
         var evt;
 
         try {
           evt = new Event(type);
-        } catch(e) {
+        } catch (e) {
           evt = document.createEvent('Event');
           evt.initEvent(type, true, false);
         }
@@ -345,9 +335,6 @@
 
         return evt;
       }
-
-
-
     });
     </script>
   </body>

@@ -426,9 +426,9 @@
     /**
      * Initialize the dialog, add events, and accessibility features.
      * Note: Should only change the DOM on attached callback otherwise it breaks Polymer bindings.
-     * @param {Object} template - The dialog DOM template itself.
+     * @param {object} template - The dialog DOM template itself.
      * @param {string} selector - The querySelector for the DOM element where we are putting the styles, events, etc.
-     * @param {Object} thisEl - The this object from the attach function.
+     * @param {object} thisEl - The this object from the attach function.
      */
     appendStyles (template, selector, thisEl) {
       var root = thisEl.getRootNode();
@@ -750,7 +750,7 @@
 
   /**
    * Determine when to close the dialog.
-   * @param {Object} event - Mouse/touch event that triggered the handler.
+   * @param {object} event - Mouse/touch event that triggered the handler.
    */
   function dialogClickHandler (event) {
     // handle child elements of elements with these attributes
@@ -791,7 +791,7 @@
 
   /**
    * Keep track of if the window has focus, to keep from losing focus and closing when entering dev tools or another browser window/application.
-   * @param {Object} event - Focus event that triggered the handler.
+   * @param {object} event - Focus event that triggered the handler.
    */
   function windowFocusListener (event) {
     FS.dialog.service.windowHasFocus = true;
@@ -799,7 +799,7 @@
 
   /**
    * Keep track of if the window has focus, to keep from losing focus and closing when entering dev tools or another browser window/application.
-   * @param {Object} event - Blur event that triggered the handler.
+   * @param {object} event - Blur event that triggered the handler.
    */
   function windowBlurListener (event) {
     FS.dialog.service.windowHasFocus = false;
@@ -807,7 +807,7 @@
 
   /**
    * Determine what to put focus back onto, once loss of focus actually occurs.
-   * @param {Object} event - Focusout event that triggered the handler.
+   * @param {object} event - Focusout event that triggered the handler.
    */
   function focusoutHandler (event) {
     var dialog = this;

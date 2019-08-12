@@ -638,13 +638,13 @@
         var dynamicDialogButton = document.querySelector('.demo-snippet button');
         dynamicDialogButton.addEventListener('click', function () {
           dynamicDialogEl.open(openOptions)
-          .then(function() {
-            setTimeout(function() {
-              if (disappearingButton) {
-                disappearingButton.style.visibility = "visible";
-              }
-            }, 300);
-          });
+            .then(function () {
+              setTimeout(function () {
+                if (disappearingButton) {
+                  disappearingButton.style.visibility = 'visible';
+                }
+              }, 300);
+            });
         });
 
         var dynamicDemoInputs = document.querySelectorAll('input, select');
@@ -685,10 +685,10 @@
       }, 0);
     })();
 
-    function disappear(button) {
+    function disappear (button) {
       disappearingButton = button;
       disappearingButton.parentNode.focus();
-      disappearingButton.style.visibility = "hidden";
+      disappearingButton.style.visibility = 'hidden';
     }
     </script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/prism.js'></script>

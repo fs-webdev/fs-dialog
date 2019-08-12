@@ -1,5 +1,5 @@
 // service to handle stacking of dialogs
-(function() {
+(function () {
   // Node getRootNode(optional GetRootNodeOptions options);
 
   /**
@@ -14,17 +14,17 @@
    * https://dom.spec.whatwg.org/#dom-node-getrootnode
    *
    * @memberof Node.prototype
-   * @param {!Object} [opt = {}] - Options.
+   * @param {!object} [opt = {}] - Options.
    * @param {!boolean} [opt.composed] - See above description.
    * @returns {!Node} The root node.
    */
-  function getRootNode(opt) {
+  function getRootNode (opt) {
     var composed = typeof opt === 'object' && Boolean(opt.composed);
 
     return composed ? getShadowIncludingRoot(this) : getRoot(this);
   }
 
-  function getShadowIncludingRoot(node) {
+  function getShadowIncludingRoot (node) {
     var root = getRoot(node);
 
     if (isShadowRoot(root)) {
@@ -34,24 +34,23 @@
     return root;
   }
 
-  function getRoot(node) {
-    if (node.parentNode != null) {
+  function getRoot (node) {
+    if (node.parentNode !== null) {
       return getRoot(node.parentNode);
     }
 
     return node;
   }
 
-  function isShadowRoot(node) {
+  function isShadowRoot (node) {
     return typeof ShadowRoot === 'function' && node instanceof ShadowRoot;
   }
 
-  function isImplemented() {
+  function isImplemented () {
     return Object.prototype.hasOwnProperty.call(Node.prototype, 'getRootNode');
   }
 
-  if(!isImplemented()) {
+  if (!isImplemented()) {
     Node.prototype.getRootNode = getRootNode;
   }
-
 })();

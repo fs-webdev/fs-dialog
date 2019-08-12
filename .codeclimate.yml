@@ -42,8 +42,10 @@ checks:
       threshold: 100
 prepare:
   fetch:
-  - url: "https://raw.githubusercontent.com/standard/eslint-config-standard/master/eslintrc.json"
-    path: ".eslint-config-standard.json"
+    - url: "https://raw.githubusercontent.com/fs-webdev/eslint-config-frontier/master/index.js"
+      path: "eslint-config-frontier.js"
+    - url: "https://raw.githubusercontent.com/fs-webdev/eslint-config-tree/master/index.js"
+      path: "eslint-config-tree.js"
 plugins:
   babel-eslint:
     enabled: true
@@ -53,6 +55,7 @@ plugins:
     enabled: true
     channel: "eslint-4"
     config:
+      config: .codeclimate.eslintrc.js
       extensions:
         - .html
         - .js
@@ -118,6 +121,8 @@ exclude_patterns:
   - bower_components/
   - build/
   - dist/
+  - eslint-config-frontier.js
+  - eslint-config-tree.js
   - node_modules/
   - src/
   - "**/*-polyfill.js"
