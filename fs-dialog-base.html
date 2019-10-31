@@ -76,6 +76,12 @@
         width: -moz-fit-content;
         width: fit-content;
       }
+      
+      fs-modeless-dialog[role-indicator-on-hf2019],
+      fs-modal-dialog[role-indicator-on-hf2019]{
+        max-height: calc(100vh - 46px);
+        margin-top: 23px;
+      }
 
       .fs-dialog__mask {
         background: rgba(51, 51, 49, 0.8);
@@ -334,8 +340,8 @@
 
         fs-modal-dialog[role-indicator-on]:not([no-fullscreen-mobile]),
         fs-anchored-dialog[role-indicator-on]:not([no-fullscreen-mobile]) {
-          height: calc(100% - 40px) !important;
-          margin-top: 40px;
+          height: calc(100% - 46px) !important;
+          margin-top: 46px;
         }
 
         .fs-dialog__mask {
@@ -489,11 +495,12 @@
       this.setAttribute('role', 'dialog');
       a11yEnhancer.dialog(this); // eslint-disable-line
 
-      if (FS.showEx('helperModeMobileNewDesignEx')) {
-        const helperModeOn = Boolean(FS && FS.User && FS.User.helper);
-        const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole());
-        if (helperModeOn || adminModeOn) {
-          this.setAttribute('role-indicator-on', '');
+      const helperModeOn = Boolean(HF && HF.showHelper && FS && FS.User && FS.User.helper); // you need to be displaying helper mode & in helper mode
+      const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole().activeRole);
+      if (helperModeOn || adminModeOn) {
+        this.setAttribute('role-indicator-on', '');
+        if (FS.showEx('header2019')) {
+          this.setAttribute('role-indicator-on-hf2019', '');
         }
       }
 
