@@ -496,7 +496,7 @@
       a11yEnhancer.dialog(this); // eslint-disable-line
 
       const helperModeOn = Boolean(HF && HF.showHelper && FS && FS.User && FS.User.helper); // you need to be displaying helper mode & in helper mode
-      const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole().activeRole);
+      const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole() && HF.roles.getSessionAdminRole().activeRole);
       if (helperModeOn || adminModeOn) {
         this.setAttribute('role-indicator-on', '');
         if (FS.showEx('header2019')) {
