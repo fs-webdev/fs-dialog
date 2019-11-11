@@ -495,11 +495,11 @@
       this.setAttribute('role', 'dialog');
       a11yEnhancer.dialog(this); // eslint-disable-line
 
-      const helperModeOn = FS.showEx('header2019') ? Boolean(HF && HF.showHelper && FS && FS.User && FS.User.helper) : Boolean(FS && FS.User && FS.User.helper); // you need to be displaying helper mode & in helper mode
-      const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole() && HF.roles.getSessionAdminRole().activeRole);
+      const helperModeOn = window.FS.showEx('header2019') ? Boolean(window.HF && window.HF.showHelper && window.FS && window.FS.User && window.FS.User.helper) : Boolean(window.FS && window.FS.User && window.FS.User.helper); // you need to be displaying helper mode & in helper mode
+      const adminModeOn = Boolean(window.HF && window.HF.roles && window.HF.roles.getSessionAdminRole() && window.HF.roles.getSessionAdminRole().activeRole);
       if (helperModeOn || adminModeOn) {
         this.setAttribute('role-indicator-on', '');
-        if (FS.showEx('header2019')) {
+        if (window.FS.showEx('header2019')) {
           this.setAttribute('role-indicator-on-hf2019', '');
         }
       }
