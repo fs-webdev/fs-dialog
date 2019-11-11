@@ -490,8 +490,8 @@
       a11yEnhancer.dialog(this); // eslint-disable-line
 
       if (FS.showEx('helperModeMobileNewDesignEx')) {
-        const helperModeOn = Boolean(FS && FS.User && FS.User.helper);
-        const adminModeOn = Boolean(HF && HF.roles && HF.roles.getSessionAdminRole());
+        const helperModeOn = Boolean(window.FS && window.FS.User && window.FS.User.helper);
+        const adminModeOn = Boolean(window.HF && window.HF.roles && window.HF.roles.getSessionAdminRole());
         if (helperModeOn || adminModeOn) {
           this.setAttribute('role-indicator-on', '');
         }
