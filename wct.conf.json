@@ -24,8 +24,8 @@
       "dir": "./reports/coverage",
       "reporters": ["text", "text-summary", "lcov"],
       "include": [
-        "**/*.html",
-        "**/*.js"
+        "*.html",
+        "*.js"
       ],
       "exclude": [
         "**/*polyfill*",
@@ -48,8 +48,8 @@
     },
     "size-limit": {
       "path": "fs-dialog-all.html",
-      "limitNoPolymer": "26 KB",
-      "limitNoExternals": "15 KB"
+      "limitNoPolymer": "40 KB",
+      "limitNoExternals": "25 KB"
     }
   }
 }
