@@ -153,7 +153,7 @@ The FamilySearch Element Catalog is located at: [https://www.familysearch.org/fr
 
 For detail about automatic releases, test plugins, pre-commit hooks, and standards enforcement, see: [fs-common-build-scripts](https://github.com/fs-webdev/fs-common-build-scripts#)
 
-> IMPORTANT NOTE: When running package dependency commands (i.e. `wct`, `standard`), you need to prefix the command with [`npx`](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b).
+> IMPORTANT NOTE: When running package dependency commands (i.e. `wct`), you need to prefix the command with [`npx`](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b).
 
 ## Running Tests
 
@@ -161,22 +161,24 @@ For detail about automatic releases, test plugins, pre-commit hooks, and standar
 
 This component is set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester).
 
-To run tests locally, run:
+To run tests locally (skipping sauce), run:
 
 ```bash
 npm test
 ```
 
-which will run the standards checks through `semistandard` and `stylelint`, and then the unit tests via `wct`.
+which will run unit tests locally via `wct`.
+
+To run against sauce (skipping local), run:
 
 ```bash
-npx wct --skip-plugin sauce
+npm run test:ci
 ```
 
 If you need to debug locally (keeping the browser open), run:
 
 ```bash
-npx wct --skip-plugin sauce -p
+npm run test:persistent
 ```
 
 or

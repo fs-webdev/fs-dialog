@@ -1,3 +1,12 @@
-*.*
-!locales/*.*
-!src/*.*
+**/.*
+**/*bower_components*/**
+**/*min.*
+**/*node_modules*/**
+**/*polyfill*
+**/coverage/**
+**/demo/**
+**/reports/**
+**/test/**
+**/vendor/**
+analysis.json
+gulpfile.js

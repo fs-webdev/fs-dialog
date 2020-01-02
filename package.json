@@ -32,10 +32,7 @@
     "gulp-replace": "^0.6.1",
     "gulp-uglify": "^3.0.0",
     "polymer-build": "^2.1.1",
-    "eslint-config-frontier": "github:fs-webdev/eslint-config-frontier",
-    "eslint-config-tree": "github:fs-webdev/eslint-config-tree#semver:^1",
-    "fs-common-build-scripts": "github:fs-webdev/fs-common-build-scripts#semver:^1",
-    "husky": "^2"
+    "fs-common-build-scripts": "github:fs-webdev/fs-common-build-scripts#semver:^2"
   },
   "husky": {
     "hooks": {
@@ -54,12 +51,11 @@
     "postinstall": "bower install",
     "lint": "eslint '**/*.html' '**/*.js' '**/*.json' && stylelint '**/*.html' '**/*.css'",
     "lint:fix": "eslint '**/*.html' '**/*.js' '**/*.json' --fix && stylelint '**/*.html' '**/*.css' --fix",
-    "lint:staged": "gulp && node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && lint-staged",
-    "standard": "npm run lint",
-    "standard-fix": "npm run lint:fix",
+    "lint:quiet": "eslint '**/*.html' '**/*.js' '**/*.json' --quiet && stylelint '**/*.html' '**/*.css' --quiet",
+    "lint:staged": "lint-staged && node node_modules/fs-common-build-scripts/bin/pre_commit_checks.js && echo '\n*** MAKE SURE TO RUN `gulp` BEFORE PUSHING ***\n'",
     "test": "wct --skip-plugin sauce",
-    "test-p": "wct --skip-plugin sauce -p",
-    "test-s": "wct --configFile wct.conf.windows.json --skip-plugin local && wct --configFile wct.conf.json --skip-plugin local"
+    "test:ci": "wct --configFile wct.conf.windows.json --skip-plugin local && wct --configFile wct.conf.json --skip-plugin local",
+    "test:persistent": "wct --skip-plugin sauce -p"
   },
   "stylelint": {
     "about": "https://github.com/stylelint/stylelint/blob/master/docs/user-guide/rules.md#possible-errors",

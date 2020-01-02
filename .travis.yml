@@ -1,53 +1,20 @@
-addons:
-  sauce_connect: true
-# Branch whitelist
-branches:
-  only:
-    - master
-# Caching of bower_components & node_modules disabled, due to an increase in delayed breakages
-cache:
-  npm: false
-  directories: null
-dist: trusty
-language: node_js
-node_js:
-  - 10
-notifications:
-  email:
-    on_success: never
-    on_failure: change
-  slack:
-    # Custom template used because SUCCESS/FAILURE is all the way at the end by default
-    template:
-      - '%{result}: %{repository} <%{build_url}|#%{build_number}>  (<%{compare_url}|%{commit}>)'
-      - "\tin %{duration} for %{author}'s commit:"
-      - "\t\"%{commit_subject}\""
-    rooms:
-      - 'familysearch:S4NvL7BI3BFGOMfoiSCfARk5#treeweb-gold-builds'
-    on_pull_requests: false
-    on_success: always
-    on_failure: change
-    on_start: never
+version: ~> 1.0
 
-before_install:
-  # Create .netrc for private repo install
-  - 'echo -e "machine github.com\n  login $GITHUB_AUTH_TOKEN" >> ~/.netrc'
-  - npm install -g bower
-install:
-  # pipe bower install output through tee to create a log to parse for errors and preserve exit code
-  - 'bower install --config.interactive=false 2>&1 | tee bower-debug.log; ( exit ${PIPESTATUS[0]} )'
-  - npm install
-before_script:
-  - node_modules/fs-common-build-scripts/bin/before_script.sh
-script:
-  # Run linting checks, suppressing warnings for cleanliness
-  - npx eslint '**/*.html' '**/*.json' --quiet
-  - stylelint '**/*.html' '**/*.css'
-  # Run tests
-  - 'npx wct --configFile wct.conf.windows.json --skip-plugin local && npx wct --configFile wct.conf.json --skip-plugin local'
-after_success:
-  - node node_modules/fs-common-build-scripts/bin/create_release.js
-after_failure:
-  - node_modules/fs-common-build-scripts/bin/report_failure_details.sh
-after_script:
-  - node_modules/fs-common-build-scripts/bin/after_script.sh
+# This Travis CI configuration makes use of imports (https://docs.travis-ci.com/user/build-config-imports/) to commonize and simplify build configuration. Utilizes shallow merge, allowing overwrites for most root level sections, and deep merge for notifications.
+import:
+  - source: fs-webdev/fs-common-build-scripts:travis/base.yml@v2
+    mode: merge
+  - source: fs-webdev/fs-common-build-scripts:travis/sauce.yml@v2
+    mode: merge
+  - source: fs-webdev/fs-common-build-scripts:travis/notifications.yml@v2
+    mode: deep_merge
+  - source: fs-webdev/fs-common-build-scripts:travis/notifications/tw-gold.yml@v2
+    mode: deep_merge
+  - source: fs-webdev/fs-common-build-scripts:travis/before.yml@v2
+    mode: merge
+  - source: fs-webdev/fs-common-build-scripts:travis/install_with_bower.yml@v2
+    mode: deep_merge_prepend
+  - source: fs-webdev/fs-common-build-scripts:travis/scripts.yml@v2
+    mode: merge
+
+# Put anything additional you wish to have happen before running tests in an `install` section.
