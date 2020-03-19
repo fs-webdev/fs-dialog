@@ -48,8 +48,8 @@
     },
     "size-limit": {
       "path": "fs-dialog-all.html",
-      "limitNoPolymer": "26 KB",
-      "limitNoExternals": "15 KB"
+      "limitNoPolymer": "40 KB",
+      "limitNoExternals": "30 KB"
     }
   }
 }
