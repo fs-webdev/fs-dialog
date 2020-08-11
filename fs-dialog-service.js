@@ -62,7 +62,9 @@
   FS.dialog.service.closeAllDialogs = function () {
     var reverseStack = [].concat(dialogStack).reverse();
     reverseStack.forEach(function (dialog) {
-      dialog.close();
+      if (dialog.close) {
+        dialog.close();
+      }
     });
   };
 
@@ -77,7 +79,9 @@
         if (animationToUseToClose) {
           dialog.setAttribute('transition', animationToUseToClose);
         }
-        dialog.close();
+        if (dialog.close) {
+          dialog.close();
+        }
         // Restsore the animation direction after the transition has finished
         if (animationToUseToClose) {
           setTimeout(function () {
