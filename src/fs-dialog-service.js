@@ -64,10 +64,10 @@
   FS.dialog.service.closeAllDialogs = function () {
     var reverseStack = [].concat(dialogStack).reverse();
     reverseStack.forEach(function (dialog) {
-      if (dialog && dialog.close) {
-        dialog.close();
-      } else {
+      if (!dialog) {
         FS.dialog.service.removeDialogFromStack(dialog);
+      } else if (dialog.close) {
+        dialog.close();
       }
     });
   };
@@ -87,10 +87,8 @@
         if (animationToUseToClose) {
           dialog.setAttribute('transition', animationToUseToClose);
         }
-        if (dialog && dialog.close) {
+        if (dialog.close) {
           dialog.close();
-        } else {
-          FS.dialog.service.removeDialogFromStack(dialog);
         }
         // Restsore the animation direction after the transition has finished
         if (animationToUseToClose) {
