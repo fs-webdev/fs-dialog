@@ -45,7 +45,9 @@
 
   FS.dialog.service.addDialogToStack = function (dialogElement) {
     FS.dialog.service.removeDialogFromStack(dialogElement);
-    dialogStack.push(dialogElement);
+    if (dialogElement) {
+      dialogStack.push(dialogElement);
+    }
   };
 
   FS.dialog.service.removeDialogFromStack = function (dialogElement) {
@@ -62,7 +64,9 @@
   FS.dialog.service.closeAllDialogs = function () {
     var reverseStack = [].concat(dialogStack).reverse();
     reverseStack.forEach(function (dialog) {
-      if (dialog.close) {
+      if (!dialog) {
+        FS.dialog.service.removeDialogFromStack(dialog);
+      } else if (dialog.close) {
         dialog.close();
       }
     });
@@ -74,6 +78,10 @@
 
     var animationToUseToClose = dialogElement.getAttribute('transition');
     reverseStack.some(function (dialog, dialogIndex) {
+      if (!dialog) {
+        FS.dialog.service.removeDialogFromStack(dialog);
+        return false;
+      }
       if (dialogIndex <= index) {
         var animationToRestore = dialog.getAttribute('transition');
         if (animationToUseToClose) {
